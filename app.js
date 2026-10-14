@@ -49,8 +49,8 @@ document.addEventListener('click',async event=>{const routeEl=event.target.close
  case 'plant-source':vm.plantSource=el.dataset.value;delete vm.forms[currentRoute+'|plant']?.source;refresh();break;
  case 'select-draft':if(vm.selected.has(el.dataset.id))vm.selected.delete(el.dataset.id);else vm.selected.add(el.dataset.id);refresh();break;
  case 'select-favorite':if(vm.selected.has(el.dataset.key))vm.selected.delete(el.dataset.key);else vm.selected.add(el.dataset.key);refresh();break;
- case 'select-all-drafts':vm.selected=new Set(myDrafts(s).map(d=>d.id));refresh();break;
- case 'select-all-favorites':vm.selected=new Set(s.favorites);refresh();break;
+ case 'select-all-drafts':{const ids=myDrafts(s).slice(0,2).map(d=>d.id);vm.selected=new Set(ids.every(x=>vm.selected.has(x))?[]:ids);refresh();break;}
+ case 'select-all-favorites':{const keys=s.favorites.slice(0,3);vm.selected=new Set(keys.every(x=>vm.selected.has(x))?[]:keys);refresh();break;}
  case 'native-font':vm.fontChoice=el.dataset.value;toast('已选择'+({standard:'标准',large:'大号',extra:'特大'})[el.dataset.value]+'字号');break;
  case 'native-apply-font':commit(s=>s.settings.font=vm.fontChoice||'standard','字号已保存');goBack();break;
  case 'help-code':toast('体验验证码为 123456；此演示不发送真实短信');break;
@@ -72,7 +72,7 @@ document.addEventListener('click',async event=>{const routeEl=event.target.close
  case 'exchange':vm.composer.exchange=el.dataset.value;updateComposer();refresh();break;
  case 'help-kind':vm.composer.helpKind=el.dataset.value;updateComposer();refresh();break;
  case 'quantity':vm.composer.quantity=Math.min(99,Math.max(1,Number(vm.composer.quantity||3)+Number(el.dataset.delta)));vm.dirty=true;preserveRecovery();refresh();break;
- case 'remove-photo':{const t=el.dataset.target;if(t==='post'){vm.composer.photos.splice(Number(el.dataset.index),1);vm.dirty=true;preserveRecovery();}else if(t==='feedback')vm.feedbackPhotos.splice(Number(el.dataset.index),1);refresh();break;}
+ case 'remove-photo':{const t=el.dataset.target;if(t==='post'){vm.composer.photos.splice(Number(el.dataset.index),1);vm.dirty=true;preserveRecovery();}else if(t==='record')vm.recordPhoto=null;else if(t==='feedback')vm.feedbackPhotos.splice(Number(el.dataset.index),1);refresh();break;}
  case 'choose-plant':openModal(`<h2 id="dialog-title">选择我的植物</h2>${myPlants(s).map(p=>views.button(esc(p.name),'associate-plant','btn btn-outline wide',`data-id="${p.id}"`)).join('')}${!myPlants(s).length?'<p>先保存本次草稿，再到“我的植物”添加一盆植物。</p>':''}`,'sheet');break;
  case 'associate-plant':vm.composer.plantId=el.dataset.id;vm.dirty=true;preserveRecovery();closeModal();refresh();break;
  case 'unlink-plant':vm.composer.plantId=null;vm.dirty=true;preserveRecovery();refresh();break;
@@ -133,7 +133,7 @@ document.addEventListener('submit',async event=>{const form=event.target;if(!for
  case 'search':navigate('/search?q='+encodeURIComponent((f.q||'').trim()));break;
  case 'login':if(!/^1\d{10}$/.test(f.phone))throw Error('请输入11位手机号');if(f.code!=='123456')throw Error('请输入验证码');if(!f.agree)throw Error('请阅读并确认用户协议');commit(s=>{s.loggedIn=true;s.users[s.userId].name=(f.name||s.users[s.userId].name).trim();},'登录成功');navigate(new URL(currentRoute,'https://qinghe.local').searchParams.get('returnTo')||'/me',{replace:true,allow:true});break;
  case 'plant':if(!requireLogin())return;{const p=commit(s=>addPlant(s,{name:f.name.trim(),date:f.date.replace(/年|月/g,'-').replace('日',''),location:vm.plantLocation||f.location,source:f.source,photo:vm.plantPhoto||'plant-new:img2'}));delete vm.forms[currentRoute+'|plant'];vm.plantPhoto=null;vm.plantLocation='阳台';navigate('/plant/'+p.id+'/success',{replace:true});break;}
- case 'record':if(!requireLogin())return;commit(s=>addPlantRecord(s,form.dataset.id,{title:f.title.trim(),date:f.date,body:f.body.trim(),photo:vm.recordPhoto}),'成长近况已保存');delete vm.forms[currentRoute+'|record'];vm.recordPhoto=null;navigate('/plant/'+form.dataset.id,{replace:true});break;
+ case 'record':if(!requireLogin())return;commit(s=>addPlantRecord(s,form.dataset.id,{title:f.title?.trim()||f.body.trim().split('\n')[0].slice(0,20),date:f.date,body:f.body.trim(),photo:vm.recordPhoto}),'成长近况已保存');delete vm.forms[currentRoute+'|record'];vm.recordPhoto=null;navigate('/plant/'+form.dataset.id,{replace:true});break;
  case 'publish':await submitPublish();break;
  case 'comment':if(!requireLogin())return;if(!f.text.trim())throw Error('请填写留言');commit(s=>{const p=s.posts.find(p=>p.id===form.dataset.id);if(!p)throw Error('帖子不存在');p.comments.push({id:id(),author:s.userId,text:f.text.trim()});},'留言已保存');delete vm.forms[currentRoute+'|comment'];form.reset();refresh();break;
  case 'chat':if(!requireLogin())return;if(!f.text.trim())throw Error('请填写消息');commit(s=>s.chats.push({id:id(),conversation:form.dataset.id,author:s.userId,text:f.text.trim()}),'消息已发送');delete vm.forms[currentRoute+'|chat'];form.reset();refresh();break;
