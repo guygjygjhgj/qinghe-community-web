@@ -56,7 +56,7 @@ export function createViews(getState,assets,homeScene){
    route('展开全部','/me?tab=records');route('展开全部  ›','/me?tab=records');
   }
   if(['activity','activity-full','activity-booked'].includes(name)){
-   const a=activity||s.activities[0],st=activityState(s,a.id);replace('8人',st.remaining+'人');replace('20人',a.capacity+'人');action('报名参加','book',{id:a.id});action('立即报名','book',{id:a.id});action('取消报名','cancel-booking',{id:a.id});route('返回查看其他活动','/activities');route('查看其他活动','/activities');node(/报名.*按钮|报名按钮/,{action:st.mine?'cancel-booking':'book',id:a.id});
+   const a=activity||s.activities[0],st=activityState(s,a.id);replace('8人',st.remaining+'人');replace('8',String(st.remaining));replace('20人',a.capacity+'人');replace('20',String(a.capacity));action('报名参加','book',{id:a.id});action('立即报名','book',{id:a.id});action('取消报名','cancel-booking',{id:a.id});route('返回查看其他活动','/activities');route('查看其他活动','/activities');node(/报名.*按钮|报名按钮/,{action:st.mine?'cancel-booking':'book',id:a.id});
   }
   if(name==='messages'){
    action('全部标为已读','read-all');action('全部已读','read-all');route('种苗约定','/chat/seed-demo');route('查看约定','/chat/seed-demo');route('查看活动','/activity/herbs');route('查看回复','/post/pothos');find('查看评论').forEach((el,i)=>bind(el,{route:['/post/pothos','/post/scallion','/activity/herbs','/post/scallion'][i%4]}));route('查看聊天','/chat/seed-demo');action('语音播报','read',{kind:'messages'});route('互动消息','/messages?tab=interaction');route('种苗消息','/messages?tab=seed');route('系统消息','/messages?tab=system');node(/种苗.*(卡片|消息)|陈爷爷.*(头像|消息)/,{route:'/chat/seed-demo'});node(/活动.*卡片/,{route:'/activity/herbs'});

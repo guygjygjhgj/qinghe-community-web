@@ -5,3 +5,11 @@ This Font Software is licensed under the SIL Open Font License, Version 1.1. Thi
 http://scripts.sil.org/OFL
 
 © 2017-2023 Adobe (http://www.adobe.com/).
+
+Copyright 2011 The Roboto Project Authors (https://github.com/googlefonts/roboto-classic)
+
+https://openfontlicense.org
+
+Copyright 2016 The Nunito Sans Project Authors (https://github.com/Fonthausen/NunitoSans)
+
+https://scripts.sil.org/OFL
