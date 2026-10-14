@@ -9,7 +9,7 @@ export function createViews(getState,assets,homeScene){
  function canvas(name){if(!screens[name])name='home';const root=screens[name](),d=sizes[name];root.classList.add('native-canvas');Object.assign(root.style,{width:d.width+'px',height:d.height+'px'});root.dataset.screen=name;root.setAttribute('aria-label','青禾社区');
   for(const m of geometry[name]||[]){if(m[1]!=='T')continue;const id=m[0].includes(';')?m[0].split(';').pop():m[0];for(const el of root.querySelectorAll('[data-node-id="'+m[0]+'"],[data-node-id="'+id+'"],[id="node-'+id.replace(':','_')+'"]')){
    if(typeof m[6]==='number')el.style.fontSize=m[6]+'px';if(m[7]?.unit==='PIXELS')el.style.lineHeight=m[7].value+'px';if(m[7]?.unit==='PERCENT')el.style.lineHeight=m[7].value/100+'em';if(m[8]?.unit==='PIXELS')el.style.letterSpacing=m[8].value+'px';else if(m[8]?.unit==='PERCENT')el.style.letterSpacing=m[8].value/100+'em';
-   const font=m[9];if(font?.family)el.style.fontFamily='"'+font.family+'"';if(font?.variationSettings?.wght)el.style.fontWeight=font.variationSettings.wght;
+   const font=m[9];if(font?.family)el.style.fontFamily='"'+font.family+'","Noto Sans SC",sans-serif';if(font?.variationSettings?.wght)el.style.fontWeight=font.variationSettings.wght;
    if(m[5]<=((m[7]?.unit==='PIXELS'?m[7].value:0)||m[6]*1.5)*1.25)el.style.whiteSpace='pre';
    if(m[11])el.style.textAlign=m[11].toLowerCase();
   }}return root;}
