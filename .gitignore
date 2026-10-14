@@ -1,0 +1,10 @@
+node_modules/
+playwright-report/
+test-results/
+*.log
+.env*
+!.env.example
+verification/screenshots/
+
+assets/fonts/*.ttf
+legacy-style.css

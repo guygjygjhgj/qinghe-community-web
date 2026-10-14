@@ -1,0 +1,18 @@
+{
+  "name": "qinghe-community-web",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "基于 Figma 的青禾社区居民端交互网页",
+  "scripts": {
+    "start": "node server.cjs",
+    "test": "node --test tests/*.test.mjs",
+    "check": "node --check app.js && node --check domain.js && node --check native-views.js && node --check native-runtime.js"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "devDependencies": {
+    "esbuild": "^0.28.2"
+  }
+}
