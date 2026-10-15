@@ -1,4 +1,5 @@
 import {myPlants,myDrafts,searchItems,seedCounts,unread} from './domain.js';
+import {nativePlantCards} from './native-plant-carousel.js';
 
 // Runtime values occupy the existing Figma slots; source art and geometry stay intact.
 export function completeRuntimeData(root,{name,state,vm,url,assets}){
@@ -36,15 +37,19 @@ export function completeRuntimeData(root,{name,state,vm,url,assets}){
   if(name==='circle-info'){for(const e of named(/tomato|article-1-button|article.*(photo|card)|资讯.*(照片|卡片)/))bind(e,{route:'/article/tomato-story'});for(const e of named(/^article-1$|article-1-button|article-pothos/))bind(e,{route:'/article/pothos-guide'});for(const e of named(/^article-2$|article-2-button|article-garden/))bind(e,{route:'/article/pocket-garden'});text('阅读科普',{route:'/article/pothos-guide'});text('查看新闻',{route:'/article/pocket-garden'});}
  }
  if(name==='plants'){
-  const plants=myPlants(state),selected=plants.find(p=>p.id===vm.activePlantId)||plants[0],pid=selected?.id||'reference-mint';
+  const plants=nativePlantCards(state),selected=plants.find(p=>p.id===vm.activePlantId)||plants[0],pid=selected.id;
   for(const e of named(/^plant-photo／|^plant-heading／|^plant-tagline／/)){bind(e,{route:'/plant/'+pid});e.setAttribute('aria-label',selected?.name||'薄荷盆栽');}
   for(const e of named(/^side-card-left／|^side-card-right／/))bind(e,{action:'native-plant-step',delta:e.dataset.name.includes('left')?'-1':'1'});
   const month=vm.calendarMonth||'2026-09';
   for(const e of named(/^day\d／/)){const day=[...e.querySelectorAll('p')].find(p=>/^\d+$/.test(p.textContent))?.textContent||'12';bind(e,{route:'/plant/'+pid+'?date='+month+'-'+day.padStart(2,'0')});if(vm.calendarMonth){const weekday=[...e.querySelectorAll('p')].find(p=>/^周/.test(p.textContent));put(weekday,'周'+['日','一','二','三','四','五','六'][new Date(month+'-'+day.padStart(2,'0')+'T12:00:00').getDay()]);}}
   for(const e of named(/^edit-profile(／|-bg)/))bind(e,{route:'/profile/edit'});
   for(const e of named(/^服务入口／/)){const key=e.dataset.name.split('／')[1],routes={favorite:'/favorites',draft:'/drafts',font:'/settings/font',voice:'/settings/speech',reminder:'/settings/notifications',privacy:'/help?topic=privacy',feedback:'/feedback',help:'/help'};if(routes[key])bind(e,{route:routes[key]});}
-  // Plant names embedded in source art are preserved; this existing location slot chooses actual records.
-  if(plants.length>1){const select=picker(at('11:1994'),plants.map(p=>[p.id,p.name]),{plantPicker:'true'},'选择我的植物');if(select&&vm.activePlantId)for(const option of select.options)if(option.value===vm.activePlantId)option.setAttribute('selected','');}
+  // Saved records use the original card slots; the reference card keeps all source artwork.
+  if(!selected.reference){
+   put(at('11:1994'),selected.location||'阳台');
+   if(selected.name!=='薄荷盆栽')for(const heading of named(/^plant-heading／/)){const img=heading.querySelector('img');if(img)img.style.visibility='hidden';const title=document.createElement('span');title.className='native-plant-runtime-title';title.textContent=selected.name;title.style.fontSize='48px';heading.append(title);}
+   const photo=selected.photo;if(photo){const [screen,key]=photo.split(':'),src=photo.startsWith('data:image/')?photo:assets[screen]?.[key]?.file;const img=named(/^plant-photo／/)[0]?.querySelector('img');if(src&&img){img.src=src;Object.assign(img.style,{inset:'0',width:'100%',height:'100%',objectFit:'cover'});}}
+  }
   const monthSelect=picker(at('11:1983'),Array.from({length:12},(_,i)=>['2026-'+String(i+1).padStart(2,'0'),(i+1)+'月']),{monthPicker:'true'},'选择记录月份');if(monthSelect&&vm.calendarMonth)for(const option of monthSelect.options)if(option.value===vm.calendarMonth)option.setAttribute('selected','');
  }
  if(name==='plant-detail'){

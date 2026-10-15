@@ -7,6 +7,7 @@ import {editorSourceExists} from './routing.js';
 import {preserveDesign} from './strict-bindings.js';
 import {completeNativeFunctions} from './native-functions.js';
 import {completeAuthControls} from './demo-auth.js';
+import {prepareNativePlantCarousel} from './native-plant-carousel.js';
 export {esc,today,typeName};
 const norm=s=>s.replace(/\s+/g,'').replace(/›/g,'');
 function completeReaderExit(root){
@@ -168,6 +169,7 @@ export function createViews(getState,assets,homeScene){
     const mask=root.querySelector('[data-name="弹窗遮罩｜独立可编辑"]');let tail=mask;while(tail){const next=tail.nextSibling;tail.remove();tail=next;}
    }
    completeNativeFunctions(root,{name,state:getState(),vm,assets,url});
+   if(name==='plants')prepareNativePlantCarousel(root);
    if(name==='login')completeAuthControls(root);
    if(name==='reader')completeReaderExit(root);
   }

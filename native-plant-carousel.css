@@ -1,0 +1,6 @@
+.native-plant-motion>*{pointer-events:auto}
+.native-canvas[data-plant-dragging=true] .native-plant-motion,
+.native-canvas[data-plant-dragging=true] .native-plant-motion *{cursor:grabbing!important;user-select:none!important}
+.native-plant-motion img{-webkit-user-drag:none}
+.native-plant-motion [data-name="plant-card-bg／独立生成图片"]{cursor:grab}
+.native-plant-runtime-title{position:absolute;inset:0;display:flex;align-items:center;color:#ff6200;font-family:'Noto Sans SC',sans-serif;font-weight:900;line-height:1.1;overflow:hidden;white-space:nowrap}
