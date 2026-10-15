@@ -1,0 +1,83 @@
+{
+  "license": "CC0",
+  "purpose": "Edited quiet Foley; analogues, not recordings of this exact cake or bamboo steamer",
+  "sources": [
+    {
+      "key": "water",
+      "source": "https://freesound.org/people/Rudmer_Rotteveel/sounds/700352/",
+      "license": "CC0"
+    },
+    {
+      "key": "cut",
+      "source": "https://freesound.org/people/qubodup/sounds/87506/",
+      "license": "CC0"
+    },
+    {
+      "key": "wood",
+      "source": "https://freesound.org/people/qubodup/sounds/792930/",
+      "license": "CC0"
+    },
+    {
+      "key": "mix",
+      "source": "https://freesound.org/people/artur_mb/sounds/671469/",
+      "license": "CC0"
+    }
+  ],
+  "edits": [
+    [
+      "water",
+      "water",
+      0.75,
+      1.45,
+      4500,
+      -23
+    ],
+    [
+      "mix",
+      "stir",
+      3,
+      2.35,
+      3000,
+      -28
+    ],
+    [
+      "cut",
+      "cut-a",
+      4,
+      0.9,
+      1900,
+      -31
+    ],
+    [
+      "cut",
+      "cut-b",
+      7,
+      0.9,
+      1900,
+      -31
+    ],
+    [
+      "cut",
+      "cut-c",
+      10,
+      0.9,
+      1900,
+      -31
+    ],
+    [
+      "wood",
+      "wood-contact",
+      0,
+      0.2,
+      1800,
+      -29
+    ]
+  ],
+  "intentionalSilence": [
+    "flower observation",
+    "powder and petals falling",
+    "steam and cooling",
+    "success",
+    "soft cake put in paper box"
+  ]
+}

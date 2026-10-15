@@ -1,0 +1,10 @@
+[data-screen="seasonal"] [data-scroll-region="seasonal-games"]::-webkit-scrollbar{display:none}
+[data-screen="seasonal"] .seasonal-game-select{position:absolute;inset:5.74px 0 auto 0;width:130.245px;height:39.336px;opacity:0;cursor:pointer;font:21px 'Noto Sans SC',sans-serif}
+[data-screen="seasonal"] .seasonal-game-select:focus-visible{opacity:1;background:#fff0c6;border-radius:20px;outline:2px solid #ff9600}
+[data-screen="seasonal"] .seasonal-detail{position:absolute;left:20px;top:1532.3426513671875px;width:710px;padding:30px;border-radius:26px;background:#fff;color:#35363d;font:26px/1.5 'Noto Sans SC',sans-serif;overflow-wrap:anywhere}
+[data-screen="seasonal"] .seasonal-detail h2{margin:22px 0;font-size:32px}
+[data-screen="seasonal"] .seasonal-detail textarea{display:block;width:100%;height:150px;resize:none;border:1.5px solid #ffc13a;border-radius:22px;padding:18px;margin-bottom:20px;font:26px/1.5 'Noto Sans SC',sans-serif}
+[data-screen="seasonal"] .seasonal-detail .seasonal-work-photo{width:650px;height:460px;object-fit:contain;margin:16px 0}
+[data-screen="seasonal"] .seasonal-detail .inline-actions{align-items:center}
+[data-screen="seasonal"] .seasonal-reply{margin:15px 0;white-space:pre-wrap}
+[data-screen="seasonal"] .seasonal-detail button:disabled{opacity:.4;cursor:default}

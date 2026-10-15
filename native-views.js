@@ -1,23 +1,35 @@
+import {completeSeasonal} from './native-seasonal.js';
 import {screens,sizes} from './native-screens.js';
 import {geometry} from './native-geometry.js';
 import {createViews as legacy,esc,today,typeName} from './legacy-views.js';
-import {myPlants,myDrafts,activityState,searchItems} from './domain.js';
+import {myPlants,myDrafts,activityState,searchItems,unread} from './domain.js';
+import {editorSourceExists} from './routing.js';
+import {preserveDesign} from './strict-bindings.js';
+import {completeNativeFunctions} from './native-functions.js';
 export {esc,today,typeName};
 const norm=s=>s.replace(/\s+/g,'').replace(/›/g,'');
+function nativeIndex(root){
+ const data=new Map(),ids=new Map(),suffix=new Map(),order=new Map();let i=0;
+ const add=(map,key,el)=>{if(!key)return;if(!map.has(key))map.set(key,[]);map.get(key).push(el);};
+ for(const el of root.querySelectorAll('[data-node-id],[id]')){order.set(el,i++);add(data,el.dataset.nodeId,el);add(ids,el.id,el);if(el.dataset.nodeId?.includes(';'))add(suffix,el.dataset.nodeId.split(';').pop(),el);}
+ return (full,instances=false)=>{const id=full.split(';').pop();return [...new Set([...(data.get(full)||[]),...(data.get(id)||[]),...(instances?suffix.get(id)||[]:[]),...(ids.get('node-'+id.replace(':','_'))||[])])].sort((a,b)=>order.get(a)-order.get(b));};
+}
 export function createViews(getState,assets,homeScene){
  const helpers=legacy(getState,assets,homeScene);
- function canvas(name){if(!screens[name])name='home';const root=screens[name](),d=sizes[name];root.classList.add('native-canvas');Object.assign(root.style,{width:d.width+'px',height:d.height+'px'});root.dataset.screen=name;root.setAttribute('aria-label','青禾社区');
-  for(const m of geometry[name]||[]){if(m[1]!=='T')continue;const id=m[0].includes(';')?m[0].split(';').pop():m[0];for(const el of root.querySelectorAll('[data-node-id="'+m[0]+'"],[data-node-id="'+id+'"],[id="node-'+id.replace(':','_')+'"]')){
+ const templates=new Map();
+ function canvas(name){if(!screens[name])name='home';if(templates.has(name))return templates.get(name).cloneNode(true);const root=screens[name](),d=sizes[name];root.classList.add('native-canvas');Object.assign(root.style,{width:d.width+'px',height:d.height+'px'});root.dataset.screen=name;root.setAttribute('aria-label','青禾社区');const nodes=nativeIndex(root);
+  for(const m of geometry[name]||[]){if(m[1]!=='T')continue;for(const el of nodes(m[0])){
    if(typeof m[6]==='number')el.style.fontSize=m[6]+'px';if(m[7]?.unit==='PIXELS')el.style.lineHeight=m[7].value+'px';if(m[7]?.unit==='PERCENT')el.style.lineHeight=m[7].value/100+'em';if(m[8]?.unit==='PIXELS')el.style.letterSpacing=m[8].value+'px';else if(m[8]?.unit==='PERCENT')el.style.letterSpacing=m[8].value/100+'em';
    const font=m[9];if(font?.family)el.style.fontFamily='"'+font.family+'","Noto Sans SC",sans-serif';if(font?.variationSettings?.wght)el.style.fontWeight=font.variationSettings.wght;
    if(m[5]<=((m[7]?.unit==='PIXELS'?m[7].value:0)||m[6]*1.5)*1.25)el.style.whiteSpace='pre';
    if(m[11])el.style.textAlign=m[11].toLowerCase();
-  }}return root;}
+  }}templates.set(name,root);return root.cloneNode(true);}
  function wire(root,vm,url,name){
   const s=getState(),path=url.pathname,itemId=path.split('/')[2],post=s.posts.find(p=>p.id===itemId),plant=s.plants.find(p=>p.id===itemId),activity=s.activities.find(p=>p.id===itemId);
-  const leaves=()=>[...root.querySelectorAll('p,span')].filter(e=>!e.children.length&&e.textContent.trim());
+  const textNodes=[...root.querySelectorAll('p,span')];
+  const leaves=()=>textNodes.filter(e=>root.contains(e)&&!e.children.length&&e.textContent.trim());
   const find=t=>leaves().filter(e=>norm(e.textContent)===norm(t));
-  const bind=(el,props)=>{if(!el)return;Object.assign(el.dataset,props);el.setAttribute('role','button');el.tabIndex=0;el.setAttribute('aria-label',el.textContent.trim()||el.dataset.name?.split('｜')[0]||'打开');el.classList.add('native-control');};
+  const bind=(el,props)=>{if(!el)return;if(props.action)delete el.dataset.route;if(props.route)delete el.dataset.action;Object.assign(el.dataset,props);el.setAttribute('role','button');el.tabIndex=0;el.setAttribute('aria-label',el.textContent.trim()||el.dataset.name?.split('｜')[0]||'打开');el.classList.add('native-control');};
   const node=(pattern,props)=>{for(const el of root.querySelectorAll('[data-name]'))if(pattern.test(el.dataset.name))bind(el,props);};
   const text=(label,props)=>{for(const el of find(label)){bind(el,props);let g=el.parentElement;for(let depth=0;g&&g!==root&&depth<4;depth++,g=g.parentElement){if([...g.querySelectorAll('[data-action]')].some(e=>e.dataset.action!==props.action)||[...g.querySelectorAll('[data-route]')].some(e=>e.dataset.route!==props.route))break;if(norm(g.textContent)===norm(label)){bind(g,props);for(const child of g.querySelectorAll('[role=button]')){child.removeAttribute('role');child.tabIndex=-1;}}else break;}}for(const n of root.querySelectorAll('[data-name]'))if(n!==root&&(n.dataset.name===label||n.dataset.name.startsWith(label+'｜')||n.dataset.name.startsWith(label+'按钮')))bind(n,props);};
   const route=(t,to)=>text(t,{route:to}),action=(t,a,attrs={})=>text(t,{action:a,...attrs}),replace=(a,b)=>find(a).forEach(e=>{e.textContent=b;for(let n=e;n&&n!==root;n=n.parentElement)if(norm(n.getAttribute('aria-label')||'')===norm(a))n.setAttribute('aria-label',b);});
@@ -34,9 +46,11 @@ export function createViews(getState,assets,homeScene){
   [['首页','/'],['植物圈','/community'],['发布','/publish'],['消息','/messages'],['我的','/me']].forEach(([t,r])=>{if(!['profile','plants','records'].includes(name)||t!=='我的')route(t,r);node(new RegExp('^'+t+'[｜].*(导航|图标)|^导航.*'+t),{route:r});});
   action('返回','back');node(/icon-back|back-arrow|返回.*图标|返回箭头|返回按钮|返回｜/,{action:'back'});
   [['编辑资料','/profile/edit'],['我的植物','/me'],['我的记录','/me?tab=records'],['我的收藏','/favorites'],['发布草稿','/drafts'],['字号设置','/settings/font'],['消息提醒','/settings/notifications'],['意见反馈','/feedback'],['使用帮助','/help'],['我的关注','/following'],['隐私设置','/settings/privacy']].forEach(([t,r])=>route(t,r));
-  route('社区','/community');route('去植物圈看看','/community');route('看回复','/messages');route('社区活动','/activities');route('当季推荐','/article/tomato-story');route('添加第一盆植物','/plant/new');node(/^添加.*植物.*(按钮|图标)/,{route:'/plant/new'});
+  route('社区','/community');route('去植物圈看看','/community');route('看回复','/messages');route('社区活动','/activities');route('当季推荐','/article/chrysanthemum');route('添加第一盆植物','/plant/new');node(/^添加.*植物.*(按钮|图标)/,{route:'/plant/new'});
   [['交流','feed'],['资讯','info'],['附近','near']].forEach(([t,v])=>route(t,'/community?tab='+v));route('关注动态','/following?tab=feed');route('关注的邻居','/following?tab=neighbors');action('筛选','filter');node(/筛选.*(图标|按钮)/,{action:'filter'});
   if(name==='home'){
+   replace('2',String(unread(s)));replace('32人已报名',activityState(s,'herbs').count+'人已报名');replace('18人已报名',activityState(s,'repot').count+'人已报名');
+   node(/菊花.*(照片|卡片)|当季推荐.*(照片|卡片)/,{route:'/article/chrysanthemum'});
    node(/搜索框|搜索入口/,{route:'/search'});route('搜本社区的植物帖子或活动','/search');
    ['查看活动','立即报名'].forEach((t,i)=>route(t,'/activity/'+(i?'repot':'herbs')));
    node(/^(活动1|活动一|香草|秋日).*(照片|封面|卡片)/,{route:'/activity/herbs'});node(/^(活动2|活动二|换盆).*(照片|封面|卡片)/,{route:'/activity/repot'});
@@ -121,13 +135,32 @@ export function createViews(getState,assets,homeScene){
  }
  function choose(url,vm){
   const s=getState(),p=url.pathname,q=url.searchParams,id=p.split('/')[2];
-  if(p==='/')return'home';if(p==='/community')return q.get('tab')==='info'?'circle-info':q.get('tab')==='near'?'circle-near':'circle';if(p==='/messages')return'messages';if(p==='/following')return'following';if(p==='/me')return q.get('tab')==='records'?'records':myPlants(s).length?'plants':'profile';
+  if(p==='/seasonal')return'seasonal';if(p==='/')return'home';if(p==='/community')return q.get('tab')==='info'?'circle-info':q.get('tab')==='near'?'circle-near':'circle';if(p==='/messages')return'messages';if(p==='/following'||p.startsWith('/neighbor/'))return'following';if(p==='/me')return q.get('tab')==='records'?q.get('kind')==='help'?'record-help':q.get('kind')==='seed'?'record-seed':'records':q.has('empty')?'profile':'plants';
   if(p==='/plant/new')return'plant-new';if(/^\/plant\/[^/]+\/success$/.test(p))return'plant-success';if(/^\/plant\/[^/]+\/record$/.test(p))return'editor';if(p.startsWith('/plant/'))return'plant-detail';if(p==='/publish')return vm.composer?.type==='seed'?'seed-editor':vm.composer?.type==='help'?'help-editor':'editor';
   if(p.startsWith('/success/'))return'success';if(p.startsWith('/post/')){const post=s.posts.find(p=>p.id===id);return post?.type==='seed'?'seed-post':post?.type==='help'?post.status==='resolved'?'help-resolved':'help-post':'post';}if(p==='/search')return q.get('q')&&!searchItems(s,q.get('q'),q.get('type')||'all').length?'search-empty':'search';
   if(p==='/favorites')return s.favorites.length?vm.manage?'favorites-manage':'favorites':'favorites-empty';if(p==='/drafts')return myDrafts(s).length?vm.manage?'drafts-manage':'drafts':'drafts-empty';if(p==='/activities')return'filter';if(p.startsWith('/activity/'))return activityState(s,id).mine?'activity-booked':activityState(s,id).full?'activity-full':'activity';
-  if(p.startsWith('/chat/'))return s.agreements.find(a=>a.id===id)?.status==='completed'?'chat-complete':'chat';if(p.startsWith('/article/'))return'article';if(p==='/login')return'login';if(p==='/profile/edit')return'profile-edit';if(p==='/help')return'help';if(p==='/feedback')return'feedback';if(p==='/settings/notifications')return'notifications';if(p==='/settings/font')return'font';if(p.startsWith('/design/'))return p.slice(8);return'profile';
+  if(p.startsWith('/chat/'))return s.agreements.find(a=>a.id===id)?.status==='completed'?'chat-complete':'chat';if(p.startsWith('/article/'))return'article';if(p==='/login')return q.get('method')==='quick'?'one-click-login':'login';if(p==='/profile/edit')return'profile-edit';if(p==='/help')return'help';if(p==='/feedback')return'feedback';if(p==='/settings/notifications')return'notifications';if(p==='/settings/font')return'font';if(p==='/settings/speech')return'reader';if(p==='/plant-records')return'records';if(p==='/settings')return'profile';if(p.startsWith('/design/'))return p.slice(8);return'network';
  }
- function render(route,vm){const url=new URL(route,'https://qinghe.local'),name=choose(url,vm),root=url.pathname.startsWith('/design/')?canvas(name):wire(canvas(name),vm,url,name);return{html:root.outerHTML,className:'native-host',nav:'',desktop:''};}
+ function render(route,vm){
+  const url=new URL(route,'https://qinghe.local');
+  if(url.pathname.startsWith('/games/')){const game=url.pathname.split('/')[2];const paths={corn:'corn/index.html',cotton:'cotton/index.html',chrysanthemum:'runtime/index.html?game=chrysanthemum',osmanthus:'runtime/index.html?game=osmanthus',luffa:'runtime/index.html?game=luffa',ginkgo:'runtime/index.html?game=ginkgo'};if(paths[game])return{html:'<iframe id="game-frame" title="植物小乐趣" src="games/'+paths[game]+'" style="width:100vw;height:100vh;border:0;display:block"></iframe>',className:'game-host',nav:'',desktop:''};}
+  let name;try{name=choose(url,vm);}catch{name='network';}
+  const target=url.pathname.split('/')[2],s=getState();
+  const missing=(url.pathname.startsWith('/post/')||url.pathname.startsWith('/success/'))&&!s.posts.some(p=>p.id===target)||url.pathname.startsWith('/activity/')&&!s.activities.some(a=>a.id===target)||url.pathname.startsWith('/plant/')&&target!=='new'&&target!=='reference-mint'&&!s.plants.some(p=>p.id===target)||url.pathname.startsWith('/chat/')&&!s.agreements.some(a=>a.id===target)&&!['neighbor-wang','neighbor-chen','neighbor-li'].includes(target)||url.pathname.startsWith('/article/')&&!s.articles.some(a=>a.id===target);if(missing)name='network';
+  if(url.pathname==='/publish'&&!editorSourceExists(getState(),url))name='network';
+  const root=canvas(name);
+  if(name==='seasonal'&&!url.pathname.startsWith('/design/'))completeSeasonal(root,{state:getState(),url,assets});
+  else if(!url.pathname.startsWith('/design/')){
+   const bindingUrl=new URL(url);if(name==='filter')bindingUrl.searchParams.set('filter','1');
+   const wired=wire(canvas(name),vm,bindingUrl,name);
+   preserveDesign(root,wired,{name,state:getState(),vm,assets,url});
+   if(name==='filter'&&url.searchParams.get('filter')!=='1'){
+    const mask=root.querySelector('[data-name="弹窗遮罩｜独立可编辑"]');let tail=mask;while(tail){const next=tail.nextSibling;tail.remove();tail=next;}
+   }
+   completeNativeFunctions(root,{name,state:getState(),vm,assets,url});
+  }
+  return {html:root.outerHTML,className:'native-host',nav:'',desktop:''};
+ }
  function nativeDialog(name,context={}){
   const root=canvas(name);root.setAttribute('role','dialog');root.setAttribute('aria-modal','true');
   const ps=[...root.querySelectorAll('p')],get=t=>ps.find(e=>norm(e.textContent)===norm(t));
@@ -135,29 +168,46 @@ export function createViews(getState,assets,homeScene){
   if(name==='exit'){bind('保存草稿并退出','save-exit');bind('继续编辑','close');bind('不保存并退出','discard-exit');}
   if(name==='delete'){bind('确认删除','confirm-delete-draft');bind('继续编辑','edit-selected-draft');bind('取消','close');}
   if(name==='publish-failed'){bind('重新发布','publish-preview');bind('存为草稿','save-draft');bind('继续编辑','close');}
-  const edit=(el,id,second)=>{if(!el)return;const area=document.createElement('textarea');area.id=id;area.className=el.className+' native-input';area.style.cssText=el.style.cssText;area.dataset.nodeId=el.dataset.nodeId;area.placeholder=[el.textContent,second?.textContent].filter(Boolean).join('\n');area.value=context.text||'';area.textContent=area.value;area.setAttribute('aria-label','转写文字');if(second)second.remove();el.replaceWith(area);area.dataset.lines='2';};
+  const edit=(el,id,second)=>{if(!el)return;const area=document.createElement('textarea');area.id=id;area.className=el.className+' native-input';area.style.cssText=el.style.cssText;area.dataset.nodeId=el.dataset.nodeId;area.placeholder=el.textContent;area.value=context.text||'';area.textContent=area.value;area.setAttribute('aria-label','转写文字');if(second){area.dataset.lines='2';second.id=id+'-continuation';second.hidden=!!area.value.trim();}el.replaceWith(area);};
   if(name==='speech'){bind('完成录音','finish-recording');bind('取消录音','close');const timer=get('00:08');if(timer){timer.id='recording-timer';timer.textContent='00:00';}const status=get('正在听您说');if(status)status.id='recording-status';edit(ps.find(e=>/今天家里的小番茄红了/.test(e.textContent)),'speech-text',ps.find(e=>norm(e.textContent)==='想和邻居分享一下。'));}
-  if(name==='speech-confirm'){bind('使用这段文字','use-speech');bind('重新录音','re-record');bind('取消','close');edit(ps.find(e=>/今天家里的小番茄红了/.test(e.textContent)),'confirmed-speech',ps.find(e=>norm(e.textContent)==='邻居分享一下。'));}
-  if(name==='reader'){bind('上一句','reader-prev');bind('下一句','reader-next');bind('暂停朗读','reader-toggle');bind('停止朗读','close');[['稍慢',.75],['正常',1],['稍快',1.25]].forEach(([t,v])=>bind(t,'reader-rate',{value:String(v)}));const content=ps.find(e=>e.textContent.includes('阳台上的小葱长高了，已经能剪来做菜啦。'));if(content)content.id='reading-sentence';const pos=get('00:12 / 00:38');if(pos)pos.id='reading-position';}
+  if(name==='speech-confirm'){bind('播放录音','play-speech');bind('使用这段文字','use-speech');bind('重新录音','re-record');bind('取消','close');edit(ps.find(e=>/今天家里的小番茄红了/.test(e.textContent)),'confirmed-speech',ps.find(e=>norm(e.textContent)==='邻居分享一下。'));if(context.elapsed!==undefined){const duration=get('录音 00:18');if(duration)duration.textContent=context.recorded?'录音 '+String(Math.floor(context.elapsed/60)).padStart(2,'0')+':'+String(context.elapsed%60).padStart(2,'0'):'文字输入';}}
+  if(name==='reader'){bind('上一句','reader-prev');bind('下一句','reader-next');bind('暂停朗读','reader-toggle');bind('停止朗读','close');[['稍慢',.75],['慢速',.75],['正常',1],['稍快',1.25]].forEach(([t,v])=>bind(t,'reader-rate',{value:String(v)}));const content=ps.find(e=>e.textContent.includes('阳台上的小葱长高了，已经能剪来做菜啦。'));if(content){content.id='reading-sentence';content.style.whiteSpace='pre-wrap';content.style.overflow='auto';}const pos=get('00:12 / 00:38');if(pos)pos.id='reading-position';}
+  if(name==='editor'){bind('立即发布','publish-preview');bind('预览','close');bind('存草稿','save-draft');bind('返回','close');const pictures=[...root.querySelectorAll('[data-name]')].filter(el=>/^(photo-scallions|photo-harvest)／/.test(el.dataset.name));pictures.forEach((el,i)=>{const photo=context.photos?.[i];if(photo?.startsWith('data:image/'))el.querySelector('img').src=photo;});if(context.body!==undefined){const body=root.querySelector('[data-node-id="3:6507"]');if(body){body.textContent=context.body;body.style.whiteSpace='pre-wrap';body.style.overflow='auto';}}}
+  if(name==='speech'){
+   const microphone=[...root.querySelectorAll('[data-name]')].find(el=>/录音麦克风图标/.test(el.dataset.name));
+   if(microphone){microphone.dataset.action='start-recording';microphone.role='button';microphone.tabIndex=0;microphone.setAttribute('aria-label','开始录音');}
+  }
+  for(const element of root.querySelectorAll('p'))if(element.textContent.includes('李阿姨'))element.textContent=element.textContent.replaceAll('李阿姨',getState().users[getState().userId].name);
+  const iconActions=name==='reader'?[[/icon-previous/,'reader-prev'],[/icon-next/,'reader-next'],[/icon-pause/,'reader-toggle'],[/icon-close/,'close']]:name==='speech-confirm'?[[/播放录音|icon-play/,'play-speech']]:name==='editor'?[[/icon-preview/,'close'],[/icon-save/,'save-draft']]:[];
+  for(const [pattern,action]of iconActions)for(const e of root.querySelectorAll('[data-name]'))if(pattern.test(e.dataset.name)){e.dataset.action=action;e.role='button';e.tabIndex=0;if(name==='editor')e.setAttribute('aria-label',action==='close'?'关闭预览':'存草稿');}
+  if(name==='editor')for(const e of root.querySelectorAll('[data-node-id="3:6450"],[data-node-id="3:6451"]')){e.dataset.action='close';e.role='button';e.tabIndex=0;e.setAttribute('aria-label','关闭预览');}
   return root.outerHTML;
  }
  return {...helpers,render,nativeCanvas:canvas,nativeDialog};
 }
-// Match the original Figma text boxes after fonts and images are decoded.
+// Match the original Figma text boxes after fonts settle, at source scale.
 // Only the source's own layer coordinates and sizes are used; images are never fitted to the viewport.
 export function alignNativeLayers(root){
  const rows=geometry[root?.dataset.screen]||[],origin=root?.getBoundingClientRect();if(!origin)return;
- const used=new Set();
- for(const m of rows){const id=m[0].split(';').pop(),all=[...root.querySelectorAll('[data-node-id="'+m[0]+'"],[data-node-id="'+id+'"],[id="node-'+id.replace(':','_')+'"]')].filter(e=>!used.has(e));if(!all.length)continue;
-  const distance=e=>{const b=e.getBoundingClientRect();return Math.abs(b.x-origin.x-m[2])+Math.abs(b.y-origin.y-m[3]);};all.sort((a,b)=>distance(a)-distance(b));const el=all[0];used.add(el);
+ const used=new Set(),nodes=nativeIndex(root);
+ for(const m of rows){const all=nodes(m[0],true).filter(e=>!used.has(e));if(!all.length)continue;
+  if(all.length>1){const distance=e=>{const b=e.getBoundingClientRect();return Math.abs(b.x-origin.x-m[2])+Math.abs(b.y-origin.y-m[3]);};all.sort((a,b)=>distance(a)-distance(b));}const el=all[0];used.add(el);
+  if(el.closest('[data-editor-type-chip]'))continue;
+  if(m[1]==='I'&&el.tagName!=='svg'){el.style.width=m[4]+'px';el.style.height=m[5]+'px';}
   if(m[1]==='T'){
    el.style.width=m[4]+'px';el.style.height=(el.dataset.lines?m[5]*Number(el.dataset.lines):m[5])+'px';
+   if(el.dataset.fitNumber&&el.textContent.length>1)el.style.fontSize=m[6]*Math.min(1,m[4]/(el.textContent.length*m[6]*.62))+'px';
    if(m[7]?.unit==='AUTO'){
     let lines=1;if(el.tagName!=='INPUT'&&el.tagName!=='TEXTAREA'){const range=document.createRange();range.selectNodeContents(el);const tops=[...range.getClientRects()].map(r=>Math.round(r.top*10));lines=Math.max(1,new Set(tops).size);}el.style.lineHeight=m[5]/lines+'px';
    }
    if(m[7]?.unit==='PERCENT')el.style.lineHeight=m[6]*m[7].value/100+'px';
   }
-  const b=el.getBoundingClientRect(),x=origin.x+m[2]-b.x,y=origin.y+m[3]-b.y;
+  const b=el.getBoundingClientRect(),pane=el.closest('[data-scroll-region]'),x=origin.x+m[2]+Number(el.dataset.nativeOffsetX||0)-b.x-(pane?.scrollLeft||0),y=origin.y+m[3]-b.y-(pane?.scrollTop||0);
   if(Math.abs(x)>.02||Math.abs(y)>.02)el.style.translate=x+'px '+y+'px';
  }
+}
+export function applyNativeTextSize(root,font){
+ const factor={large:1.12,extra:1.25}[font];if(!factor||!root)return;
+ for(const m of geometry[root.dataset.screen]||[]){if(m[1]!=='T'||!m[6])continue;const id=m[0].split(';').pop();for(const e of root.querySelectorAll('[data-node-id="'+m[0]+'"],[data-node-id="'+id+'"]')){if(e.closest('[data-editor-type-chip]'))continue;e.style.fontSize=m[6]*factor+'px';e.style.overflow='auto';}}
+ for(const chip of root.querySelectorAll('[data-editor-type-chip]')){const label=chip.querySelector('p');if(label)label.style.fontSize=(chip.getAttribute('aria-pressed')==='true'?29.848:30.953)*factor+'px';}
 }

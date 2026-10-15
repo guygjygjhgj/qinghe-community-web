@@ -1,0 +1,251 @@
+{
+  "license": "CC0",
+  "purpose": "Material analogues, not original recordings of this cake. Grain is sugar pouring filtered for powder. Lid rub is softened wooden spoon friction. Cooling is room ambience.",
+  "sources": [
+    {
+      "name": "grain",
+      "url": "https://freesound.org/people/davahey/sounds/98794/",
+      "license": "CC0"
+    },
+    {
+      "name": "leaves",
+      "url": "https://freesound.org/people/ericnorcross81/sounds/570759/",
+      "license": "CC0"
+    },
+    {
+      "name": "paper",
+      "url": "https://freesound.org/people/Sheyvan/sounds/540229/",
+      "license": "CC0"
+    },
+    {
+      "name": "simmer",
+      "url": "https://bigsoundbank.com/boiling-water-s0149.html",
+      "license": "CC0"
+    },
+    {
+      "name": "room",
+      "url": "https://freesound.org/people/visionear/sounds/565535/",
+      "license": "CC0"
+    },
+    {
+      "name": "water",
+      "url": "https://freesound.org/people/Rudmer_Rotteveel/sounds/700352/",
+      "license": "CC0"
+    },
+    {
+      "name": "mix",
+      "url": "https://freesound.org/people/artur_mb/sounds/671469/",
+      "license": "CC0"
+    },
+    {
+      "name": "cut",
+      "url": "https://freesound.org/people/qubodup/sounds/87506/",
+      "license": "CC0"
+    },
+    {
+      "name": "wood",
+      "url": "https://freesound.org/people/qubodup/sounds/792930/",
+      "license": "CC0"
+    }
+  ],
+  "edits": [
+    [
+      "grain",
+      "powder",
+      3,
+      3,
+      2600,
+      -23
+    ],
+    [
+      "leaves",
+      "leaf",
+      17.2,
+      1.5,
+      4200,
+      -27
+    ],
+    [
+      "leaves",
+      "petals",
+      22,
+      2,
+      3300,
+      -26
+    ],
+    [
+      "paper2",
+      "paper",
+      3.2,
+      1.25,
+      2800,
+      -26
+    ],
+    [
+      "grain",
+      "press",
+      12,
+      1.2,
+      1700,
+      -25
+    ],
+    [
+      "mix",
+      "lid-rub",
+      5,
+      1,
+      1200,
+      -29
+    ],
+    [
+      "boil",
+      "simmer",
+      2,
+      10,
+      2400,
+      -29
+    ],
+    [
+      "room",
+      "room",
+      2,
+      9,
+      3500,
+      -34
+    ],
+    [
+      "water",
+      "water",
+      0.75,
+      1.45,
+      4500,
+      -23
+    ],
+    [
+      "mix",
+      "stir",
+      3,
+      2.4,
+      3000,
+      -25
+    ],
+    [
+      "cut",
+      "cut-a",
+      4,
+      1.15,
+      1900,
+      -26
+    ],
+    [
+      "cut",
+      "cut-b",
+      7,
+      1.15,
+      1900,
+      -26
+    ],
+    [
+      "cut",
+      "cut-c",
+      10,
+      1.15,
+      1900,
+      -26
+    ],
+    [
+      "wood",
+      "wood-contact",
+      0,
+      0.166,
+      1800,
+      -26
+    ]
+  ],
+  "measurements": [
+    {
+      "name": "powder",
+      "duration": 3.0,
+      "peakDB": -12.0,
+      "rmsDB": -27.4
+    },
+    {
+      "name": "leaf",
+      "duration": 1.5,
+      "peakDB": -14.7,
+      "rmsDB": -34.7
+    },
+    {
+      "name": "petals",
+      "duration": 2.0,
+      "peakDB": -14.5,
+      "rmsDB": -33.2
+    },
+    {
+      "name": "paper",
+      "duration": 1.25,
+      "peakDB": -5.8,
+      "rmsDB": -31.7
+    },
+    {
+      "name": "press",
+      "duration": 1.2,
+      "peakDB": -16.4,
+      "rmsDB": -29.9
+    },
+    {
+      "name": "lid-rub",
+      "duration": 1.0,
+      "peakDB": -15.2,
+      "rmsDB": -33.8
+    },
+    {
+      "name": "simmer",
+      "duration": 9.901,
+      "peakDB": -5.0,
+      "rmsDB": -28.5
+    },
+    {
+      "name": "room",
+      "duration": 9.0,
+      "peakDB": -22.3,
+      "rmsDB": -35.3
+    },
+    {
+      "name": "water",
+      "duration": 1.45,
+      "peakDB": -10.0,
+      "rmsDB": -30.6
+    },
+    {
+      "name": "stir",
+      "duration": 2.4,
+      "peakDB": -9.4,
+      "rmsDB": -30.9
+    },
+    {
+      "name": "cut-a",
+      "duration": 1.15,
+      "peakDB": -5.3,
+      "rmsDB": -31.2
+    },
+    {
+      "name": "cut-b",
+      "duration": 1.15,
+      "peakDB": -5.5,
+      "rmsDB": -30.0
+    },
+    {
+      "name": "cut-c",
+      "duration": 1.15,
+      "peakDB": -5.3,
+      "rmsDB": -34.5
+    },
+    {
+      "name": "wood-contact",
+      "duration": 0.166,
+      "peakDB": -8.0,
+      "rmsDB": -23.8
+    }
+  ]
+}
