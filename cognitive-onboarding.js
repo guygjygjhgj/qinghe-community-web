@@ -4,7 +4,7 @@ export function needsCognitiveWelcome(state,route){
  return !!state.loggedIn&&new URL(route,'https://qinghe.local').pathname==='/'&&!(seen?.version===COGNITIVE_VERSION&&['finished','deferred'].includes(seen.status));
 }
 
-export function createCognitiveOnboarding({document,window,getState,getRoute,markSeen,onError}){
+export function createCognitiveOnboarding({document,window,getState,getRoute,markSeen,saveResult,onError}){
  let host=null,frame=null,account=null,session=null,timer=null,previousFocus=null;
  const backgrounds=new Map(),handledThisSession=new Set();
  function close(){
@@ -20,17 +20,23 @@ export function createCognitiveOnboarding({document,window,getState,getRoute,mar
   try{markSeen(account,{version:COGNITIVE_VERSION,status,seenAt:new Date().toISOString()});}
   catch(error){failure=error;}
   // Storage exhaustion must never trap someone in the first-login experience.
-  handledThisSession.add(account);close();document.querySelector('#main')?.focus({preventScroll:true});
+  handledThisSession.add(account);const url=new URL(window.location.href);if(url.searchParams.get('assessment')==='start'){url.searchParams.delete('assessment');window.history.replaceState(null,'',url);}close();document.querySelector('#main')?.focus({preventScroll:true});
   if(failure)onError?.(failure);
  }
  function receive(event){
   const data=event.data;
   if(!host||event.origin!==window.location.origin||event.source!==frame.contentWindow||data?.source!=='qinghe-cognitive'||data.version!==COGNITIVE_VERSION||data.session!==session)return;
   if(data.type==='ready'){window.clearTimeout(timer);host.querySelector('.cognitive-loading').hidden=true;}
+  if(data.type==='ready')frame.contentWindow.postMessage({source:'qinghe-community',type:'context',session,resident:{sourceUserId:account,name:getState().users[account]?.name||'未命名居民'}},window.location.origin);
+  if(data.type==='result'){
+   const s=getState();if(!s.loggedIn||s.userId!==account)return;
+   try{if(!saveResult)throw Error('测评保存未配置');saveResult(account,data.result);frame.contentWindow.postMessage({source:'qinghe-community',type:'saved',session,assessmentId:data.result.assessmentId},window.location.origin);}
+   catch(error){frame.contentWindow.postMessage({source:'qinghe-community',type:'save-error',session,message:'测评记录未保存，请导出本次记录后重试。'},window.location.origin);onError?.(error);}
+  }
   if(data.type==='exit'&&['finished','deferred'].includes(data.status))exit(data.status);
  }
  function sync(){
-  const s=getState();if(!needsCognitiveWelcome(s,getRoute())||handledThisSession.has(s.userId)){close();return;}
+  const s=getState(),requested=new URL(window.location.href).searchParams.get('assessment')==='start'&&s.loggedIn&&new URL(getRoute(),'https://qinghe.local').pathname==='/';if((!requested&&!needsCognitiveWelcome(s,getRoute()))||handledThisSession.has(s.userId)){close();return;}
   if(host&&account===s.userId)return;
   close();account=s.userId;session=window.crypto.randomUUID();previousFocus=document.activeElement;
   host=document.createElement('section');host.className='cognitive-onboarding-host';host.setAttribute('role','dialog');host.setAttribute('aria-modal','true');host.setAttribute('aria-label','首次登录认知小体验');

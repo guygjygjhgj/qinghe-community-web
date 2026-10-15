@@ -1,8 +1,19 @@
 'use strict';
-// Only the onboarding disposition crosses the frame boundary, never task answers.
+// Only the current authenticated host may receive task records or acknowledge saving.
 const cognitiveSession=new URLSearchParams(location.search).get('session');
 if(new URLSearchParams(location.search).get('demoTools')==='1')document.body.classList.remove('screen-only');
 const cognitiveEmbedded=window.parent!==window&&!!cognitiveSession;
+window.qingheCognitiveReport=()=>{
+ if(!cognitiveEmbedded)return;
+ window.parent.postMessage({source:'qinghe-cognitive',type:'result',version:1,session:cognitiveSession,result:buildReport()},location.origin);
+};
+window.addEventListener('message',event=>{
+ const d=event.data;if(!cognitiveEmbedded||event.origin!==location.origin||event.source!==window.parent||d?.source!=='qinghe-community'||d.session!==cognitiveSession)return;
+ if(d.type==='context'&&typeof d.resident?.sourceUserId==='string')window.qingheCognitiveResident={sourceUserId:d.resident.sourceUserId,name:String(d.resident.name||'未命名居民').slice(0,60)};
+ const status=document.querySelector('#save-status');
+ if(d.type==='saved'&&d.assessmentId===state.assessmentId&&status){status.textContent='已保存至当前账号。社区端可在同一浏览器查看；跨设备请导出记录。';document.querySelector('#retry-save')?.remove();}
+ if(d.type==='save-error'&&status){status.textContent='未能保存。请导出本次记录保留备份，或重试保存。';if(!document.querySelector('#retry-save')){const b=document.createElement('button');b.id='retry-save';b.type='button';b.className='outline';b.textContent='重试保存';b.onclick=window.qingheCognitiveReport;status.after(b);}}
+});
 function stopCognitiveMedia(){
  stopTick();state.paused=true;
  if('speechSynthesis' in window)window.speechSynthesis.cancel();

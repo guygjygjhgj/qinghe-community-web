@@ -10,14 +10,15 @@ import {fitNativeInputs} from './native-inputs.js';
 import {createDemoAuth,isPhone} from './demo-auth.js';
 import {createAuthBridge} from './auth-bridge.js';
 import {nativePlantCards,bindNativePlantCarousel} from './native-plant-carousel.js';
-import {createCognitiveOnboarding} from './cognitive-onboarding.js';
+import {createCognitiveOnboarding} from './cognitive-onboarding.js?v=assessment-link-1';
 import {recordSelection,bindNativeRecordCarousel} from './native-record-carousel.js';
+import {storeAssessment} from './cognitive-data.js';
 
 const main=document.querySelector('#main'),modalRoot=document.querySelector('#modal-root');
 const presentation=createPresentation({main,modalRoot,document,window});
 const store=new Store(localStorage);
 const accountAuth=createDemoAuth({storage:localStorage});
-function applyAccount(s,account){const {cognitiveOnboarding,...template}=s.users.li;s.userId=account.id;s.users[account.id]={...template,...s.users[account.id],id:account.id,name:account.nickname};s.loggedIn=true;}
+function applyAccount(s,account){const {cognitiveOnboarding,cognitiveAssessments,...template}=s.users.li;s.userId=account.id;s.users[account.id]={...template,...s.users[account.id],id:account.id,name:account.nickname};s.loggedIn=true;}
 const restoredAccount=await accountAuth.restore();if(restoredAccount)store.commit(s=>applyAccount(s,restoredAccount));else if(store.data.loggedIn)store.commit(s=>{s.loggedIn=false;});
 
 const vm={composer:null,composerKey:null,dirty:false,submissionKey:id(),manage:false,selected:new Set(),activeDate:'',plantPhoto:null,recordPhoto:null,avatarPhoto:null,plantLocation:'阳台',feedbackPhotos:[],feedbackType:'功能问题',feedbackBody:'',feedbackContact:'',forms:{}};
@@ -25,7 +26,7 @@ try{const cached=JSON.parse(sessionStorage.getItem('qinghe-form-recovery'));if(c
 let renderEpoch=0;
 let views,currentRoute=normalizeRoute(location.hash.slice(1)||'/'),modal=null,pendingExit=null,pendingNavigation=null,sceneObserver=null,toastTimeout,reader=null,plantCarousel=null,plantCarouselEntry=0,plantCarouselFocus=null,recordCarousel=null,recordCarouselEntry=0,recordCarouselFocus=null;
 const path=()=>new URL(currentRoute,'https://qinghe.local').pathname;
-const cognitiveOnboarding=createCognitiveOnboarding({document,window,getState:()=>store.data,getRoute:()=>currentRoute,markSeen:(account,marker)=>commit(s=>{s.users[account].cognitiveOnboarding=marker;}),onError:error=>toast(error.message)});
+const cognitiveOnboarding=createCognitiveOnboarding({document,window,getState:()=>store.data,getRoute:()=>currentRoute,markSeen:(account,marker)=>commit(s=>{s.users[account].cognitiveOnboarding=marker;}),saveResult:(account,result)=>commit(s=>storeAssessment(s,account,result)),onError:error=>toast(error.message)});
 const getForm=name=>main.querySelector(`form[data-form="${name}"]`);
 const authBridge=createAuthBridge({document,window,auth:accountAuth,getPhone:()=>getForm('login')?.elements.namedItem('phone')?.value?.trim(),onIssued:challenge=>{vm.authChallenge=challenge;},onLogin:(phone,result)=>{vm.authChallenge=result?.challenge||null;const form=getForm('login');if(form&&phone){form.elements.namedItem('phone').value=phone;form.elements.namedItem('code').value='';capture();}toast(result?.challenge?'后台已发放验证码，请输入验证码登录':'请点击获取验证码，提交后台审核发放申请');}});
 const voiceInput=createVoiceInput({getForm,openModal,closeModal,toast,helpers:()=>views});

@@ -5,6 +5,7 @@ import {JSDOM} from 'jsdom';
 import {setup,waitFor} from './helpers/browser.mjs';
 import {initialState} from '../domain.js';
 import {needsCognitiveWelcome,createCognitiveOnboarding} from '../cognitive-onboarding.js';
+import {TASKS,normalizeAssessment,taskScore} from '../cognitive-data.js';
 const state=()=>({...initialState(),loggedIn:true});
 const frame=()=>document.querySelector('#cognitive-frame');
 function send(env,status='deferred',overrides={}){
@@ -37,6 +38,16 @@ test('finished and deferred dispositions survive reload, and do not store task a
   const again=await setup('/',saved);try{assert.equal(frame(),null);}finally{again.cleanup();}
  }
 });
+test('result messages are saved to the frame account before exit, deduplicated, and reject spoofed sessions',async()=>{
+ const env=await setup('/',state());try{
+  const f=frame(),session=new URL(f.src).searchParams.get('session');
+  const result={assessmentId:'secure-assessment-01',prototype:'QH-DEMO-1.0',startedAt:'2026-10-16T01:00:00Z',completedAt:'2026-10-16T01:05:00Z',tasks:TASKS.map(t=>({name:t.name,record:{completed:false,status:'skipped',items:[]}}))};
+  const sendResult=overrides=>env.w.dispatchEvent(new env.w.MessageEvent('message',{origin:env.w.location.origin,source:f.contentWindow,data:{source:'qinghe-cognitive',type:'result',version:1,session,result},...overrides}));
+  sendResult({origin:'https://spoof.invalid'});assert.equal(env.stored().users.li.cognitiveAssessments,undefined);
+  sendResult();sendResult();assert.equal(env.stored().users.li.cognitiveAssessments.length,1);assert.ok(frame());
+  send(env,'finished');assert.equal(frame(),null);assert.equal(env.stored().users.li.cognitiveAssessments[0].assessmentId,'secure-assessment-01');
+ }finally{env.cleanup();}
+});
 test('plain successful login enters home with onboarding; existing return destinations remain intact',async()=>{
  for(const route of ['/login','/login?returnTo=%2Factivity%2Fherbs']){
   const e=await setup(route);try{
@@ -47,10 +58,10 @@ test('plain successful login enters home with onboarding; existing return destin
  }
 });
 test('a different account does not inherit the template account onboarding marker',async()=>{
- const s=initialState();s.users.li.cognitiveOnboarding={version:1,status:'finished'};
+ const s=initialState();s.users.li.cognitiveOnboarding={version:1,status:'finished'};s.users.li.cognitiveAssessments=[{assessmentId:'private-template-result'}];
  const account={id:'new-neighbor',nickname:'新邻居',phone:'19900000002',status:'approved'};
  const e=await setup('/login',s,{authFetch:async(path,init)=>({ok:true,json:async()=>path==='login'?{token:'approved',expiresAt:Date.now()+600000,account}:{requestId:'request',proof:'proof',account,challenge:{phone:'19900000002',purpose:'login',challengeId:'challenge',code:'123456',expiresAt:Date.now()+600000}}})});
- try{e.fill('login','phone','19900000002');await e.click('[data-action=login-consent]');await e.click('[data-action=get-code]');await e.click('.auth-bridge-return');e.fill('login','code','123456');await e.submit('login');assert.equal(e.stored().userId,'new-neighbor');assert.ok(frame());send(e,'deferred');assert.equal(e.stored().users.li.cognitiveOnboarding.status,'finished');assert.equal(e.stored().users['new-neighbor'].cognitiveOnboarding.status,'deferred');}finally{e.cleanup();}
+ try{e.fill('login','phone','19900000002');await e.click('[data-action=login-consent]');await e.click('[data-action=get-code]');await e.click('.auth-bridge-return');e.fill('login','code','123456');await e.submit('login');assert.equal(e.stored().userId,'new-neighbor');assert.equal(e.stored().users['new-neighbor'].cognitiveAssessments,undefined);assert.ok(frame());send(e,'deferred');assert.equal(e.stored().users.li.cognitiveOnboarding.status,'finished');assert.equal(e.stored().users['new-neighbor'].cognitiveOnboarding.status,'deferred');}finally{e.cleanup();}
 });
 test('leaving home removes the frame and restores focusability without marking an unfinished game',async()=>{
  const e=await setup('/',state());try{e.w.location.hash='#/me';await waitFor(()=>e.routeNow()==='/me'&&!frame());assert.equal(frame(),null);assert.equal(document.querySelector('.app-shell').hasAttribute('inert'),false);assert.equal(e.stored().users.li.cognitiveOnboarding,undefined);e.w.history.back();await waitFor(()=>frame());}finally{e.cleanup();}
@@ -59,6 +70,10 @@ test('project-prefixed deployment resolves the game and its assets without an ab
  const dom=new JSDOM('<div class="app-shell"><main id="main" tabindex="-1"></main></div>',{url:'https://demo.github.io/qinghe-community-web/#/'}),s=state();
  const bridge=createCognitiveOnboarding({document:dom.window.document,window:dom.window,getState:()=>s,getRoute:()=>'/',markSeen:()=>{}});
  try{bridge.sync();assert.equal(new URL(dom.window.document.querySelector('iframe').src).pathname,'/qinghe-community-web/cognitive/index.html');}finally{bridge.dispose();dom.window.close();}
+});
+test('explicit community re-entry reuses the existing game for a finished account and consumes its URL flag on exit',()=>{
+ const dom=new JSDOM('<div class="app-shell"><main id="main" tabindex="-1"></main></div>',{url:'https://demo.github.io/qinghe-community-web/?assessment=start#/'}),s=state();s.users.li.cognitiveOnboarding={version:1,status:'finished'};
+ const bridge=createCognitiveOnboarding({document:dom.window.document,window:dom.window,getState:()=>s,getRoute:()=> '/',markSeen:()=>{}});try{bridge.sync();assert.ok(dom.window.document.querySelector('iframe'));dom.window.document.querySelector('.cognitive-loading button:last-child').click();assert.equal(dom.window.document.querySelector('iframe'),null);assert.equal(new URL(dom.window.location.href).searchParams.has('assessment'),false);bridge.sync();assert.equal(dom.window.document.querySelector('iframe'),null);}finally{bridge.dispose();dom.window.close();}
 });
 test('full local storage cannot trap the user in onboarding or immediately reopen it',()=>{
  const dom=new JSDOM('<div class="app-shell"><main id="main" tabindex="-1"></main></div>',{url:'https://demo.github.io/qinghe-community-web/#/'}),s=state(),errors=[];
@@ -93,7 +108,9 @@ test('practice, all nine tasks, record report and finish run through the supplie
   g.click('#task-start');const d=new Date(),days=['星期日','星期一','星期二','星期三','星期四','星期五','星期六'];for(const answer of [d.getFullYear()+' 年',(d.getMonth()+1)+' 月',d.getDate()+' 日',days[d.getDay()]])g.choose(answer);g.click('#next-task');
   g.click('#task-start');for(const answer of ['杯子','雨伞','剪刀']){g.click('#reveal');const el=[...g.w.document.querySelectorAll('[data-name]')].find(e=>e.dataset.name===answer);assert.ok(el);el.click();g.click('#scratch-submit');}g.click('#next-task');
   g.click('#task-start');g.advance(3000);for(let n=0;n<20;n++){if(g.w.document.querySelector('#digit').textContent==='1')g.click('#attention-tap');g.advance(1200);}g.click('#next-task');
-  assert.equal(g.w.document.querySelectorAll('.result-card').length,9);assert.equal([...g.w.document.querySelectorAll('.result-card .status')].filter(e=>e.textContent==='已完成').length,9);g.click('#go-home');assert.equal(g.messages.at(-1).data.status,'finished');assert.equal(Object.keys(g.messages.at(-1).data).length,5);
+  assert.equal(g.w.document.querySelectorAll('.result-card').length,9);assert.equal([...g.w.document.querySelectorAll('.result-card .status')].filter(e=>e.textContent==='已完成').length,9);
+  const message=g.messages.find(x=>x.data.type==='result');assert.ok(message,'report automatically transmits the real nine-task result');const assessment=normalizeAssessment(message.data.result);assert.equal(assessment.tasks.length,9);assert.equal(taskScore(assessment,0).score,100);assert.equal(taskScore(assessment,8).score,100);assert.equal(assessment.pauseCount,1);assert.ok(assessment.tasks[0].record.startedAt);assert.equal(assessment.clinicalClassification,null);
+  g.click('#go-home');assert.equal(g.messages.at(-1).data.status,'finished');assert.equal(Object.keys(g.messages.at(-1).data).length,5);
  }finally{g.close();}
 });
 test('the header exit cancels an active game after confirmation and lets the user continue when cancelled',()=>{
