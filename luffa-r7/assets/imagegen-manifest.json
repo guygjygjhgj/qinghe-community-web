@@ -1,0 +1,87 @@
+{
+  "generator": "built-in image_gen",
+  "raster_edits": false,
+  "copy_policy": "Original generated files copied byte-for-byte; no cropping, scaling or alpha changes.",
+  "bbox_convention": "[left,top,right,bottom], right/bottom exclusive. Alpha=1 stray pixels extend raw bounding boxes; alpha>=10 useful visible bounds also provided.",
+  "alignment_note": "Green and fiber keep near identical pose/framing; fiber lower blossom tip ends 18 px higher. No deterministic alignment edits were performed.",
+  "assets": [
+    {
+      "name": "mature-green.png",
+      "source": "C:/Users/何柏璇/.codex/generated_images/01a11a7b-c59e-72e0-b566-17aae922349b/exec-118666c0-967f-4c15-924a-3a9286db7fbf.png",
+      "prompt": "Use case: product-mockup. Create ONE photographic transparent game asset of a whole mature green smooth luffa gourd. The inspected reference is only material inspiration, NOT a screenshot to crop and NOT a scene to reproduce. Isolated single long slender natural luffa, body length exactly about 5 times maximum body width; vertical upright pose, very slight natural curve, short 2 cm green stem at top, rounded blossom end at bottom. Mature leathery olive-green skin with subtle fine yellow speckle and very shallow longitudinal texture, naturally tapered shoulder and rounded tip. Entire outer skin intact with no peeling, no flesh visible. Photorealistic botanical product photography, soft natural daylight from upper left, realistic self-shading only. Centered full object, complete stem and bottom visible, portrait canvas with useful tight bounds and small margin. Background truly transparent alpha. No hands, tools, table, basket, floor, cast ground shadow, UI, text, labels, additional fruits, cut pieces, thick cucumber shape, strong ribs or spines.",
+      "alpha_bbox": [
+        0,
+        1,
+        1010,
+        1518
+      ],
+      "visible_bbox_alpha_gte_10": [
+        408,
+        13,
+        637,
+        1510
+      ],
+      "path": "C:/Users/何柏璇/Desktop/ui设计/outputs/luffa-interaction-r6/assets/mature-green.png",
+      "canvas": [
+        1024,
+        1536
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ]
+    },
+    {
+      "name": "fiber.png",
+      "source": "C:/Users/何柏璇/.codex/generated_images/01a11a7b-c59e-72e0-b566-17aae922349b/exec-6731f89d-4323-460f-92a9-3b2c8bfa400f.png",
+      "prompt": "Use case: precise-object-edit. Image 1 is the EDIT TARGET, a single whole vertical luffa. Create the matching peeled fiber layer for an interactive game. Preserve EXACT original canvas 1024x1536, silhouette, contour, length, width, center position, slight curve, upright pose, framing, top stem position and bottom blossom-tip position. Change ONLY surface material: completely remove ALL green outer skin from the entire body and reveal a naturally mature, fresh wet creamy ivory-white intricate fibrous luffa lattice. Dense delicate interwoven irregular long pale fibers around the whole natural elongated gourd with believable porous texture and subtle translucency, moist rather than dry brown. Keep the short natural stem as the same top anchor. Natural rounded blossom end, never a sawn flat cut. Photographic botanical realism. Same soft upper-left daylight and self-shading. True transparent background with crisp clean alpha and no haze or cast ground shadow. No peel remnants on body, no peel ribbons, no hands, no tools, no table, no new objects, no UI or text. Absolutely no commercial sponge cylinders, tubular cross sections or three-hole tubes. This is a whole peeled fruit matching the exact silhouette of the input.",
+      "alpha_bbox": [
+        23,
+        2,
+        1010,
+        1510
+      ],
+      "visible_bbox_alpha_gte_10": [
+        407,
+        13,
+        637,
+        1492
+      ],
+      "path": "C:/Users/何柏璇/Desktop/ui设计/outputs/luffa-interaction-r6/assets/fiber.png",
+      "canvas": [
+        1024,
+        1536
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ]
+    },
+    {
+      "name": "peel-flap.png",
+      "source": "C:/Users/何柏璇/.codex/generated_images/01a11a7b-c59e-72e0-b566-17aae922349b/exec-b49c1ee0-9f51-429f-a84e-d4c8b174f7dc.png",
+      "prompt": "Use case: product-mockup. Image 1 is ONLY a material, color, scale and daylight reference for the mature green luffa peel. Generate ONE independent photographic game sprite: a single elongated pliable green luffa peel ribbon, freshly stripped from that fruit, vertically hanging and curling outward naturally. Narrow attachment root at the very top, gently widening leathery ribbon through middle, free tapered tip bending and curling to the lower right. The green exterior has the same fine yellow speckles and longitudinal shallow texture as Image 1; the folded-back underside is pale yellowish ivory-green with a few tiny moist white fibers attached, soft and flexible. Long ribbon about 5 times longer than average ribbon width; one continuous strip, no loops pile. Full object visible with tight useful bounds. Match soft natural daylight from upper left, photorealistic botanical detail, realistic self shadows only. True transparent alpha background, crisp clean edges. No whole luffa or flesh behind ribbon, no stem or leaves, no hand or tools, no table or basket, no floor, no cast ground shadow, no haze, no UI, no text. This image contains only the peeled green ribbon.",
+      "alpha_bbox": [
+        43,
+        5,
+        996,
+        1510
+      ],
+      "visible_bbox_alpha_gte_10": [
+        422,
+        12,
+        863,
+        1468
+      ],
+      "path": "C:/Users/何柏璇/Desktop/ui设计/outputs/luffa-interaction-r6/assets/peel-flap.png",
+      "canvas": [
+        1024,
+        1536
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ]
+    }
+  ]
+}
