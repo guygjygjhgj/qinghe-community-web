@@ -69,8 +69,11 @@ export function completeCommunityData(root,{name,state,vm,url,assets}){
   }
  }
  if(name==='following'){
-  const people=state.following.map(id=>state.users[id]).filter(Boolean),available=Object.values(state.users).filter(u=>!u.sample&&!u.disabled&&u.id!==state.userId&&u.id!=='guest');
+  const followed=state.following.map(id=>state.users[id]).filter(Boolean),chosen=followed.find(u=>u.id===vm.cloudFollowingId)||followed[0],people=chosen?[chosen,...followed.filter(u=>u.id!==chosen.id)]:[],available=Object.values(state.users).filter(u=>!u.sample&&!u.disabled&&u.id!==state.userId&&u.id!=='guest');
   picker(at('39:1206'),available.map(u=>['/chat/neighbor-'+u.id,u.name]),'routePicker','选择邻居聊天');
+  if(followed.length>2)picker(at('39:1204'),followed.map(u=>[u.id,u.name]),'cloudFollowingSelect','翻看关注的邻居');
+  for(let i=0;i<2;i++){const u=people[i],p=u&&state.posts.find(p=>p.author===u.id),first=i?1222:1207,last=i?1236:1221;for(let n=first;n<=last;n++){const e=at('39:'+n);if(e)e.hidden=!u;}if(!u)continue;const avatar=at(i?'39:1223':'39:1208'),photo=at(i?'39:1231':'39:1216');image(avatar,u.avatar);bind(avatar,{route:'/chat/neighbor-'+u.id},'与'+u.name+'聊天');if(p?.photos[0]){image(photo,p.photos[0]);bind(photo,{route:'/post/'+p.id},'查看'+p.title);}else if(photo)photo.hidden=true;for(const n of i?[1227,1228,1229]:[1212,1213,1214]){const e=at('39:'+n);if(p)bind(e,{action:'favorite',key:'post:'+p.id},'收藏'+p.title);else if(e)e.hidden=true;}}
+  if(!people.length)set('39:1200','还没有关注邻居，可从植物圈或搜索找到邻居。');
   for(const [i,ids]of [['39:1209','39:1211','39:1215','39:1217','39:1218','39:1219','39:1220','39:1221'],['39:1224','39:1226','39:1230','39:1232','39:1233','39:1234','39:1235','39:1236']].entries()){
    const u=people[i],p=u&&state.posts.find(p=>p.author===u.id);set(ids[0],u?.name||'');set(ids[1],u?'已关注':'');set(ids[2],p?.body||(!people.length&&i===0?'还没有关注邻居，可从植物圈作者或搜索进入':''));set(ids[3],p?.date||'');set(ids[5],p?.likes||'');set(ids[7],p?.comments.length||'');if(u){bind(at(ids[0]),{route:'/chat/neighbor-'+u.id},'与'+u.name+'聊天');bind(at(ids[1]),{action:'follow',id:u.id},'取消关注'+u.name);}if(p){bind(at(ids[4]),{action:'like',id:p.id},'点赞');bind(at(ids[6]),{route:'/post/'+p.id+'?comments=1'},'查看留言');}else{for(const id of [ids[4],ids[6]])if(at(id))at(id).hidden=true;}}
  }
