@@ -1,5 +1,5 @@
 import {mediaSource} from './community-media.js';
-import {seedCounts} from './domain.js';
+import {seedCounts,activityState} from './domain.js';
 const labels={share:'分享',help:'求助',seed:'种苗赠送'};
 export function completeCommunityData(root,{name,state,vm,url,assets}){
  if(!state.cloud)return;
@@ -11,6 +11,7 @@ export function completeCommunityData(root,{name,state,vm,url,assets}){
  const picker=(old,options,kind,label)=>{if(!old||!options.length)return;const e=document.createElement('select');e.className=old.className+' native-input';e.style.cssText=old.style.cssText;e.dataset.nodeId=old.dataset.nodeId;e.dataset[kind]='true';e.setAttribute('aria-label',label);for(const [value,text]of [['',old.textContent],...options]){const o=document.createElement('option');o.value=value;o.textContent=text;e.append(o);}old.replaceWith(e);};
  for(const e of root.querySelectorAll('[data-action=follow]'))if(['li','wang','chen'].includes(e.dataset.id))e.dataset.id='sample-'+e.dataset.id;
  const pid=url.pathname.split('/')[2],post=state.posts.find(p=>p.id===pid);
+ if(name==='home'){const featured=['herbs','repot'].map(id=>state.activities.find(a=>a.id===id));for(const [i,ids]of [['11:1476','11:1480','11:1494','11:1495','11:1496','11:1497'],['11:1498','11:1502','11:1516','11:1517','11:1518','11:1519']].entries()){const a=featured[i],card=at(ids[0]);if(!a){if(card)card.hidden=true;continue;}const st=activityState(state,a.id);set(ids[1],a.organizer);set(ids[2],a.title);set(ids[3],a.date+' '+a.time);set(ids[4],a.location);set(ids[5],st.count+'人已报名');for(const e of card.querySelectorAll('[data-route],[data-action]'))bind(e,{route:'/activity/'+a.id},'查看活动：'+a.title);}}
  if(['profile','plants','records','record-help','record-seed','profile-edit'].includes(name))for(const e of named(/头像|^avatar-photo/))if(!/描边|border|底色/.test(e.dataset.name))image(e,vm.avatarPhoto||state.users[state.userId]?.avatar);
  if(name==='circle'||name==='circle-near'){
   const near=name==='circle-near',posts=state.posts.filter(p=>!near||p.type==='seed').sort((a,b)=>Number(!!a.sample)-Number(!!b.sample)||(b.createdAt||0)-(a.createdAt||0)||(a.id===(near?'lettuce':'mint')?-1:1));
