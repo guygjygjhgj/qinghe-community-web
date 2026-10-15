@@ -9,6 +9,15 @@ import {completeNativeFunctions} from './native-functions.js';
 import {completeAuthControls} from './demo-auth.js';
 export {esc,today,typeName};
 const norm=s=>s.replace(/\s+/g,'').replace(/›/g,'');
+function completeReaderExit(root){
+ // Transparent decoration bounds overlap the close circle; keep their pixels and geometry, but let clicks pass through.
+ for(const decoration of root.querySelectorAll('[data-name^="mascot-reading"],[data-name^="emphasis-reading"]'))decoration.style.pointerEvents='none';
+ for(const [name,label] of [['close-disc','关闭语音朗读'],['stop-button','停止朗读']]){
+  const button=root.querySelector('[data-name="'+name+'"]');if(!button)continue;
+  for(const child of button.querySelectorAll('[data-action],[data-route]')){delete child.dataset.action;delete child.dataset.route;child.removeAttribute('role');child.removeAttribute('tabindex');}
+  delete button.dataset.route;button.dataset.action='reader-close';button.setAttribute('role','button');button.setAttribute('aria-label',label);button.tabIndex=0;button.classList.add('native-control');
+ }
+}
 function nativeIndex(root){
  const data=new Map(),ids=new Map(),suffix=new Map(),order=new Map();let i=0;
  const add=(map,key,el)=>{if(!key)return;if(!map.has(key))map.set(key,[]);map.get(key).push(el);};
@@ -160,6 +169,7 @@ export function createViews(getState,assets,homeScene){
    }
    completeNativeFunctions(root,{name,state:getState(),vm,assets,url});
    if(name==='login')completeAuthControls(root);
+   if(name==='reader')completeReaderExit(root);
   }
   return {html:root.outerHTML,className:'native-host',nav:'',desktop:''};
  }
@@ -182,6 +192,7 @@ export function createViews(getState,assets,homeScene){
   for(const element of root.querySelectorAll('p'))if(element.textContent.includes('李阿姨'))element.textContent=element.textContent.replaceAll('李阿姨',getState().users[getState().userId].name);
   const iconActions=name==='reader'?[[/icon-previous/,'reader-prev'],[/icon-next/,'reader-next'],[/icon-pause/,'reader-toggle'],[/icon-close/,'close']]:name==='speech-confirm'?[[/播放录音|icon-play/,'play-speech']]:name==='editor'?[[/icon-preview/,'close'],[/icon-save/,'save-draft']]:[];
   for(const [pattern,action]of iconActions)for(const e of root.querySelectorAll('[data-name]'))if(pattern.test(e.dataset.name)){e.dataset.action=action;e.role='button';e.tabIndex=0;if(name==='editor')e.setAttribute('aria-label',action==='close'?'关闭预览':'存草稿');}
+  if(name==='reader')completeReaderExit(root);
   if(name==='editor')for(const e of root.querySelectorAll('[data-node-id="3:6450"],[data-node-id="3:6451"]')){e.dataset.action='close';e.role='button';e.tabIndex=0;e.setAttribute('aria-label','关闭预览');}
   return root.outerHTML;
  }
