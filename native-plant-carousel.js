@@ -41,7 +41,7 @@ export function bindNativeCardCarousel({root,count,index=0,onSelect,entry=0,moti
   tween(offset,-direction*750,()=>onSelect((index+direction+count)%count,direction));
  };
  const down=e=>{
-  if(locked||!inside(e.target)||editable(e.target)||e.isPrimary===false||e.button>0)return;
+  if(locked||drag||!inside(e.target)||editable(e.target)||e.isPrimary===false||e.button>0)return;
   drag={id:e.pointerId,x:e.clientX,y:e.clientY,axis:null};
  };
  const movePointer=e=>{
@@ -63,7 +63,7 @@ export function bindNativeCardCarousel({root,count,index=0,onSelect,entry=0,moti
   if(!cancel&&count>1&&Math.abs(offset)>=90)step(offset<0?1:-1);
   else{locked=true;tween(offset,0,()=>{locked=false;});}
  };
- const up=e=>finish(e),cancel=e=>finish(e,true),blur=()=>finish(null,true);
+ const up=e=>{movePointer(e);finish(e);},cancel=e=>finish(e,true),blur=()=>finish(null,true);
  // Touch begins with implicit capture on the photo; transferring it to the canvas
  // emits a bubbling lostpointercapture from that child, not a cancelled gesture.
  const lost=e=>{if(e.target===root)finish(e,true);};
@@ -79,9 +79,13 @@ export function bindNativeCardCarousel({root,count,index=0,onSelect,entry=0,moti
   if(Math.abs(wheel)>=50){guard.wheelLocked=true;step(wheel<0?-1:1);wheel=0;}
  };
  const dragImage=e=>{if(inside(e.target))e.preventDefault();};
- const listeners=[['pointerdown',down],['pointermove',movePointer,{passive:false}],['pointerup',up],['pointercancel',cancel],['lostpointercapture',lost],['click',click,true],['keydown',key],['wheel',scroll,{passive:false}],['dragstart',dragImage]];
+ const listeners=[['pointerdown',down,true],['lostpointercapture',lost],['click',click,true],['keydown',key],['wheel',scroll,{passive:false}],['dragstart',dragImage]];
+ // Desktop drags may cross the small app frame before the first pointermove.
+ // Keep tracking the active gesture on the window, even if capture is unavailable.
+ const gestures=[['pointermove',movePointer,{passive:false,capture:true}],['pointerup',up,true],['pointercancel',cancel,true]];
+ for(const args of gestures)win.addEventListener(...args);
  for(const args of listeners)root.addEventListener(...args);win.addEventListener('blur',blur);
  if(entry){locked=true;tween(entry*750,0,()=>{locked=false;});}
- return {step,dispose(){disposed=true;animation?.cancel();for(const args of listeners)root.removeEventListener(...args);win.removeEventListener('blur',blur);delete root.dataset.plantDragging;}};
+ return {step,dispose(){disposed=true;animation?.cancel();for(const args of gestures)win.removeEventListener(...args);for(const args of listeners)root.removeEventListener(...args);win.removeEventListener('blur',blur);delete root.dataset.plantDragging;}};
 }
 export const bindNativePlantCarousel=bindNativeCardCarousel;

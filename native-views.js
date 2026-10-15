@@ -206,9 +206,13 @@ export function createViews(getState,assets,homeScene){
 // Only the source's own layer coordinates and sizes are used; images are never fitted to the viewport.
 export function alignNativeLayers(root){
  const rows=geometry[root?.dataset.screen]||[],origin=root?.getBoundingClientRect();if(!origin)return;
+ // A swipe can already be animating when a remote font finishes loading.
+ // Measure layers in their resting coordinate system, not the moving slide.
+ const moving='[data-native-record-motion],[data-native-plant-motion]',offsets=new Map([...root.querySelectorAll(moving)].map(el=>[el,el.getBoundingClientRect().x-el.parentElement.getBoundingClientRect().x]));
+ const bounds=el=>{const b=el.getBoundingClientRect();return {x:b.x-(offsets.get(el.closest(moving))||0),y:b.y};};
  const used=new Set(),nodes=nativeIndex(root);
  for(const m of rows){const all=nodes(m[0],true).filter(e=>!used.has(e));if(!all.length)continue;
-  if(all.length>1){const distance=e=>{const b=e.getBoundingClientRect();return Math.abs(b.x-origin.x-m[2])+Math.abs(b.y-origin.y-m[3]);};all.sort((a,b)=>distance(a)-distance(b));}const el=all[0];used.add(el);
+  if(all.length>1){const distance=e=>{const b=bounds(e);return Math.abs(b.x-origin.x-m[2])+Math.abs(b.y-origin.y-m[3]);};all.sort((a,b)=>distance(a)-distance(b));}const el=all[0];used.add(el);
   if(el.closest('[data-editor-type-chip]'))continue;
   if(m[1]==='I'&&el.tagName!=='svg'){el.style.width=m[4]+'px';el.style.height=m[5]+'px';}
   if(m[1]==='T'){
@@ -219,7 +223,7 @@ export function alignNativeLayers(root){
    }
    if(m[7]?.unit==='PERCENT')el.style.lineHeight=m[6]*m[7].value/100+'px';
   }
-  const b=el.getBoundingClientRect(),pane=el.closest('[data-scroll-region]'),x=origin.x+m[2]+Number(el.dataset.nativeOffsetX||0)-b.x-(pane?.scrollLeft||0),y=origin.y+m[3]-b.y-(pane?.scrollTop||0);
+  const b=bounds(el),pane=el.closest('[data-scroll-region]'),x=origin.x+m[2]+Number(el.dataset.nativeOffsetX||0)-b.x-(pane?.scrollLeft||0),y=origin.y+m[3]-b.y-(pane?.scrollTop||0);
   if(Math.abs(x)>.02||Math.abs(y)>.02)el.style.translate=x+'px '+y+'px';
  }
 }

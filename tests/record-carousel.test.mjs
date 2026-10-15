@@ -4,6 +4,8 @@ import {setup,waitFor} from './helpers/browser.mjs';
 import {initialState} from '../domain.js';
 import {nativeRecordCards} from '../native-record-carousel.js';
 import {screens} from '../native-screens.js';
+import {alignNativeLayers} from '../native-views.js';
+import {geometry} from '../native-geometry.js';
 const state=()=>({...initialState(),loggedIn:true});
 const root=()=>document.querySelector('#main .native-canvas');
 const card=()=>root().querySelector('[data-record-card]');
@@ -11,6 +13,33 @@ const key=()=>card().dataset.recordCard;
 function pointer(e,type,target,x,y){const event=new e.w.Event(type,{bubbles:true,cancelable:true});Object.assign(event,{pointerId:1,button:0,isPrimary:true,clientX:x,clientY:y});target.dispatchEvent(event);return event;}
 function swipe(e,dx,dy=0,cancel=false){const target=card().querySelector('[data-record-role=photo]');pointer(e,'pointerdown',target,350,900);const move=pointer(e,'pointermove',target,350+dx,900+dy);pointer(e,cancel?'pointercancel':'pointerup',root(),350+dx,900+dy);return move;}
 const arrow=direction=>card().dispatchEvent(new window.KeyboardEvent('keydown',{key:direction,bubbles:true,cancelable:true}));
+
+test('records can be dragged before remote fonts finish loading',async()=>{
+ let finishFonts;const fontsReady=new Promise(resolve=>{finishFonts=resolve;});
+ const e=await setup('/me?tab=records&kind=',state(),{fontsReady});try{
+  swipe(e,-140);await waitFor(()=>key()==='post:pothos');
+  finishFonts();await waitFor(()=>document.querySelector('#main').dataset.ready==='true');
+  swipe(e,-140);await waitFor(()=>key()==='reference:seed');
+ }finally{finishFonts();e.cleanup();}
+});
+
+test('a fast drag ending outside the narrow app frame still changes the record',async()=>{
+ const e=await setup('/me?tab=records',state());try{
+  const target=card().querySelector('[data-record-role=photo]');
+  pointer(e,'pointerdown',target,350,900);pointer(e,'pointermove',document.body,100,900);pointer(e,'pointerup',document.body,100,900);
+  await waitFor(()=>key()==='post:pothos');
+ }finally{e.cleanup();}
+});
+
+test('font alignment during a swipe does not shift text away from its original card',async()=>{
+ const e=await setup('/me?tab=records',state());try{
+  const motion=root().querySelector('[data-native-record-motion]'),label=card().querySelector('[data-node-id="11:1326"]'),row=geometry.records.find(r=>r[0]==='11:1326');
+  for(const offset of [312,-312]){
+   label.style.translate='0px 0px';motion.getBoundingClientRect=()=>({x:offset,y:0});label.getBoundingClientRect=()=>({x:row[2]+offset,y:row[3]});
+   alignNativeLayers(root());assert.equal(label.style.translate,'0px 0px');
+  }
+ }finally{e.cleanup();}
+});
 test('all records rotate share, help and seed designs, then retain additional records',()=>{
  const s=state();assert.deepEqual(nativeRecordCards(s,''),nativeRecordCards(s));assert.deepEqual(nativeRecordCards(s).map(c=>c.key),['post:scallion','post:pothos','reference:seed','post:tomato']);
  assert.deepEqual(nativeRecordCards(s).slice(0,3).map(c=>c.type),['share','help','seed']);assert.equal(nativeRecordCards(s)[2].reference,true);assert.equal(s.agreements.length,0);
