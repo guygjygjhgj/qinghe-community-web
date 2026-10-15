@@ -38,7 +38,7 @@ test('only nickname and avatar update the personal profile while introduction re
 });
 test('login returns to the source activity; booking and cancellation use the original state canvases',async()=>{
  const state=initialState(),env=await setup('/activity/herbs',state);
- try{await env.click('[data-action=book]');assert.match(env.routeNow(),/^\/login/);env.fill('login','phone','19900000001');await env.click('[data-action=get-code]');env.fill('login','code','123456');await env.click('[data-action=login-consent]');await env.submit('login');
+ try{await env.click('[data-action=book]');assert.match(env.routeNow(),/^\/login/);env.fill('login','phone','19900000001');await env.click('[data-action=login-consent]');await env.click('[data-action=get-code]');await env.click('.auth-bridge-return');env.fill('login','code','123456');await env.submit('login');
  assert.equal(env.routeNow(),'/activity/herbs');await env.click('[data-action=book]');assert.equal(document.querySelector('.native-canvas').dataset.screen,'activity-booked');assert.ok(env.stored().bookings.some(b=>b.activityId==='herbs'&&b.userId==='li'));
  await env.click('[data-action=cancel-booking]');assert.equal(document.querySelector('.native-canvas').dataset.screen,'activity');assert.ok(!env.stored().bookings.some(b=>b.activityId==='herbs'&&b.userId==='li'));
  }finally{env.cleanup();}
