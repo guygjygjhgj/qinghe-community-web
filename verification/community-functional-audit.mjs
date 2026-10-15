@@ -25,5 +25,6 @@ try{
  await open('/help?topic=privacy');assert.ok(document.body.textContent.includes('私聊仅对参与者可见'));done('共享模式隐私说明');
  await open('/publish');e.fill('publish','body','退出应保留在恢复提示或草稿中');await e.click('[data-action=back]');assert.ok(document.querySelector('#modal-root [data-action=save-exit]'));await e.click('[data-action=save-exit]');await waitFor(()=>!e.routeNow().startsWith('/publish'));assert.ok((await f.bootstrap()).drafts.some(d=>d.body==='退出应保留在恢复提示或草稿中'));done('发布页返回、保存并退出');
  assert.ok((await f.call('conversations/'+cid+'/messages',null,{user:f.users[2]})).status===403);done('第三方账号不能读取私聊');
+ await open('/plant/'+plant.id);await change('[data-plant-action-picker]','remove');assert.ok(document.querySelector('#modal-root [data-action=delete-plant]'));await e.click('#modal-root [data-action=close]');await waitFor(()=>!document.querySelector('#modal-root .native-canvas'));assert.equal((await f.bootstrap()).plants.length,1);await change('[data-plant-action-picker]','remove');await e.click('#modal-root [data-action=delete-plant]');await waitFor(()=>e.routeNow()==='/me');assert.equal((await f.bootstrap()).plants.length,0);done('植物移除入口、保留取消、确认删除实际记录');
  console.log(JSON.stringify({checks:results.length,results},null,2));
 }finally{if(e)e.cleanup();f.close();}

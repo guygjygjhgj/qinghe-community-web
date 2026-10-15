@@ -185,7 +185,11 @@ export function createViews(getState,assets,homeScene){
   const ps=[...root.querySelectorAll('p')],get=t=>ps.find(e=>norm(e.textContent)===norm(t));
   const bind=(t,action,attrs={})=>{for(const e of ps.filter(e=>norm(e.textContent)===norm(t))){Object.assign(e.dataset,{action,...attrs});e.role='button';e.tabIndex=0;e.classList.add('native-control');const parent=e.parentElement;if(parent.classList.contains('contents'))Object.assign(parent.dataset,{action,...attrs});}};
   if(name==='exit'){bind('保存草稿并退出','save-exit');bind('继续编辑','close');bind('不保存并退出','discard-exit');}
-  if(name==='delete'){bind('确认删除','confirm-delete-draft');bind('继续编辑','edit-selected-draft');bind('取消','close');}
+  if(name==='delete'){
+   bind('确认删除',context.action||'confirm-delete-draft',context.id?{id:context.id}:{});bind('继续编辑',context.action?'close':'edit-selected-draft');bind('取消','close');
+   if(context.action){const title=get('删除这条草稿？'),description=get('删除后无法恢复，您还可以选择继续编辑。'),retain=get('继续编辑');if(title)title.textContent=context.title;if(description){description.textContent=context.description;description.style.overflowY='auto';}if(retain)retain.textContent='保留植物';root.style.background='transparent';for(const el of root.children)if(Number(el.dataset.nodeId?.split(':')[1])<2012)el.hidden=true;}
+   else if(context.ids?.length>1){const title=get('删除这条草稿？');if(title)title.textContent='删除这'+context.ids.length+'条草稿？';}
+  }
   if(name==='publish-failed'){bind('重新发布','publish-preview');bind('存为草稿','save-draft');bind('继续编辑','close');}
   const edit=(el,id,second)=>{if(!el)return;const area=document.createElement('textarea');area.id=id;area.className=el.className+' native-input';area.style.cssText=el.style.cssText;area.dataset.nodeId=el.dataset.nodeId;area.placeholder=el.textContent;area.value=context.text||'';area.textContent=area.value;area.setAttribute('aria-label','转写文字');if(second){area.dataset.lines='2';second.id=id+'-continuation';second.hidden=!!area.value.trim();}el.replaceWith(area);};
   if(name==='speech'){bind('完成录音','finish-recording');bind('取消录音','close');const timer=get('00:08');if(timer){timer.id='recording-timer';timer.textContent='00:00';}const status=get('正在听您说');if(status)status.id='recording-status';edit(ps.find(e=>/今天家里的小番茄红了/.test(e.textContent)),'speech-text',ps.find(e=>norm(e.textContent)==='想和邻居分享一下。'));}
