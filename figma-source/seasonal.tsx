@@ -1,0 +1,600 @@
+// Source: Figma 8hkTaJl8DnvJ51QVKU6ofp, node 1000:823. Assets saved locally without alteration.
+const imgNavMicPng = "assets/3ed401172dd9e960f9c8d6d308236dce4e01ad32.png";
+const imgNavHomePng = "assets/e7942221d01b23f0d525fe1f278c5e429f4ea78a.png";
+const imgIconCommentPng = "assets/8b6cdd797e57fc663c2228bcacfbf0a70548aee3.png";
+const imgIconHeartPng = "assets/7dd0d9f68268256825cbaecee3a0dd55b805657e.png";
+const imgAutumnLeafPng = "assets/b10e8e50d3d68d3b17135f2d6ffdbdc114129139.png";
+const imgIconFriendsPng = "assets/e15529a122365f88e9b2aaf6f68a88e9e2d757de.png";
+const imgGame1PhotoPng = "assets/7b5a5ebc5cabc23fde9195429a7cd9847b3e81cb.png";
+const imgIconGamepadPng = "assets/42e0222957329b55cb72b1e30233f6e2dec3fe1c.png";
+const imgGame2PhotoPng = "assets/788b54ce64a81103a73c350f10204b7a32c8a090.png";
+const imgGame3PhotoPng = "assets/7ed209f52d3ba4a55a71b149288ec94fe90460c4.png";
+const imgGame4PhotoPng = "assets/11cb13b7477c053be83e3216a0d95eb659510192.png";
+const imgGame5PhotoPng = "assets/6c62b5a8877d906ed42eee3710dbc11bfc83d9e6.png";
+const imgBannerSceneryPng = "assets/5bc52b4d81c6dbc923902d2b397e75f6f9bfdec2.png";
+const imgBannerLeafPng = "assets/f4d053a5d65c5b75d9e8e26b0b2a81b597cb08b2.png";
+const imgStar1png = "assets/c492d1966ba4552bcb24b5233c72b3028753b688.png";
+const imgBannerDeerPng = "assets/24b83d614f2c71173b5528642fa5b7ee6ae6184e.png";
+const imgBannerLetteringPng = "assets/85afb5ce51de2e126cb6a981a78594b6c7e9219a.png";
+const imgAvatarPng = "assets/10521ff330911eabccd1c2479504ff617d1eb922.png";
+const imgAutumnRaysPng = "assets/aee0ab9fce9784d72023e923d9ac5a772e24f7c4.png";
+const imgPhotoStep1png = "assets/efbf42b7fccd73f691207d5e5e0a6adb043ed71c.png";
+const imgPhotoStep2png = "assets/159c2cfecc0c39c66a5d94a52fa15ecd8619dbe2.png";
+const imgPhotoStep3png = "assets/f9b51f7ed169688459e337c77de801a7e9ab1710.png";
+const imgPhotoStep4png = "assets/24325592d93408f096728cff8bc91d4cd359f29e.png";
+const imgNavCompassPng = "assets/694ce78455d5bb339fa757217c5707b3aeea04ca.png";
+const imgNavMessagePng = "assets/8aade7a8fa5e57d21890e5f2de2b5ca394324e8d.png";
+const imgNavMinePng = "assets/26209418909bbc47ea2cd5bd0150ae9806c34e55.png";
+const imgGame1Ring = "assets/6bd179026e26c8112154f78a061e27d17421ec49.svg";
+const imgGame2Ring = "assets/e66c98af1516edd93046a8ecf0740e42c17e07ea.svg";
+const imgBannerHillBack = "assets/98fdbdef62793e8f5e575fcc60cd7ed49fa483da.svg";
+const imgBannerHillFront = "assets/1cd025b1b07f8d47b7bb38f1ce416b7e6b4892f3.svg";
+const imgBannerDiamond1 = "assets/d568d0c3ed805058c055785eb3627ba5c0c5d2bc.svg";
+const imgBannerDiamond2 = "assets/7bdbb6b3d66552319ed7d417f588667ead24bd36.svg";
+const imgBannerMeteor = "assets/702a487f4fe4a0b1f95032b67e69bacca6252114.svg";
+const imgBannerSpeechLeft = "assets/d0052026ba4c85fd1ddc38709c5ea37181a2330a.svg";
+const imgBannerSpeechRight = "assets/31aa4bdc3366172077b00e321c9d6e594022c69b.svg";
+const imgAutumnBubble = "assets/04c09cd4441144685a748463b05e4b4b0c7ad4d0.svg";
+const imgNavSelectedHex = "assets/f51a1c346731094f18108de7bbf6e591a98905c8.svg";
+const imgNavMicDisc = "assets/d0e6fa5965f596c3db763826ec2632c577667c34.svg";
+
+function pngNavMic({ className }: { className?: string }) {
+  return (
+    <div className={className || "h-[55.944px] relative w-[40.21px]"} data-node-id="1004:760" data-name="青禾／游戏圈／PNG图标/nav-mic">
+      <div className="absolute h-[67.939px] left-[-3.08px] top-[-6.85px] w-[46.366px]" data-node-id="1004:761" data-name="nav-mic／独立PNG">
+        <img alt="" className="absolute inset-0 max-w-none object-contain pointer-events-none size-full" src={imgNavMicPng} />
+      </div>
+    </div>
+  );
+}
+
+function pngNavHome({ className }: { className?: string }) {
+  return (
+    <div className={className || "h-[52.448px] relative w-[57.692px]"} data-node-id="1004:756" data-name="青禾／游戏圈／PNG图标/nav-home">
+      <div className="absolute h-[104.895px] left-[-25.65px] top-[-27.89px] w-[108.989px]" data-node-id="1004:757" data-name="nav-home／独立PNG">
+        <img alt="" className="absolute inset-0 max-w-none object-contain pointer-events-none size-full" src={imgNavHomePng} />
+      </div>
+    </div>
+  );
+}
+
+type ComponentProps = {
+  className?: string;
+  propValue?: string;
+  propValue1?: "参与活动" | "我也来做" | "查看作品";
+};
+
+function Component({ className, propValue = "立即加入", propValue1 = "参与活动" }: ComponentProps) {
+  const is = propValue1 === "我也来做";
+  const is1 = propValue1 === "查看作品";
+  const is2 = propValue1 === "参与活动";
+  return (
+    <div className={className || `content-stretch flex items-start relative ${is1 ? "h-[50.699px] pl-[var(--games-gap-31-4688,31.469px)] pt-[var(--games-gap-9-8422,9.842px)] w-[151.224px]" : is ? "h-[50.699px] pl-[var(--games-gap-32-3426,32.343px)] pt-[var(--games-gap-8-9680,8.968px)] w-[151.224px]" : "h-[52.448px] pl-[var(--games-gap-30-5944,30.594px)] pt-[var(--games-gap-8-3424,8.342px)] w-[166.084px]"}`} id={is1 ? "node-1004_808" : is ? "node-1004_807" : "node-1004_806"}>
+      {is2 && (
+        <>
+          <div className="absolute bg-gradient-to-b border-[1.748px] border-[var(--games-white,white)] border-solid from-[var(--games-joinStart,#ff9c18)] h-[52.448px] left-0 rounded-[var(--games-corner_radius-26-2238,26.224px)] to-[var(--games-joinEnd,#ff6a04)] top-0 w-[166.084px]" data-node-id="1004:810" data-name="banner-join-bg" />
+          <p className="[word-break:break-word] font-['Noto_Sans_SC:Bold'] font-bold leading-[32.837px] relative shrink-0 text-[25.654px] text-[color:var(--games-text-banner-join,white)] tracking-[1.4569px] w-[114px]" data-node-id="1004:817">
+            {propValue}
+          </p>
+        </>
+      )}
+      {is && (
+        <>
+          <div className="absolute bg-[var(--games-gold,#ffbd00)] h-[50.699px] left-0 rounded-[var(--games-corner_radius-25-3497,25.35px)] top-0 w-[151.224px]" data-node-id="1004:819" data-name="make-bg" />
+          <p className="[word-break:break-word] font-['Noto_Sans_SC:Medium'] font-medium leading-[29.188px] relative shrink-0 text-[22.803px] text-[color:var(--games-text-make-label,black)] w-[97px]" data-node-id="1004:826">
+            {propValue}
+          </p>
+        </>
+      )}
+      {is1 && (
+        <>
+          <div className="absolute bg-[var(--games-white,white)] border-[1.748px] border-[var(--games-gold,#ffbd00)] border-solid h-[50.699px] left-0 rounded-[var(--games-corner_radius-25-3497,25.35px)] top-0 w-[151.224px]" data-node-id="1004:828" data-name="view-bg" />
+          <p className="[word-break:break-word] font-['Noto_Sans_SC:Medium'] font-medium leading-[29.188px] relative shrink-0 text-[22.803px] text-[color:var(--games-text-view-label,black)] w-[97px]" data-node-id="1004:833">
+            {propValue}
+          </p>
+        </>
+      )}
+    </div>
+  );
+}
+
+function pngIconComment({ className }: { className?: string }) {
+  return (
+    <div className={className || "relative size-[42.832px]"} data-node-id="1004:754" data-name="青禾／游戏圈／PNG图标/icon-comment">
+      <div className="absolute left-[-21.31px] size-[85.392px] top-[-21.28px]" data-node-id="1004:755" data-name="icon-comment／独立PNG">
+        <img alt="" className="absolute inset-0 max-w-none object-contain pointer-events-none size-full" src={imgIconCommentPng} />
+      </div>
+    </div>
+  );
+}
+
+function pngIconHeart({ className }: { className?: string }) {
+  return (
+    <div className={className || "h-[41.958px] relative w-[43.706px]"} data-node-id="1004:752" data-name="青禾／游戏圈／PNG图标/icon-heart">
+      <div className="absolute left-[-8.53px] size-[60.762px] top-[-9.38px]" data-node-id="1004:753" data-name="icon-heart／独立PNG">
+        <img alt="" className="absolute inset-0 max-w-none object-contain pointer-events-none size-full" src={imgIconHeartPng} />
+      </div>
+    </div>
+  );
+}
+
+function pngAutumnLeaf({ className }: { className?: string }) {
+  return (
+    <div className={className || "h-[34.965px] relative w-[27.098px]"} data-node-id="1004:750" data-name="青禾／游戏圈／PNG图标/autumn-leaf">
+      <div className="absolute h-[33.938px] left-[-2.36px] top-[0.46px] w-[31.815px]" data-node-id="1004:751" data-name="autumn-leaf／独立PNG">
+        <img alt="" className="absolute inset-0 max-w-none object-contain pointer-events-none size-full" src={imgAutumnLeafPng} />
+      </div>
+    </div>
+  );
+}
+
+type Component1Props = {
+  className?: string;
+  propValue?: string;
+};
+
+function Component1({ className, propValue = "桂花小游戏 · 制作成果" }: Component1Props) {
+  return (
+    <div className={className || "content-stretch flex h-[39.336px] items-start pl-[var(--games-gap-25-3496,25.35px)] pt-[var(--games-gap-4-8073,4.807px)] relative w-[265.734px]"} data-node-id="1004:798" data-name="青禾／游戏圈／游戏成果标签">
+      <div className="absolute bg-[var(--games-pale,#fff0c4)] h-[39.336px] left-0 rounded-[var(--games-corner_radius-20-9790,20.979px)] top-0 w-[265.734px]" data-node-id="1004:799" data-name="post-game-bg" />
+      <p className="[word-break:break-word] font-['Noto_Sans_SC:Regular'] font-normal leading-[27.972px] relative shrink-0 text-[21.853px] text-[color:var(--games-text-post-game,#032135)] tracking-[-1.192px] w-[220px]" data-node-id="1004:804">
+        {propValue}
+      </p>
+    </div>
+  );
+}
+
+type Component2Props = {
+  className?: string;
+  propValue?: string;
+};
+
+function Component2({ className, propValue = "成果分享" }: Component2Props) {
+  return (
+    <div className={className || "content-stretch flex h-[40.21px] items-start pl-[var(--games-gap-10-4895,10.49px)] pt-[var(--games-gap-2-6415,2.641px)] relative w-[112.762px]"} data-node-id="1004:788" data-name="青禾／游戏圈／成果分享标签">
+      <div className="absolute bg-[var(--games-orange,#ff7814)] h-[40.21px] left-0 rounded-[var(--games-corner_radius-7-8671,7.867px)] top-0 w-[112.762px]" data-node-id="1004:789" data-name="post-badge-bg" />
+      <p className="[word-break:break-word] font-['Noto_Sans_SC:Bold'] font-bold leading-[30.404px] relative shrink-0 text-[23.753px] text-[color:var(--games-text-post-badge,white)] w-[101px]" data-node-id="1004:796">
+        {propValue}
+      </p>
+    </div>
+  );
+}
+
+function pngIconFriends({ className }: { className?: string }) {
+  return (
+    <div className={className || "h-[41.084px] relative w-[41.958px]"} data-node-id="1004:748" data-name="青禾／游戏圈／PNG图标/icon-friends">
+      <div className="absolute left-[-8.72px] size-[59.452px] top-[-9.66px]" data-node-id="1004:749" data-name="icon-friends／独立PNG">
+        <img alt="" className="absolute inset-0 max-w-none object-contain pointer-events-none size-full" src={imgIconFriendsPng} />
+      </div>
+    </div>
+  );
+}
+
+function PhotoOsmanthus({ className }: { className?: string }) {
+  return (
+    <div className={className || "relative size-[118.881px]"} data-node-id="1004:766" data-name="青禾／游戏圈／游戏照片/photo-osmanthus">
+      <div className="absolute left-0 rounded-[var(--games-corner_radius-59-4406,59.441px)] size-[118.881px] top-0" data-node-id="1004:767" data-name="game1-photo／独立PNG">
+        <img alt="" className="absolute inset-0 max-w-none object-cover pointer-events-none rounded-[var(--games-corner_radius-59-4406,59.441px)] size-full" src={imgGame1PhotoPng} />
+      </div>
+    </div>
+  );
+}
+
+type Component3Props = {
+  className?: string;
+  propValue?: string;
+};
+
+function Component3({ className, propValue = "休息选择" }: Component3Props) {
+  return (
+    <div className={className || "content-stretch flex h-[39.336px] items-start pl-[var(--games-gap-20-9795,20.979px)] pt-[var(--games-gap-5-6818,5.682px)] relative w-[130.245px]"} data-node-id="1004:778" data-name="青禾／游戏圈／休息选择">
+      <div className="absolute bg-[var(--games-pale,#fff0c4)] h-[39.336px] left-0 rounded-[var(--games-corner_radius-20-9790,20.979px)] top-0 w-[130.245px]" data-node-id="1004:779" data-name="rest-pill" />
+      <p className="[word-break:break-word] font-['Noto_Sans_SC:Regular'] font-normal leading-[27.972px] relative shrink-0 text-[21.853px] text-[color:var(--games-text-rest-label,#000001)] w-[93px]" data-node-id="1004:786">
+        {propValue}
+      </p>
+    </div>
+  );
+}
+
+function pngIconGamepad({ className }: { className?: string }) {
+  return (
+    <div className={className || "h-[38.461px] relative w-[53.322px]"} data-node-id="1004:746" data-name="青禾／游戏圈／PNG图标/icon-gamepad">
+      <div className="absolute h-[50.934px] left-[-11.54px] top-[-6.26px] w-[76.401px]" data-node-id="1004:747" data-name="icon-gamepad／独立PNG">
+        <img alt="" className="absolute inset-0 max-w-none object-contain pointer-events-none size-full" src={imgIconGamepadPng} />
+      </div>
+    </div>
+  );
+}
+
+export default function Component4() {
+  return (
+    <div className="relative size-full" data-node-id="1000:823" style={{ backgroundImage: "linear-gradient(180deg, var(--games-paperTop,rgb(255, 254, 220)) 0%, var(--games-paperMid,rgb(255, 253, 241)) 28%, var(--games-paper,rgb(246, 247, 248)) 49%, var(--games-paper,rgb(246, 247, 248)) 100%)" }} data-name="游戏／好友游戏圈 · 可编辑稿">
+      <div className="absolute h-[374.989px] left-0 overflow-clip top-0 w-[750px]" data-node-id="1004:917" data-name="游戏／页签与横向游戏入口">
+        <div className="absolute bg-[var(--games-orange,#ff7814)] h-[12.238px] left-[155.59px] rounded-[var(--games-corner_radius-6-1189,6.119px)] top-[46.33px] w-[117.133px]" data-node-id="1004:918" data-name="tab-underline" />
+        <div className="absolute content-stretch flex h-[61px] items-start left-[31.47px] top-[-3.46px] w-[237.363px]" data-node-id="1004:921" data-name="页签／广场与游戏">
+          <div className="h-[61px] relative shrink-0 w-[88px]" data-node-id="1004:922" data-name="位置/tab-plaza">
+            <p className="[word-break:break-word] absolute font-['Noto_Sans_SC:Bold'] font-bold h-[52px] leading-[52.296px] left-[-1.75px] text-[40.856px] text-[color:var(--games-text-tab-plaza,#59585b)] top-[9.33px] tracking-[-2.6224px] w-[88px]" data-node-id="1004:923">
+              广场
+            </p>
+          </div>
+          <div className="h-[61px] relative shrink-0 w-[48.363px]" data-node-id="1004:925" data-name="测量间距" />
+          <div className="h-[61px] relative shrink-0 w-[101px]" data-node-id="1004:926" data-name="位置/tab-games">
+            <p className="[word-break:break-word] absolute font-['Noto_Sans_SC:Black'] font-black h-[61px] leading-[60.809px] left-[-1.75px] text-[47.507px] text-[color:var(--games-text-tab-games,#020318)] top-[1.75px] w-[101px]" data-node-id="1004:927">
+              游戏
+            </p>
+          </div>
+        </div>
+        <div className="absolute content-stretch flex h-[49px] items-start left-[27.97px] top-[78.18px] w-[362.762px]" data-node-id="1004:929" data-name="在线游戏标题与休息选择">
+          <div className="h-[49px] relative shrink-0 w-[53.322px]" data-node-id="1004:930" data-name="位置/icon-gamepad">
+            <pngIconGamepad className="absolute h-[38.461px] left-0 top-[6.61px] w-[53.322px]" />
+          </div>
+          <div className="h-[49px] relative shrink-0 w-[10.49px]" data-node-id="1004:933" data-name="测量间距" />
+          <div className="h-[49px] relative shrink-0 w-[153px]" data-node-id="1004:934" data-name="位置/online-title">
+            <p className="[word-break:break-word] absolute font-['Noto_Sans_SC:Bold'] font-bold h-[49px] leading-[48.647px] left-0 text-[38.006px] text-[color:var(--games-text-online-title,#03041a)] top-0 tracking-[-1.1655px] w-[153px]" data-node-id="1004:935">
+              在线游戏
+            </p>
+          </div>
+          <div className="h-[49px] relative shrink-0 w-[15.706px]" data-node-id="1004:937" data-name="测量间距" />
+          <div className="h-[49px] relative shrink-0 w-[130.245px]" data-node-id="1004:938" data-name="位置/rest-pill">
+            <Component3 className="absolute content-stretch flex h-[39.336px] items-start left-0 pl-[var(--games-gap-20-9795,20.979px)] pt-[var(--games-gap-5-6818,5.682px)] top-[5.74px] w-[130.245px]" />
+          </div>
+        </div>
+        <div className="absolute content-stretch flex h-[209.79px] items-start left-[20.98px] top-[146.85px] w-[783.217px]" data-node-id="1004:942" data-name="横向游戏列表／第五项按原图裁切">
+          <div className="bg-[var(--games-gamecard,#fffdf0)] content-stretch drop-shadow-[0px_4.371px_7.867px_rgba(94,87,31,0.05)] flex flex-col h-[209.79px] items-start pl-[var(--games-gap-10-4895,10.49px)] pt-[var(--games-gap-8-7413,8.741px)] relative rounded-[var(--games-corner_radius-26-2238,26.224px)] shrink-0 w-[152.972px]" data-node-id="1004:943" data-name="game1-card">
+            <div className="relative shrink-0 size-[134.615px]" data-node-id="I1004:943;1004:842" data-name="game-visual">
+              <div className="absolute left-0 size-[134.615px] top-0" data-node-id="I1004:943;1004:843" data-name="game1-ring">
+                <img alt="" className="absolute block inset-0 max-w-none size-full" src={imgGame1Ring} />
+              </div>
+              <PhotoOsmanthus className="absolute left-[7.87px] size-[118.881px] top-[9.62px]" />
+            </div>
+            <div className="h-[19.288px] relative shrink-0 w-[152.972px]" data-node-id="I1004:943;1004:848" data-name="game-label-gap" />
+            <div className="content-stretch flex h-[35px] items-start pl-[var(--games-gap-38-4616,38.462px)] relative shrink-0 w-[142.482px]" data-node-id="I1004:943;1004:849" data-name="game-label-row">
+              <p className="[word-break:break-word] font-['Noto_Sans_SC:Bold'] font-bold leading-[35.269px] relative shrink-0 text-[27.554px] text-[color:var(--games-text-game1-label,#3a3c47)] w-[61px]" data-node-id="I1004:943;1004:852">
+                桂花
+              </p>
+            </div>
+            <div className="absolute content-stretch flex h-[44.58px] items-start left-[20.1px] pl-[var(--games-gap-30-5944,30.594px)] pt-[var(--games-gap-5-9291,5.929px)] top-[116.26px] w-[113.636px]" data-node-id="I1004:943;1004:854" data-name="game-button">
+              <div className="absolute bg-gradient-to-b border-[1.748px] border-[var(--games-white,white)] border-solid from-[var(--games-joinStart,#ff9c18)] h-[44.58px] left-0 rounded-[var(--games-corner_radius-22-7273,22.727px)] to-[var(--games-joinEnd,#ff6a04)] top-0 w-[113.636px]" data-node-id="I1004:943;1004:857" data-name="game1-button" />
+              <p className="[word-break:break-word] font-['Noto_Sans_SC:Bold'] font-bold leading-[31.621px] relative shrink-0 text-[24.704px] text-[color:var(--games-text-game1-enter,white)] tracking-[2.6224px] w-[61px]" data-node-id="I1004:943;1004:860">
+                进入
+              </p>
+            </div>
+          </div>
+          <div className="h-[209.79px] relative shrink-0 w-[10.49px]" data-node-id="1004:955" data-name="卡片间距" />
+          <div className="bg-[var(--games-gamecard,#fffdf0)] content-stretch drop-shadow-[0px_4.371px_7.867px_rgba(94,87,31,0.05)] flex flex-col h-[209.79px] items-start pl-[var(--games-gap-10-4895,10.49px)] pt-[var(--games-gap-8-7413,8.741px)] relative rounded-[var(--games-corner_radius-26-2238,26.224px)] shrink-0 w-[152.972px]" data-node-id="1004:956" data-name="game2-card">
+            <div className="relative shrink-0 size-[134.615px]" data-node-id="I1004:956;1004:862" data-name="game-visual">
+              <div className="absolute left-0 size-[134.615px] top-0" data-node-id="I1004:956;1004:863" data-name="game2-ring">
+                <img alt="" className="absolute block inset-0 max-w-none size-full" src={imgGame2Ring} />
+              </div>
+              <div className="absolute left-[6.12px] size-[118.881px] top-[9.62px]" data-node-id="I1004:956;1004:864" data-name="game2-photo">
+                <div className="absolute left-0 rounded-[var(--games-corner_radius-59-4406,59.441px)] size-[118.881px] top-0" data-node-id="I1004:956;1004:864;1004:771" data-name="game2-photo／独立PNG">
+                  <img alt="" className="absolute inset-0 max-w-none object-cover pointer-events-none rounded-[var(--games-corner_radius-59-4406,59.441px)] size-full" src={imgGame2PhotoPng} />
+                </div>
+              </div>
+            </div>
+            <div className="h-[19.288px] relative shrink-0 w-[152.972px]" data-node-id="I1004:956;1004:866" data-name="game-label-gap" />
+            <div className="content-stretch flex h-[35px] items-start pl-[var(--games-gap-37-5869,37.587px)] relative shrink-0 w-[142.482px]" data-node-id="I1004:956;1004:867" data-name="game-label-row">
+              <p className="[word-break:break-word] font-['Noto_Sans_SC:Bold'] font-bold leading-[35.269px] relative shrink-0 text-[27.554px] text-[color:var(--games-text-game2-label,#33363d)] w-[61px]" data-node-id="I1004:956;1004:870">
+                棉花
+              </p>
+            </div>
+            <div className="absolute content-stretch flex h-[44.58px] items-start left-[20.1px] pl-[var(--games-gap-29-7205,29.721px)] pt-[var(--games-gap-5-9291,5.929px)] top-[116.26px] w-[113.636px]" data-node-id="I1004:956;1004:871" data-name="game-button">
+              <div className="absolute bg-gradient-to-b border-[1.748px] border-[var(--games-white,white)] border-solid from-[var(--games-goldRing,#ffc600)] h-[44.58px] left-0 rounded-[var(--games-corner_radius-22-7273,22.727px)] to-[var(--games-gold,#ffbd00)] top-0 w-[113.636px]" data-node-id="I1004:956;1004:874" data-name="game2-button" />
+              <p className="[word-break:break-word] font-['Noto_Sans_SC:Bold'] font-bold leading-[31.621px] relative shrink-0 text-[24.704px] text-[color:var(--games-text-game2-enter,white)] tracking-[2.6224px] w-[61px]" data-node-id="I1004:956;1004:875">
+                进入
+              </p>
+            </div>
+          </div>
+          <div className="h-[209.79px] relative shrink-0 w-[7.867px]" data-node-id="1004:969" data-name="卡片间距" />
+          <div className="bg-[var(--games-gamecard,#fffdf0)] content-stretch drop-shadow-[0px_4.371px_7.867px_rgba(94,87,31,0.05)] flex flex-col h-[209.79px] items-start pl-[var(--games-gap-10-4895,10.49px)] pt-[var(--games-gap-8-7413,8.741px)] relative rounded-[var(--games-corner_radius-26-2238,26.224px)] shrink-0 w-[145.105px]" data-node-id="1004:970" data-name="game3-card">
+            <div className="relative shrink-0 size-[134.615px]" data-node-id="I1004:970;1004:876" data-name="game-visual">
+              <div className="absolute left-0 size-[134.615px] top-0" data-node-id="I1004:970;1004:877" data-name="game3-ring">
+                <img alt="" className="absolute block inset-0 max-w-none size-full" src={imgGame2Ring} />
+              </div>
+              <div className="absolute left-[4.37px] size-[118.881px] top-[9.62px]" data-node-id="I1004:970;1004:878" data-name="game3-photo">
+                <div className="absolute left-0 rounded-[var(--games-corner_radius-59-4406,59.441px)] size-[118.881px] top-0" data-node-id="I1004:970;1004:878;1004:773" data-name="game3-photo／独立PNG">
+                  <img alt="" className="absolute inset-0 max-w-none object-cover pointer-events-none rounded-[var(--games-corner_radius-59-4406,59.441px)] size-full" src={imgGame3PhotoPng} />
+                </div>
+              </div>
+            </div>
+            <div className="h-[19.288px] relative shrink-0 w-[145.105px]" data-node-id="I1004:970;1004:880" data-name="game-label-gap" />
+            <div className="content-stretch flex h-[35px] items-start pl-[var(--games-gap-34-9648,34.965px)] relative shrink-0 w-[134.615px]" data-node-id="I1004:970;1004:881" data-name="game-label-row">
+              <p className="[word-break:break-word] font-['Noto_Sans_SC:Bold'] font-bold leading-[35.269px] relative shrink-0 text-[27.554px] text-[color:var(--games-text-game3-label,#33363e)] w-[61px]" data-node-id="I1004:970;1004:884">
+                丝瓜
+              </p>
+            </div>
+            <div className="absolute content-stretch flex h-[44.58px] items-start left-[20.1px] pl-[var(--games-gap-27-9724,27.972px)] pt-[var(--games-gap-5-9291,5.929px)] top-[116.26px] w-[113.636px]" data-node-id="I1004:970;1004:885" data-name="game-button">
+              <div className="absolute bg-gradient-to-b border-[1.748px] border-[var(--games-white,white)] border-solid from-[var(--games-goldRing,#ffc600)] h-[44.58px] left-0 rounded-[var(--games-corner_radius-22-7273,22.727px)] to-[var(--games-gold,#ffbd00)] top-0 w-[113.636px]" data-node-id="I1004:970;1004:888" data-name="game3-button" />
+              <p className="[word-break:break-word] font-['Noto_Sans_SC:Bold'] font-bold leading-[31.621px] relative shrink-0 text-[24.704px] text-[color:var(--games-text-game3-enter,white)] w-[55px]" data-node-id="I1004:970;1004:889">
+                进入
+              </p>
+            </div>
+          </div>
+          <div className="h-[209.79px] relative shrink-0 w-[11.364px]" data-node-id="1004:983" data-name="卡片间距" />
+          <div className="bg-[var(--games-gamecard,#fffdf0)] content-stretch drop-shadow-[0px_4.371px_7.867px_rgba(94,87,31,0.05)] flex flex-col h-[209.79px] items-start pl-[var(--games-gap-10-4895,10.49px)] pt-[var(--games-gap-8-7413,8.741px)] relative rounded-[var(--games-corner_radius-26-2238,26.224px)] shrink-0 w-[143.357px]" data-node-id="1004:984" data-name="game4-card">
+            <div className="relative shrink-0 size-[134.615px]" data-node-id="I1004:984;1004:891" data-name="game-visual">
+              <div className="absolute left-0 size-[134.615px] top-0" data-node-id="I1004:984;1004:892" data-name="game4-ring">
+                <img alt="" className="absolute block inset-0 max-w-none size-full" src={imgGame2Ring} />
+              </div>
+              <div className="absolute left-[4.37px] size-[118.881px] top-[9.62px]" data-node-id="I1004:984;1004:893" data-name="game4-photo">
+                <div className="absolute left-0 rounded-[var(--games-corner_radius-59-4406,59.441px)] size-[118.881px] top-0" data-node-id="I1004:984;1004:893;1004:775" data-name="game4-photo／独立PNG">
+                  <img alt="" className="absolute inset-0 max-w-none object-cover pointer-events-none rounded-[var(--games-corner_radius-59-4406,59.441px)] size-full" src={imgGame4PhotoPng} />
+                </div>
+              </div>
+            </div>
+            <div className="h-[19.288px] relative shrink-0 w-[143.357px]" data-node-id="I1004:984;1004:895" data-name="game-label-gap" />
+            <div className="content-stretch flex h-[35px] items-start pl-[var(--games-gap-34-0912,34.091px)] relative shrink-0 w-[132.867px]" data-node-id="I1004:984;1004:896" data-name="game-label-row">
+              <p className="[word-break:break-word] font-['Noto_Sans_SC:Bold'] font-bold leading-[35.269px] relative shrink-0 text-[27.554px] text-[color:var(--games-text-game4-label,#35373e)] w-[61px]" data-node-id="I1004:984;1004:899">
+                玉米
+              </p>
+            </div>
+            <div className="absolute content-stretch flex h-[44.58px] items-start left-[20.1px] pl-[var(--games-gap-25-3499,25.35px)] pt-[var(--games-gap-5-9291,5.929px)] top-[116.26px] w-[113.636px]" data-node-id="I1004:984;1004:900" data-name="game-button">
+              <div className="absolute bg-gradient-to-b border-[1.748px] border-[var(--games-white,white)] border-solid from-[var(--games-goldRing,#ffc600)] h-[44.58px] left-0 rounded-[var(--games-corner_radius-22-7273,22.727px)] to-[var(--games-gold,#ffbd00)] top-0 w-[113.636px]" data-node-id="I1004:984;1004:903" data-name="game4-button" />
+              <p className="[word-break:break-word] font-['Noto_Sans_SC:Bold'] font-bold leading-[31.621px] relative shrink-0 text-[24.704px] text-[color:var(--games-text-game4-enter,white)] tracking-[2.6224px] w-[61px]" data-node-id="I1004:984;1004:904">
+                进入
+              </p>
+            </div>
+          </div>
+          <div className="h-[209.79px] relative shrink-0 w-[11.364px]" data-node-id="1004:997" data-name="卡片间距" />
+          <div className="bg-[var(--games-gamecard,#fffdf0)] content-stretch drop-shadow-[0px_4.371px_7.867px_rgba(94,87,31,0.05)] flex flex-col h-[209.79px] items-start pl-[var(--games-gap-10-4895,10.49px)] pt-[var(--games-gap-8-7413,8.741px)] relative rounded-[var(--games-corner_radius-26-2238,26.224px)] shrink-0 w-[147.727px]" data-node-id="1004:998" data-name="game5-card">
+            <div className="relative shrink-0 size-[134.615px]" data-node-id="I1004:998;1004:905" data-name="game-visual">
+              <div className="absolute left-0 size-[134.615px] top-0" data-node-id="I1004:998;1004:906" data-name="game5-ring">
+                <img alt="" className="absolute block inset-0 max-w-none size-full" src={imgGame2Ring} />
+              </div>
+              <div className="absolute left-[4.37px] size-[118.881px] top-[9.62px]" data-node-id="I1004:998;1004:907" data-name="game5-photo">
+                <div className="absolute left-0 rounded-[var(--games-corner_radius-59-4406,59.441px)] size-[118.881px] top-0" data-node-id="I1004:998;1004:907;1004:777" data-name="game5-photo／独立PNG">
+                  <img alt="" className="absolute inset-0 max-w-none object-cover pointer-events-none rounded-[var(--games-corner_radius-59-4406,59.441px)] size-full" src={imgGame5PhotoPng} />
+                </div>
+              </div>
+            </div>
+            <div className="h-[19.288px] relative shrink-0 w-[147.727px]" data-node-id="I1004:998;1004:909" data-name="game-label-gap" />
+            <div className="content-stretch flex h-[35px] items-start pl-[var(--games-gap-30-5940,30.594px)] relative shrink-0 w-[137.238px]" data-node-id="I1004:998;1004:910" data-name="game-label-row">
+              <p className="[word-break:break-word] font-['Noto_Sans_SC:Bold'] font-bold leading-[35.269px] relative shrink-0 text-[27.554px] text-[color:var(--games-text-game5-label,#36383f)] w-[61px]" data-node-id="I1004:998;1004:913">
+                银杏
+              </p>
+            </div>
+            <div className="absolute content-stretch flex h-[44.58px] items-start left-[20.1px] pl-[var(--games-gap-25-3496,25.35px)] pt-[var(--games-gap-5-9291,5.929px)] top-[116.26px] w-[113.636px]" data-node-id="I1004:998;1004:914" data-name="game-button">
+              <div className="absolute bg-gradient-to-b border-[1.748px] border-[var(--games-white,white)] border-solid from-[var(--games-goldRing,#ffc600)] h-[44.58px] left-0 rounded-[var(--games-corner_radius-22-7273,22.727px)] to-[var(--games-gold,#ffbd00)] top-0 w-[113.636px]" data-node-id="I1004:998;1004:915" data-name="game5-button" />
+              <p className="[word-break:break-word] font-['Noto_Sans_SC:Bold'] font-bold leading-[31.621px] relative shrink-0 text-[24.704px] text-[color:var(--games-text-game5-enter,white)] w-[55px]" data-node-id="I1004:998;1004:916">
+                进入
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="absolute bg-gradient-to-r from-[var(--games-bannerStart,#ffb220)] h-[246.503px] left-[20.98px] overflow-clip rounded-[var(--games-corner_radius-18-3566,18.357px)] to-[var(--games-bannerEnd,#ff8c08)] top-[375px] w-[708.916px]" data-node-id="1004:1011" data-name="banner">
+        <div className="absolute h-[158.217px] left-0 top-[88.29px] w-[402.098px]" data-node-id="1004:1026" data-name="banner-hill-back">
+          <img alt="" className="absolute block inset-0 max-w-none size-full" src={imgBannerHillBack} />
+        </div>
+        <div className="absolute h-[76.049px] left-0 top-[170.45px] w-[708.916px]" data-node-id="1004:1027" data-name="banner-hill-front">
+          <img alt="" className="absolute block inset-0 max-w-none size-full" src={imgBannerHillFront} />
+        </div>
+        <div className="absolute h-[236.969px] left-[-11.62px] top-[39.74px] w-[730.821px]" data-node-id="1004:1018" data-name="banner-scenery／独立PNG">
+          <img alt="" className="absolute inset-0 max-w-none object-contain pointer-events-none size-full" src={imgBannerSceneryPng} />
+        </div>
+        <div className="absolute h-[42.265px] left-[411.5px] top-[19.08px] w-[63.397px]" data-node-id="1004:1021" data-name="banner-leaf／独立PNG">
+          <img alt="" className="absolute inset-0 max-w-none object-contain pointer-events-none size-full" src={imgBannerLeafPng} />
+        </div>
+        <div className="absolute h-[25.921px] left-[632.12px] top-[40.4px] w-[26.933px]" data-node-id="1004:1022" data-name="star1／独立PNG">
+          <img alt="" className="absolute inset-0 max-w-none object-contain pointer-events-none size-full" src={imgStar1png} />
+        </div>
+        <div className="absolute h-[28.175px] left-[366.09px] top-[130.63px] w-[29.275px]" data-node-id="1004:1023" data-name="star2／独立PNG">
+          <img alt="" className="absolute inset-0 max-w-none object-contain pointer-events-none size-full" src={imgStar1png} />
+        </div>
+        <div className="absolute h-[37.192px] left-[427.85px] top-[146.67px] w-[38.643px]" data-node-id="1004:1024" data-name="star3／独立PNG">
+          <img alt="" className="absolute inset-0 max-w-none object-contain pointer-events-none size-full" src={imgStar1png} />
+        </div>
+        <div className="absolute h-[19.159px] left-[201.18px] top-[158.28px] w-[19.907px]" data-node-id="1004:1025" data-name="star4／独立PNG">
+          <img alt="" className="absolute inset-0 max-w-none object-contain pointer-events-none size-full" src={imgStar1png} />
+        </div>
+        <div className="absolute h-[13.524px] left-[22.72px] top-[129.62px] w-[14.052px]" data-node-id="1004:1031" data-name="star-small1／独立PNG">
+          <img alt="" className="absolute inset-0 max-w-none object-contain pointer-events-none size-full" src={imgStar1png} />
+        </div>
+        <div className="absolute h-[11.27px] left-[320.21px] top-[179.7px] w-[11.71px]" data-node-id="1004:1032" data-name="star-small2／独立PNG">
+          <img alt="" className="absolute inset-0 max-w-none object-contain pointer-events-none size-full" src={imgStar1png} />
+        </div>
+        <div className="absolute h-[8.741px] left-[13.99px] top-[75.17px] w-[7.867px]" data-node-id="1004:1028" data-name="banner-diamond1">
+          <img alt="" className="absolute block inset-0 max-w-none size-full" src={imgBannerDiamond1} />
+        </div>
+        <div className="absolute h-[7.867px] left-[402.97px] top-[159.09px] w-[6.119px]" data-node-id="1004:1029" data-name="banner-diamond2">
+          <img alt="" className="absolute block inset-0 max-w-none size-full" src={imgBannerDiamond2} />
+        </div>
+        <div className="absolute h-[16.608px] left-[662.59px] top-[25.35px] w-[14.86px]" data-node-id="1004:1030" data-name="banner-meteor">
+          <img alt="" className="absolute block inset-0 max-w-none size-full" src={imgBannerMeteor} />
+        </div>
+        <div className="absolute h-[235.956px] left-[432.98px] top-[8.82px] w-[230.564px]" data-node-id="1004:1019" data-name="banner-deer／独立PNG">
+          <img alt="" className="absolute inset-0 max-w-none object-contain pointer-events-none size-full" src={imgBannerDeerPng} />
+        </div>
+        <Component className="absolute content-stretch flex h-[52.448px] items-start left-[29.72px] pl-[var(--games-gap-30-5944,30.594px)] pt-[var(--games-gap-8-3424,8.342px)] top-[177.45px] w-[166.084px]" />
+        <div className="absolute h-[54.196px] left-[385.49px] top-[70.8px] w-[93.532px]" data-node-id="1004:1014" data-name="banner-speech-left">
+          <img alt="" className="absolute block inset-0 max-w-none size-full" src={imgBannerSpeechLeft} />
+        </div>
+        <div className="absolute h-[56.818px] left-[615.38px] top-[77.8px] w-[87.413px]" data-node-id="1004:1017" data-name="banner-speech-right">
+          <div className="absolute inset-[0_0_5.45%_0]">
+            <img alt="" className="block max-w-none size-full" src={imgBannerSpeechRight} />
+          </div>
+        </div>
+        <div className="absolute h-[141.194px] left-[13.04px] top-[8.56px] w-[407.703px]" data-node-id="1004:1020" data-name="banner-lettering／独立PNG">
+          <img alt="" className="absolute inset-0 max-w-none object-contain pointer-events-none size-full" src={imgBannerLetteringPng} />
+        </div>
+        <div className="absolute flex h-[31.616px] items-center justify-center left-[394.23px] top-[79.97px] w-[78.886px]" data-node-id="1004:1036">
+          <div className="-rotate-5 flex-none">
+            <p className="[word-break:break-word] font-['Noto_Sans_SC:Bold'] font-bold h-[25px] leading-[24.615px] relative text-[20.131px] text-[color:var(--games-text-banner-start,#8a1501)] tracking-[-3.4091px] w-[77px]">来出发吧!</p>
+          </div>
+        </div>
+        <div className="absolute flex h-[31.267px] items-center justify-center left-[623.25px] top-[89.93px] w-[74.901px]" data-node-id="1004:1038">
+          <div className="-rotate-5 flex-none">
+            <p className="[word-break:break-word] font-['Noto_Sans_SC:Bold'] font-bold h-[25px] leading-[24.615px] relative text-[19.231px] text-[color:var(--games-text-banner-together,#890e00)] tracking-[-3.4965px] w-[73px]">一起玩呀!</p>
+          </div>
+        </div>
+        <p className="[word-break:break-word] absolute font-['Roboto:Bold'] font-bold h-[35px] leading-[35.204px] left-[213.29px] text-[27.503px] text-[color:var(--games-text-banner-date,white)] top-[188.16px] tracking-[0.6871px] w-[167px]" data-node-id="1004:1040" style={{ fontVariationSettings: '"wdth" 100' }}>
+          05.14-05.26
+        </p>
+      </div>
+      <div className="absolute h-[772.704px] left-0 top-[633.72px] w-[750px]" data-node-id="1004:1042" data-name="好友游戏圈／标题与成果帖子">
+        <div className="absolute content-stretch flex h-[48.362px] items-start left-[26.22px] top-[8.47px] w-[244.692px]" data-node-id="1004:1043" data-name="好友游戏圈标题">
+          <div className="h-[48.362px] relative shrink-0 w-[41.958px]" data-node-id="1004:1044" data-name="位置/icon-friends">
+            <pngIconFriends className="absolute h-[41.084px] left-0 top-[7.28px] w-[41.958px]" />
+          </div>
+          <div className="h-[48.362px] relative shrink-0 w-[15.734px]" data-node-id="1004:1047" data-name="测量间距" />
+          <div className="h-[48.362px] relative shrink-0 w-[187px]" data-node-id="1004:1048" data-name="位置/friends-title">
+            <p className="[word-break:break-word] absolute font-['Noto_Sans_SC:Bold'] font-bold h-[47px] leading-[47.431px] left-0 text-[37.055px] text-[color:var(--games-text-friends-title,#05051b)] top-0 tracking-[-0.8741px] w-[187px]" data-node-id="1004:1049">
+              好友游戏圈
+            </p>
+          </div>
+        </div>
+        <div className="absolute bg-[var(--games-white,white)] h-[698.427px] left-[16.61px] rounded-[var(--games-corner_radius-21-8531,21.853px)] top-[74.32px] w-[716.783px]" data-node-id="1004:1051" data-name="post-card">
+          <div className="absolute left-[26.22px] rounded-[var(--games-corner_radius-45-8916,45.892px)] size-[91.783px] top-[24.48px]" data-node-id="1004:1054" data-name="avatar／独立PNG">
+            <img alt="" className="absolute inset-0 max-w-none object-cover pointer-events-none rounded-[var(--games-corner_radius-45-8916,45.892px)] size-full" src={imgAvatarPng} />
+          </div>
+          <div className="absolute content-stretch flex h-[47.069px] items-start left-[142.48px] top-[24.61px] w-[235.14px]" data-node-id="1004:1057" data-name="作者昵称与成果标签">
+            <div className="h-[47.069px] relative shrink-0 w-[108px]" data-node-id="1004:1058" data-name="位置/author">
+              <p className="[word-break:break-word] absolute font-['Noto_Sans_SC:Bold'] font-bold h-[45px] leading-[44.999px] left-[1.75px] text-[35.155px] text-[color:var(--games-text-author,#30313a)] top-[1.75px] tracking-[-2.6224px] w-[108px]" data-node-id="1004:1059">
+                李大爷
+              </p>
+            </div>
+            <div className="h-[47.069px] relative shrink-0 w-[14.377px]" data-node-id="1004:1061" data-name="测量间距" />
+            <div className="h-[47.069px] relative shrink-0 w-[112.762px]" data-node-id="1004:1062" data-name="位置/post-badge-bg">
+              <Component2 className="absolute content-stretch flex h-[40.21px] items-start left-0 pl-[var(--games-gap-10-4895,10.49px)] pt-[var(--games-gap-2-6415,2.641px)] top-[6.86px] w-[112.762px]" />
+            </div>
+          </div>
+          <p className="[word-break:break-word] absolute font-['Noto_Sans_SC:Regular'] font-normal h-[28px] leading-[27.972px] left-[145.98px] text-[21.853px] text-[color:var(--games-text-post-time,#84848b)] top-[77.36px] w-[96px]" data-node-id="1004:1066">
+            10分钟前
+          </p>
+          <Component1 className="absolute content-stretch flex h-[39.336px] items-start left-[29.72px] pl-[var(--games-gap-25-3496,25.35px)] pt-[var(--games-gap-4-8073,4.807px)] top-[123.25px] w-[265.734px]" />
+          <div className="absolute h-[69.93px] left-[511.36px] top-[75.17px] w-[177.448px]" data-node-id="1004:1070" data-name="autumn-bubble">
+            <div className="absolute inset-[0_0_6.63%_0]">
+              <img alt="" className="block max-w-none size-full" src={imgAutumnBubble} />
+            </div>
+          </div>
+          <pngAutumnLeaf className="absolute h-[34.965px] left-[527.97px] top-[86.54px] w-[27.098px]" />
+          <div className="absolute h-[59.998px] left-[636.02px] top-[43.02px] w-[89.997px]" data-node-id="1004:1075" data-name="autumn-rays／独立PNG">
+            <img alt="" className="absolute inset-0 max-w-none object-contain pointer-events-none size-full" src={imgAutumnRaysPng} />
+          </div>
+          <div className="absolute flex h-[34.677px] items-center justify-center left-[561.05px] top-[91.54px] w-[112.613px]" data-node-id="1004:1076">
+            <div className="flex-none rotate-4">
+              <p className="[word-break:break-word] font-['Noto_Sans_SC:Medium'] font-medium h-[27px] leading-[26.853px] relative text-[20.979px] text-[color:var(--games-text-autumn-label,#660b00)] w-[111px]">秋日小收获</p>
+            </div>
+          </div>
+          <div className="[word-break:break-word] absolute font-['Noto_Sans_SC:Regular'] font-normal h-[96px] leading-[0] left-[27.1px] text-[35.63px] text-[color:var(--games-text-post-body,#35363d)] top-[175.73px] tracking-[-1.4397px] w-[621px]" data-node-id="1004:1078">
+            <p className="leading-[48.077px] mb-0">今天做了两盒桂花糕，挑桂花、配糕点，</p>
+            <p className="leading-[48.077px]">把这份秋日心意分享给大家。</p>
+          </div>
+          <div className="absolute content-stretch flex flex-col gap-[var(--games-gap-10-4895,10.49px)] h-[322.552px] items-start left-[29.72px] top-[285.84px] w-[658.217px]" data-node-id="1004:1080" data-name="制作过程／四张独立照片">
+            <div className="content-stretch flex gap-[var(--games-gap-11-3636,11.364px)] h-[158.217px] items-start relative shrink-0 w-[658.217px]" data-node-id="1004:1081" data-name="照片行1">
+              <div className="h-[158.217px] relative rounded-[var(--games-corner_radius-11-3636,11.364px)] shrink-0 w-[323.427px]" data-node-id="1004:1084" data-name="photo-step1／独立PNG">
+                <img alt="" className="absolute inset-0 max-w-none object-cover pointer-events-none rounded-[var(--games-corner_radius-11-3636,11.364px)] size-full" src={imgPhotoStep1png} />
+              </div>
+              <div className="h-[158.217px] relative rounded-[var(--games-corner_radius-11-3636,11.364px)] shrink-0 w-[323.427px]" data-node-id="1004:1086" data-name="photo-step2／独立PNG">
+                <img alt="" className="absolute inset-0 max-w-none object-cover pointer-events-none rounded-[var(--games-corner_radius-11-3636,11.364px)] size-full" src={imgPhotoStep2png} />
+              </div>
+            </div>
+            <div className="content-stretch flex gap-[var(--games-gap-11-3636,11.364px)] h-[153.846px] items-start relative shrink-0 w-[658.217px]" data-node-id="1004:1087" data-name="照片行2">
+              <div className="h-[153.846px] relative rounded-[var(--games-corner_radius-11-3636,11.364px)] shrink-0 w-[323.427px]" data-node-id="1004:1088" data-name="photo-step3／独立PNG">
+                <img alt="" className="absolute inset-0 max-w-none object-cover pointer-events-none rounded-[var(--games-corner_radius-11-3636,11.364px)] size-full" src={imgPhotoStep3png} />
+              </div>
+              <div className="h-[153.846px] relative rounded-[var(--games-corner_radius-11-3636,11.364px)] shrink-0 w-[323.427px]" data-node-id="1004:1089" data-name="photo-step4／独立PNG">
+                <img alt="" className="absolute inset-0 max-w-none object-cover pointer-events-none rounded-[var(--games-corner_radius-11-3636,11.364px)] size-full" src={imgPhotoStep4png} />
+              </div>
+            </div>
+          </div>
+          <div className="absolute content-stretch flex h-[51.574px] items-start left-[29.72px] top-[624.13px] w-[661.713px]" data-node-id="1004:1090" data-name="帖子底部／点赞评论与操作">
+            <div className="h-[51.574px] relative shrink-0 w-[43.706px]" data-node-id="1004:1091" data-name="位置/icon-heart">
+              <pngIconHeart className="absolute h-[41.958px] left-0 top-[4.37px] w-[43.706px]" />
+            </div>
+            <div className="h-[51.574px] relative shrink-0 w-[12.238px]" data-node-id="1004:1094" data-name="测量间距" />
+            <div className="h-[51.574px] relative shrink-0 w-[44px]" data-node-id="1004:1095" data-name="位置/like-count">
+              <p className="[word-break:break-word] absolute font-['Noto_Sans_SC:Regular'] font-normal h-[40px] leading-[40.055px] left-0 text-[31.293px] text-[color:var(--games-text-like-count,#3f3f46)] top-[4.84px] tracking-[1.8328px] w-[44px]" data-node-id="1004:1096">
+                12
+              </p>
+            </div>
+            <div className="h-[51.574px] relative shrink-0 w-[30.3px]" data-node-id="1004:1098" data-name="测量间距" />
+            <div className="h-[51.574px] relative shrink-0 w-[42.832px]" data-node-id="1004:1099" data-name="位置/icon-comment">
+              <pngIconComment className="absolute left-0 size-[42.832px] top-[4.37px]" />
+            </div>
+            <div className="h-[51.574px] relative shrink-0 w-[13.111px]" data-node-id="1004:1102" data-name="测量间距" />
+            <div className="h-[51.574px] relative shrink-0 w-[23px]" data-node-id="1004:1103" data-name="位置/comment-count">
+              <p className="[word-break:break-word] absolute font-['Noto_Sans_SC:Regular'] font-normal h-[40px] leading-[40.055px] left-0 text-[31.293px] text-[color:var(--games-text-comment-count,#434349)] top-[5.72px] w-[23px]" data-node-id="1004:1104">
+                3
+              </p>
+            </div>
+            <div className="h-[51.574px] relative shrink-0 w-[136.091px]" data-node-id="1004:1106" data-name="测量间距" />
+            <div className="h-[51.574px] relative shrink-0 w-[151.224px]" data-node-id="1004:1107" data-name="位置/make-bg">
+              <Component className="absolute content-stretch flex h-[50.699px] items-start left-0 pl-[var(--games-gap-32-3426,32.343px)] pt-[var(--games-gap-8-9680,8.968px)] top-[0.87px] w-[151.224px]" propValue="我也来做" propValue1="我也来做" />
+            </div>
+            <div className="h-[51.574px] relative shrink-0 w-[13.986px]" data-node-id="1004:1111" data-name="测量间距" />
+            <div className="h-[51.574px] relative shrink-0 w-[151.224px]" data-node-id="1004:1112" data-name="位置/view-bg">
+              <Component className="absolute content-stretch flex h-[50.699px] items-start left-0 pl-[var(--games-gap-31-4688,31.469px)] pt-[var(--games-gap-9-8422,9.842px)] top-0 w-[151.224px]" propValue="查看作品" propValue1="查看作品" />
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="absolute h-[137.279px] left-0 top-[1395.06px] w-[750px]" data-node-id="1004:1157" data-name="真实底部导航／保留凸起语音按钮">
+        <div className="absolute bg-[var(--games-white,white)] h-[114.51px] left-0 top-[22.77px] w-[750px]" data-node-id="1004:1158" data-name="nav-background" />
+        <div className="absolute content-stretch flex flex-col h-[85.258px] items-start left-[43.71px] top-[33.26px] w-[57.692px]" data-node-id="1004:1159" data-name="导航/首页">
+          <div className="h-[52.448px] relative shrink-0 w-[57.692px]" data-node-id="I1004:1159;1004:1121" data-name="导航图标位置">
+            <pngNavHome className="absolute h-[52.448px] left-0 top-0 w-[57.692px]" />
+          </div>
+          <div className="h-[4.811px] relative shrink-0 w-[57.692px]" data-node-id="I1004:1159;1004:1124" data-name="导航图标到文字" />
+          <div className="content-stretch flex h-[28px] items-start pl-[var(--games-gap-6-9930,6.993px)] relative shrink-0 w-[57.692px]" data-node-id="I1004:1159;1004:1125" data-name="导航标签行">
+            <p className="[word-break:break-word] font-['Noto_Sans_SC:Regular'] font-normal leading-[27.972px] relative shrink-0 text-[21.853px] text-[color:var(--games-text-nav-home-label,#39383c)] w-[50px]" data-node-id="I1004:1159;1004:1128">
+              首页
+            </p>
+          </div>
+        </div>
+        <div className="absolute content-stretch flex flex-col h-[82.72px] items-start left-[193.18px] top-[35.01px] w-[62.063px]" data-node-id="1004:1167" data-name="导航/动态">
+          <div className="h-[52.448px] relative shrink-0 w-[62.063px]" data-node-id="I1004:1167;1004:1129" data-name="导航图标位置">
+            <div className="absolute h-[52.448px] left-0 top-0 w-[62.063px]" data-node-id="I1004:1167;1004:1130" data-name="nav-selected-hex">
+              <img alt="" className="absolute block inset-0 max-w-none size-full" src={imgNavSelectedHex} />
+            </div>
+            <div className="absolute h-[52.448px] left-[18.36px] top-[13.99px] w-[57.692px]" data-node-id="I1004:1167;1004:1133" data-name="nav-compass">
+              <div className="absolute h-[42.707px] left-[-8.21px] top-[-9.77px] w-[41.071px]" data-node-id="I1004:1167;1004:1133;1004:759" data-name="nav-compass／独立PNG">
+                <img alt="" className="absolute inset-0 max-w-none object-contain pointer-events-none size-full" src={imgNavCompassPng} />
+              </div>
+            </div>
+          </div>
+          <div className="h-[3.273px] relative shrink-0 w-[62.063px]" data-node-id="I1004:1167;1004:1135" data-name="导航图标到文字" />
+          <div className="content-stretch flex h-[27px] items-start pl-[var(--games-gap-11-3632,11.363px)] relative shrink-0 w-[62.063px]" data-node-id="I1004:1167;1004:1136" data-name="导航标签行">
+            <p className="[word-break:break-word] font-['Noto_Sans_SC:Regular'] font-normal leading-[26.756px] relative shrink-0 text-[20.903px] text-[color:var(--games-text-nav-feed-label,#feaa00)] w-[48px]" data-node-id="I1004:1167;1004:1139">
+              动态
+            </p>
+          </div>
+        </div>
+        <div className="absolute content-stretch flex flex-col h-[81.762px] items-start left-[495.63px] top-[36.75px] w-[55.245px]" data-node-id="1004:1177" data-name="导航/信息">
+          <div className="h-[48.951px] relative shrink-0 w-[55.245px]" data-node-id="I1004:1177;1004:1141" data-name="导航图标位置">
+            <div className="absolute h-[52.448px] left-0 top-0 w-[57.692px]" data-node-id="I1004:1177;1004:1142" data-name="nav-message">
+              <div className="absolute h-[108.024px] left-[-35.43px] top-[-31.56px] w-[123.298px]" data-node-id="I1004:1177;1004:1142;1004:763" data-name="nav-message／独立PNG">
+                <img alt="" className="absolute inset-0 max-w-none object-contain pointer-events-none size-full" src={imgNavMessagePng} />
+              </div>
+            </div>
+          </div>
+          <div className="h-[4.811px] relative shrink-0 w-[55.245px]" data-node-id="I1004:1177;1004:1144" data-name="导航图标到文字" />
+          <div className="content-stretch flex h-[28px] items-start pl-[var(--games-gap-5-2446,5.245px)] relative shrink-0 w-[55.245px]" data-node-id="I1004:1177;1004:1145" data-name="导航标签行">
+            <p className="[word-break:break-word] font-['Noto_Sans_SC:Regular'] font-normal leading-[27.972px] relative shrink-0 text-[21.853px] text-[color:var(--games-text-nav-message-label,#37383b)] w-[50px]" data-node-id="I1004:1177;1004:1148">
+              信息
+            </p>
+          </div>
+        </div>
+        <div className="absolute content-stretch flex flex-col h-[84.384px] items-start left-[647.73px] top-[34.13px] w-[59.616px]" data-node-id="1004:1186" data-name="导航/我的">
+          <div className="h-[54.196px] relative shrink-0 w-[59.616px]" data-node-id="I1004:1186;1004:1149" data-name="导航图标位置">
+            <div className="absolute h-[52.448px] left-0 top-0 w-[57.692px]" data-node-id="I1004:1186;1004:1150" data-name="nav-mine">
+              <div className="absolute h-[82.765px] left-[-11.31px] top-[-15.43px] w-[81.196px]" data-node-id="I1004:1186;1004:1150;1004:765" data-name="nav-mine／独立PNG">
+                <img alt="" className="absolute inset-0 max-w-none object-contain pointer-events-none size-full" src={imgNavMinePng} />
+              </div>
+            </div>
+          </div>
+          <div className="h-[2.188px] relative shrink-0 w-[59.616px]" data-node-id="I1004:1186;1004:1152" data-name="导航图标到文字" />
+          <div className="content-stretch flex h-[28px] items-start pl-[var(--games-gap-9-6157,9.616px)] relative shrink-0 w-[59.616px]" data-node-id="I1004:1186;1004:1153" data-name="导航标签行">
+            <p className="[word-break:break-word] font-['Noto_Sans_SC:Regular'] font-normal leading-[27.972px] relative shrink-0 text-[21.853px] text-[color:var(--games-text-nav-mine-label,#36373a)] w-[50px]" data-node-id="I1004:1186;1004:1156">
+              我的
+            </p>
+          </div>
+        </div>
+        <div className="absolute left-[321.68px] size-[107.518px] top-[0.04px]" data-node-id="1004:1195" data-name="nav-mic-disc">
+          <img alt="" className="absolute block inset-0 max-w-none size-full" src={imgNavMicDisc} />
+        </div>
+        <pngNavMic className="absolute h-[55.944px] left-[354.9px] top-[26.27px] w-[40.21px]" />
+      </div>
+    </div>
+  );
+}
