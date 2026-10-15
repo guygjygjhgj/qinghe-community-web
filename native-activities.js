@@ -28,9 +28,12 @@ export function completeActivities(root,{name,state,vm,url}){
   bind(at('39:2178'),{action:'filter'},'社区活动，打开活动筛选');
   const children=[...(form||root).children],first=children.findIndex(e=>e.dataset.nodeId==='39:2184'),second=children.findIndex(e=>e.dataset.nodeId==='39:2196'),end=children.findIndex(e=>e.dataset.nodeId==='39:2206');
   let visible=0;
-  ACTIVITY_LIST_IDS.forEach((id,i)=>{
-   const a=state.activities.find(a=>a.id===id);if(!a)return;
+  const cloudRows=state.cloud?state.activities.filter(a=>!['status','kind','time','community'].some(k=>url.searchParams.has(k))||matchesActivity(state,a.id,applied)).sort((a,b)=>Number(!!a.sample)-Number(!!b.sample)||(a.id==='vegetable-day'?-1:a.id==='vegetable-meeting'?-1:1)):[];
+  const chosen=cloudRows.find(a=>a.id===vm.cloudActivityId)||cloudRows[0],listIds=state.cloud?[chosen?.id,cloudRows.find(a=>a.id!==chosen?.id)?.id]:ACTIVITY_LIST_IDS;
+  listIds.forEach((id,i)=>{
+   const a=state.activities.find(a=>a.id===id);
    const start=i?second:first,stop=i?(end<0?children.length:end):second,nodes=children.slice(start,stop);
+   if(!a){if(state.cloud)nodes.forEach(e=>{e.hidden=true;});return;}
    // Apply the same predicate before and after opening the sheet, without removing layers.
    const show=!['status','kind','time','community'].some(k=>url.searchParams.has(k))||matchesActivity(state,id,applied);
    nodes.forEach(e=>{e.hidden=!show;});if(show)visible++;
@@ -38,6 +41,7 @@ export function completeActivities(root,{name,state,vm,url}){
    for(const key of i?['39:2196','39:2197','39:2198','39:2199','39:2200','39:2204']:['39:2184','39:2185','39:2186','39:2187','39:2188','39:2193','39:2194','39:2195'])bind(at(key),{route:prefix},'查看详情：'+a.title);
    for(const key of i?['39:2201','39:2202']:['39:2189','39:2190'])bind(at(key),{action:'activity-calendar',id},'添加活动到日历：'+a.title);
    for(const key of i?['39:2203','39:2205']:['39:2191','39:2192'])bind(at(key),{action:'copy-location',id},'复制活动地点：'+a.location);
+   if(state.cloud){set(i?'39:2198':'39:2186',a.title);set(i?'39:2199':'39:2187',a.type);set(i?'39:2200':'39:2188',a.organizer);set(i?'39:2202':'39:2190',a.date+' '+a.time);set(i?'39:2203':'39:2192',a.location);if(!i&&cloudRows.length>1){const old=at('39:2186'),select=document.createElement('select');select.className=old.className+' native-input';select.style.cssText=old.style.cssText;select.dataset.nodeId=old.dataset.nodeId;select.dataset.cloudActivitySelect='true';select.setAttribute('aria-label','选择社区活动');for(const a of cloudRows){const option=document.createElement('option');option.value=a.id;option.textContent=a.title;option.selected=a.id===id;select.append(option);}old.replaceWith(select);}}
   });
   root.dataset.activityResults=String(visible);root.setAttribute('aria-label','社区活动，'+visible+'场活动');
   if(open){
@@ -59,7 +63,7 @@ export function completeActivities(root,{name,state,vm,url}){
  const date=Number(a.date.slice(5,7))+'月'+Number(a.date.slice(8))+'日';
  // The fixed four-character heading and illustrated hero remain the original design.
  root.setAttribute('aria-label',a.title+'，'+(st.ended?'活动已结束':st.mine?'已报名':st.full?'名额已满':'可以报名'));
- set(ids.organizer,a.organizer);set(ids.capacity,booked?a.capacity:a.capacity+'人');set(ids.remaining,booked?st.remaining:st.remaining+'人');set(ids.date,date+(booked?'':' '+a.time));if(booked)set(ids.time,a.time);set(ids.location,a.location);
+ set(ids.organizer,state.cloud&&!a.sample?a.title+' · '+a.organizer:a.organizer);set(ids.capacity,booked?a.capacity:a.capacity+'人');set(ids.remaining,booked?st.remaining:st.remaining+'人');set(ids.date,date+(booked?'':' '+a.time));if(booked)set(ids.time,a.time);set(ids.location,a.location);
  for(const e of root.querySelectorAll('[data-name]')){
   const n=e.dataset.name;
   if(/icon-back|header-back/.test(n))bind(e,{action:'back'},'返回');

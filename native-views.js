@@ -1,3 +1,4 @@
+import {mediaSource} from './community-media.js';
 import {completeSeasonal} from './native-seasonal.js';
 import {screens,sizes} from './native-screens.js';
 import {geometry} from './native-geometry.js';
@@ -9,6 +10,7 @@ import {completeNativeFunctions} from './native-functions.js';
 import {completeAuthControls} from './demo-auth.js';
 import {prepareNativePlantCarousel} from './native-plant-carousel.js';
 import {recordSelection,recordScreen,completeRecordCard} from './native-record-carousel.js';
+import {completeCommunityData} from './native-community-data.js';
 export {esc,today,typeName};
 const norm=s=>s.replace(/\s+/g,'').replace(/›/g,'');
 function completeReaderExit(root){
@@ -45,7 +47,7 @@ export function createViews(getState,assets,homeScene){
   const node=(pattern,props)=>{for(const el of root.querySelectorAll('[data-name]'))if(pattern.test(el.dataset.name))bind(el,props);};
   const text=(label,props)=>{for(const el of find(label)){bind(el,props);let g=el.parentElement;for(let depth=0;g&&g!==root&&depth<4;depth++,g=g.parentElement){if([...g.querySelectorAll('[data-action]')].some(e=>e.dataset.action!==props.action)||[...g.querySelectorAll('[data-route]')].some(e=>e.dataset.route!==props.route))break;if(norm(g.textContent)===norm(label)){bind(g,props);for(const child of g.querySelectorAll('[role=button]')){child.removeAttribute('role');child.tabIndex=-1;}}else break;}}for(const n of root.querySelectorAll('[data-name]'))if(n!==root&&(n.dataset.name===label||n.dataset.name.startsWith(label+'｜')||n.dataset.name.startsWith(label+'按钮')))bind(n,props);};
   const route=(t,to)=>text(t,{route:to}),action=(t,a,attrs={})=>text(t,{action:a,...attrs}),replace=(a,b)=>find(a).forEach(e=>{e.textContent=b;for(let n=e;n&&n!==root;n=n.parentElement)if(norm(n.getAttribute('aria-label')||'')===norm(a))n.setAttribute('aria-label',b);});
-  const imageSource=photo=>{if(!photo)return null;const split=photo.indexOf(':');return assets[photo.slice(0,split)]?.[photo.slice(split+1)]?.file||photo;};
+  const imageSource=photo=>{if(!photo)return null;const split=photo.indexOf(':');return assets[photo.slice(0,split)]?.[photo.slice(split+1)]?.file||mediaSource(photo);};
   const image=(pattern,photo)=>{const src=imageSource(photo);if(!src)return;for(const el of root.querySelectorAll('[data-name]'))if(pattern.test(el.dataset.name)){const img=el.querySelector('img');if(img)img.src=src;}};
   const choices=(labels,value)=>{let base,target;for(const label of labels){for(const e of find(label))e.setAttribute('aria-pressed',String(label===value));const bg=[...root.querySelectorAll('[data-name]')].find(e=>e.dataset.name===label+'｜选项背景');if(bg){if(label===labels[0])base=bg;if(label===value)target=bg;bg.style.backgroundColor=label===value?'#fff5c3':'#f9f9f9';bg.style.borderColor=label===value?'#e5c51f':'#dddddb';bind(bg,{action:labels.includes('阳台')?'plant-location':'plant-source',value:label});}}if(base&&target&&value!==labels[0]){const x=e=>Number(/left-\[([\d.]+)px\]/.exec(e.className)?.[1]||0),first=base.parentElement;for(const mark of first.querySelectorAll('[data-name="选择圆形背景"],[data-name="选择勾"]')){const copy=mark.cloneNode(true);for(const e of [copy,...copy.querySelectorAll('[data-node-id]')])e.removeAttribute('data-node-id');copy.style.transform='translateX('+(x(target)-x(base))+'px)';mark.style.visibility='hidden';root.append(copy);}}};
   const managed=(items,kind,label)=>{const capacity=kind==='drafts'?2:3,circles=[...root.querySelectorAll('[data-name]')].filter(e=>['选择圆形背景','未选中单选圆圈'].includes(e.dataset.name));circles.forEach((el,i)=>{const value=items[i],all=i===capacity,selected=all?items.length>0&&items.every(x=>vm.selected.has(x)):vm.selected.has(value);if(!all&&!value){el.style.visibility='hidden';return;}bind(el,all?{action:'select-all-'+kind}:{action:kind==='drafts'?'select-draft':'select-favorite',...(kind==='drafts'?{id:value}:{key:value})});el.setAttribute('aria-pressed',String(selected));el.style.backgroundColor=selected?'#fe951b':'transparent';el.style.border='3px solid '+(selected?'#fe951b':'#8d8d91');});const check=root.querySelector('[data-name="选择勾"]');if(check)check.style.visibility=vm.selected.has(items[0])?'visible':'hidden';replace('1',String(vm.selected.size));replace(label+'（1）',label+'（'+vm.selected.size+'）');};
@@ -147,7 +149,7 @@ export function createViews(getState,assets,homeScene){
  }
  function choose(url,vm){
   const s=getState(),p=url.pathname,q=url.searchParams,id=p.split('/')[2];
-  if(p==='/seasonal')return'seasonal';if(p==='/')return'home';if(p==='/community')return q.get('tab')==='info'?'circle-info':q.get('tab')==='near'?'circle-near':'circle';if(p==='/messages')return'messages';if(p==='/following'||p.startsWith('/neighbor/'))return'following';if(p==='/me')return q.get('tab')==='records'?recordScreen(recordSelection(s,vm,url).selected?.type):q.has('empty')?'profile':'plants';
+  if(p==='/seasonal')return'seasonal';if(p==='/')return'home';if(p==='/community')return q.get('tab')==='info'?'circle-info':q.get('tab')==='near'?'circle-near':'circle';if(p==='/messages')return'messages';if(p==='/following'||p.startsWith('/neighbor/'))return'following';if(p==='/me')return q.get('tab')==='records'?recordScreen(recordSelection(s,vm,url).selected?.type):q.has('empty')||s.cloud&&!myPlants(s).length?'profile':'plants';
   if(p==='/plant/new')return'plant-new';if(/^\/plant\/[^/]+\/success$/.test(p))return'plant-success';if(/^\/plant\/[^/]+\/record$/.test(p))return'editor';if(p.startsWith('/plant/'))return'plant-detail';if(p==='/publish')return vm.composer?.type==='seed'?'seed-editor':vm.composer?.type==='help'?'help-editor':'editor';
   if(p.startsWith('/success/'))return'success';if(p.startsWith('/post/')){const post=s.posts.find(p=>p.id===id);return post?.type==='seed'?'seed-post':post?.type==='help'?post.status==='resolved'?'help-resolved':'help-post':'post';}if(p==='/search')return q.get('q')&&!searchItems(s,q.get('q'),q.get('type')||'all').length?'search-empty':'search';
   if(p==='/favorites')return s.favorites.length?vm.manage?'favorites-manage':'favorites':'favorites-empty';if(p==='/drafts')return myDrafts(s).length?vm.manage?'drafts-manage':'drafts':'drafts-empty';if(p==='/activities')return'filter';if(p.startsWith('/activity/'))return activityState(s,id).mine?'activity-booked':activityState(s,id).full?'activity-full':'activity';
@@ -158,7 +160,7 @@ export function createViews(getState,assets,homeScene){
   if(url.pathname.startsWith('/games/')){const game=url.pathname.split('/')[2];const paths={corn:'corn/index.html',cotton:'cotton/index.html',chrysanthemum:'runtime/index.html?game=chrysanthemum',osmanthus:'runtime/index.html?game=osmanthus',luffa:'runtime/index.html?game=luffa',ginkgo:'runtime/index.html?game=ginkgo'};if(paths[game])return{html:'<iframe id="game-frame" title="植物小乐趣" src="games/'+paths[game]+'" style="width:100vw;height:100vh;border:0;display:block"></iframe>',className:'game-host',nav:'',desktop:''};}
   let name;try{name=choose(url,vm);}catch{name='network';}
   const target=url.pathname.split('/')[2],s=getState();
-  const missing=(url.pathname.startsWith('/post/')||url.pathname.startsWith('/success/'))&&!s.posts.some(p=>p.id===target)||url.pathname.startsWith('/activity/')&&!s.activities.some(a=>a.id===target)||url.pathname.startsWith('/plant/')&&target!=='new'&&target!=='reference-mint'&&!s.plants.some(p=>p.id===target)||url.pathname.startsWith('/chat/')&&!s.agreements.some(a=>a.id===target)&&!['neighbor-wang','neighbor-chen','neighbor-li'].includes(target)||url.pathname.startsWith('/article/')&&!s.articles.some(a=>a.id===target);if(missing)name='network';
+  const missing=(url.pathname.startsWith('/post/')||url.pathname.startsWith('/success/'))&&!s.posts.some(p=>p.id===target)||url.pathname.startsWith('/activity/')&&!s.activities.some(a=>a.id===target)||url.pathname.startsWith('/plant/')&&target!=='new'&&target!=='reference-mint'&&!s.plants.some(p=>p.id===target)||url.pathname.startsWith('/chat/')&&!s.agreements.some(a=>a.id===target)&&!s.conversations?.some(c=>c.id===target)&&!['neighbor-wang','neighbor-chen','neighbor-li'].includes(target)||url.pathname.startsWith('/article/')&&!s.articles.some(a=>a.id===target);if(missing)name='network';
   if(url.pathname==='/publish'&&!editorSourceExists(getState(),url))name='network';
   const root=canvas(name);
   if(name==='seasonal'&&!url.pathname.startsWith('/design/'))completeSeasonal(root,{state:getState(),url,assets});
@@ -174,6 +176,7 @@ export function createViews(getState,assets,homeScene){
    if(['records','record-help','record-seed'].includes(name))completeRecordCard(root,{state:getState(),vm,url,assets});
    if(name==='login')completeAuthControls(root);
    if(name==='reader')completeReaderExit(root);
+   completeCommunityData(root,{name,state:getState(),vm,url,assets});
   }
   return {html:root.outerHTML,className:'native-host',nav:'',desktop:''};
  }

@@ -28,6 +28,13 @@ export function buildPages(destination='dist'){
  for(const item of readdirSync(workspace,{withFileTypes:true}))if(item.isFile()&&(/\.(js|css|html|svg)$/.test(item.name)||['assets.json','design-source.json'].includes(item.name)))copy(item.name);
  function walk(folder){for(const item of readdirSync(resolve(workspace,folder),{withFileTypes:true})){const path=folder+'/'+item.name;if(item.isDirectory()){if(!item.name.startsWith('.')&&item.name!=='node_modules')walk(path);}else if(item.isFile()&&extensions.has(extname(item.name))&&!excludedNames.has(item.name))copy(path);}}
  for(const folder of folders)walk(folder);
+ // One release token covers the module graph, preventing an old cached dependency
+ // from mixing local-only handlers with the newly deployed shared service.
+ const modules=readdirSync(out).filter(f=>f.endsWith('.js')).concat(readdirSync(resolve(out,'native')).filter(f=>f.endsWith('.js')).map(f=>'native/'+f)).sort();
+ const release=createHash('sha256');for(const file of modules)release.update(file).update(readFileSync(resolve(out,file)));
+ const token=release.digest('hex').slice(0,16),imports={};
+ for(const file of modules){imports['./'+file]='./'+file+'?release='+token;const source=readFileSync(resolve(out,file),'utf8');for(const match of source.matchAll(/(?:from\s*|import\s*\()(['"])(\.\/[^'"]+\.js\?[^'"]+)\1/g))if(!file.includes('/'))imports[match[2]]=match[2].split('?')[0]+'?release='+token;}
+ const htmlPath=resolve(out,'index.html');let html=readFileSync(htmlPath,'utf8');html=html.replace('</head>','<script type="importmap">'+JSON.stringify({imports})+'</script></head>').replace(/src="app\.js[^\"]*"/,'src="app.js?release='+token+'"').replace(/href="([^"?]+\.css)"/g,'href="$1?release='+token+'"');writeFileSync(htmlPath,html);
  writeFileSync(resolve(out,'.nojekyll'),'');
  const appSha256=createHash('sha256').update(readFileSync(resolve(out,'app.js'))).digest('hex');
  writeFileSync(resolve(out,'build-info.json'),JSON.stringify({commit:process.env.GITHUB_SHA||'local',appSha256,builtAt:new Date().toISOString()},null,2)+'\n');

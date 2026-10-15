@@ -21,7 +21,7 @@ export function completeSeasonal(root,{state,url,assets}){
  route(leaf('桂花小游戏 · 制作成果'),'/games/osmanthus');
  const like=!!state.settings.seasonalLiked;
  for(const id of ['1004:1091','1004:1095']){const el=at(id);bind(el,{action:'seasonal-like'},like?'取消点赞':'点赞');el?.setAttribute('aria-pressed',String(like));}
- at('1004:1096').textContent=String(12+Number(like));
+ at('1004:1096').textContent=String(12+(state.cloud?state.settings.seasonalLikeCount||0:Number(like)));
  for(const id of ['1004:1099','1004:1103'])route(at(id),'/seasonal?panel=comments&comments=1','查看和写留言');
  at('1004:1104').textContent=String(3+(state.settings.seasonalReplies?.length||0));
  ['1004:1084','1004:1086','1004:1088','1004:1089'].forEach((id,i)=>route(at(id),'/seasonal?panel=work&photo='+i+'&comments=1','查看制作过程第'+(i+1)+'张照片'));

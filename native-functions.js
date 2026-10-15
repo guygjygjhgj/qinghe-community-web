@@ -1,3 +1,4 @@
+import {mediaSource} from './community-media.js';
 import {geometry} from './native-geometry.js';
 import {myPlants,searchItems,seedCounts} from './domain.js';
 import {completeRuntimeData} from './native-runtime-data.js';
@@ -41,14 +42,14 @@ export function completeNativeFunctions(root,{name,state,vm,url,assets}){
    if(bubbles.length||name==='chat-complete'){
     const pane=document.createElement('div');pane.dataset.scrollRegion='chat';pane.className='native-chat-scroll';pane.tabIndex=0;pane.setAttribute('aria-label','聊天历史，可上下滚动');Object.assign(pane.style,{position:'absolute',inset:'0 auto auto 0',width:'750px',height:'630px',overflowY:'auto',overflowX:'hidden',overscrollBehavior:'contain'});
     const stream=document.createElement('div');stream.className='chat-history';Object.assign(stream.style,{position:'relative',width:'750px',height:'630px'});pane.append(stream);
-    const original=name==='chat'?[...group.children].slice(0,9):[...group.children].filter(e=>['3:4677','3:4678','3:4679','3:4680','3:4681','3:4682','3:4683','3:4684','3:4685'].includes(e.dataset.nodeId));for(const el of original)stream.append(el);group.prepend(pane);
+    const original=name==='chat'?[...group.children].slice(0,9):[...group.children].filter(e=>['3:4677','3:4678','3:4679','3:4680','3:4681','3:4682','3:4683','3:4684','3:4685'].includes(e.dataset.nodeId));for(const el of original){if(state.cloud)el.remove();else stream.append(el);}group.prepend(pane);
     const messages=state.chats.filter(m=>m.conversation===url.pathname.split('/')[2]);
     for(let i=0;i<messages.length;i++){
      const message=messages[i],out=message.author===state.userId,template=out?own:incoming;
-     const row=document.createElement('div');row.className='chat-message';row.dataset.messageId=message.id;Object.assign(row.style,{position:'absolute',left:'0',top:(630+i*220)+'px',width:'750px',height:'220px'});
-     for(const base of template.filter(Boolean).slice(0,3)){const clone=base.cloneNode(true),isBubble=base.querySelector('p');cleanIds(clone);clone.style.translate='none';clone.style.top=isBubble?'40px':clone.querySelector('img')?'20px':'0';if(clone.tagName==='P')clone.textContent=state.users[message.author]?.name||'邻居';if(isBubble){const ps=[...clone.querySelectorAll('p')];ps.forEach((p,j)=>{p.textContent=j===0?message.text:'';Object.assign(p.style,{whiteSpace:'pre-wrap',overflowY:'auto',height:j===0?'92px':'0',maxHeight:'92px',width:'calc(100% - 48px)'});});bind(clone,{action:'copy-bubble',text:message.text});}row.append(clone);}stream.append(row);
+     const row=document.createElement('div');row.className='chat-message';row.dataset.messageId=message.id;Object.assign(row.style,{position:'absolute',left:'0',top:((state.cloud?0:630)+i*220)+'px',width:'750px',height:'220px'});
+     for(const base of template.filter(Boolean).slice(0,3)){const clone=base.cloneNode(true),isBubble=base.querySelector('p');cleanIds(clone);clone.style.translate='none';clone.style.top=isBubble?'40px':clone.querySelector('img')?'20px':'0';if(state.cloud&&clone.querySelector('img')){const photo=state.users[message.author]?.avatar,[screen,key]=(photo||'').split(':'),src=/^https:\/\//.test(photo||'')?mediaSource(photo):assets[screen]?.[key]?.file;if(src)clone.querySelector('img').src=src;}if(clone.tagName==='P')clone.textContent=state.users[message.author]?.name||'邻居';if(isBubble){const ps=[...clone.querySelectorAll('p')];ps.forEach((p,j)=>{p.textContent=j===0?message.text:'';Object.assign(p.style,{whiteSpace:'pre-wrap',overflowY:'auto',height:j===0?'92px':'0',maxHeight:'92px',width:'calc(100% - 48px)'});});bind(clone,{action:'copy-bubble',text:message.text});}row.append(clone);}stream.append(row);
     }
-    stream.style.height=(630+messages.length*220)+'px';
+    stream.style.height=(state.cloud?Math.max(630,messages.length*220):630+messages.length*220)+'px';
    }
   }
  }

@@ -1,11 +1,12 @@
+import {mediaSource} from './community-media.js';
 import {myPlants,myDrafts,unread,seedCounts,activityState,searchItems} from './domain.js';
 export const esc=value=>String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 export const today=()=>{const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');};
 export const typeName={share:'分享',help:'求助',seed:'种苗赠送'};
 export function createViews(getState,assets,homeScene){
  const art=(screen,key,cls='',extra='')=>{const a=assets[screen]?.[key];if(!a?.file)return '';const css=Object.entries(a.imageStyle||{}).map(([k,v])=>k+':'+v).join(';');return `<span class="art ${a.contain?'contain':''} ${cls}" style="--ar:${a.width}/${a.height};${extra}" aria-hidden="true"><img alt="" loading="lazy" src="${esc(a.file)}" style="${esc(css)}"></span>`;};
- const pict=(key,cls='')=>{if(key?.startsWith('data:image/'))return `<span class="photo ${cls}"><img alt="植物照片" src="${esc(key)}"></span>`;const [screen,...parts]=String(key||'').split(':');return `<span class="photo ${cls}">${art(screen,parts.join(':'))}</span>`;};
- const avatar=(userId)=>{const u=getState().users[userId];if(u?.avatar?.startsWith('data:image/'))return `<span class="avatar"><img src="${esc(u.avatar)}" alt="${esc(u.name)}的头像"></span>`;const [s,k]=String(u?.avatar||'profile:img5').split(':');return `<span class="avatar">${art(s,k)}</span>`;};
+ const pict=(key,cls='')=>{if(/^(data:image\/|https:\/\/)/.test(key||''))return `<span class="photo ${cls}"><img alt="植物照片" src="${esc(mediaSource(key))}"></span>`;const [screen,...parts]=String(key||'').split(':');return `<span class="photo ${cls}">${art(screen,parts.join(':'))}</span>`;};
+ const avatar=(userId)=>{const u=getState().users[userId];if(/^(data:image\/|https:\/\/)/.test(u?.avatar||''))return `<span class="avatar"><img src="${esc(mediaSource(u.avatar))}" alt="${esc(u.name)}的头像"></span>`;const [s,k]=String(u?.avatar||'profile:img5').split(':');return `<span class="avatar">${art(s,k)}</span>`;};
  const button=(text,action,cls='btn btn-primary',attrs='')=>`<button type="button" class="${cls}" data-action="${action}" ${attrs}>${text}</button>`;
  const link=(text,to,cls='')=>`<a href="#${esc(to)}" data-route="${esc(to)}" class="${cls}">${text}</a>`;
  const back=()=>`<button type="button" class="back" data-action="back">返回</button>`;

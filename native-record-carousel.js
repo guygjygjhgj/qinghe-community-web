@@ -1,3 +1,4 @@
+import {mediaSource} from './community-media.js';
 import {seedCounts} from './domain.js';
 import {bindNativeCardCarousel} from './native-plant-carousel.js';
 
@@ -17,7 +18,7 @@ export function nativeRecordCards(state,kind='all'){
   if(agreement.status==='cancelled'||![agreement.sender,agreement.receiver].includes(state.userId))continue;
   const post=state.posts.find(p=>p.id===agreement.postId);if(post?.type==='seed')cards.push({key:'agreement:'+agreement.id,type:'seed',post,agreement});
  }
- if(cards.length)return cards;
+ if(cards.length||state.cloud)return cards;
  // Keep the original source example in an empty category. It never grants edit
  // permission or invents a seed agreement for someone else's post.
  const type=kind==='all'?'share':kind,id={share:'scallion',help:'pothos',seed:'lettuce'}[type],post=state.posts.find(p=>p.id===id);
@@ -40,7 +41,7 @@ export function completeRecordCard(root,{state,vm,url,assets}){
  const put=(e,value)=>{if(e&&e.textContent!==String(value??'')){e.textContent=value??'';e.style.whiteSpace='pre-wrap';e.style.overflowY='auto';}};
  const bind=(e,props,role,label)=>{if(!e)return;Object.assign(e.dataset,props);e.dataset.recordRole=role;e.role='button';e.tabIndex=0;e.classList.add('native-control');if(label)e.setAttribute('aria-label',label);};
  const button=(id,label,props,role)=>{const el=at(id);bind(el,props,role,label);const p=[...card.querySelectorAll('p')].find(e=>e.textContent===label);if(p)bind(p,props,role,label);};
- const image=(el,photo)=>{if(!el||!photo)return;const [screen,key]=photo.split(':'),src=photo.startsWith('data:image/')?photo:assets[screen]?.[key]?.file,img=el.querySelector('img');if(src&&img)img.src=src;};
+ const image=(el,photo)=>{if(!el||!photo)return;const [screen,key]=photo.split(':'),src=/^(data:image\/|https:\/\/)/.test(photo)?mediaSource(photo):assets[screen]?.[key]?.file,img=el.querySelector('img');if(src&&img)img.src=src;};
  const title=(el,value,width)=>{if(!el)return;for(const img of el.querySelectorAll('img'))img.style.visibility='hidden';const span=document.createElement('span');span.className='native-record-runtime-title';span.textContent=value;span.style.fontSize=Math.min(48,width/Math.max(1,value.length))+'px';el.append(span);};
  const own=post.author===state.userId,edit=own?'/publish?post='+post.id:'/publish?type='+type,view='/post/'+post.id;
  const initial=!post.postId&&post.date!=='刚刚发布';

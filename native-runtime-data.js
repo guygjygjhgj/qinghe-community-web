@@ -1,3 +1,4 @@
+import {mediaSource} from './community-media.js';
 import {myPlants,myDrafts,searchItems,seedCounts,unread} from './domain.js';
 import {nativePlantCards} from './native-plant-carousel.js';
 
@@ -48,7 +49,7 @@ export function completeRuntimeData(root,{name,state,vm,url,assets}){
   if(!selected.reference){
    put(at('11:1994'),selected.location||'阳台');
    if(selected.name!=='薄荷盆栽')for(const heading of named(/^plant-heading／/)){const img=heading.querySelector('img');if(img)img.style.visibility='hidden';const title=document.createElement('span');title.className='native-plant-runtime-title';title.textContent=selected.name;title.style.fontSize='48px';heading.append(title);}
-   const photo=selected.photo;if(photo){const [screen,key]=photo.split(':'),src=photo.startsWith('data:image/')?photo:assets[screen]?.[key]?.file;const img=named(/^plant-photo／/)[0]?.querySelector('img');if(src&&img){img.src=src;Object.assign(img.style,{inset:'0',width:'100%',height:'100%',objectFit:'cover'});}}
+   const photo=selected.photo;if(photo){const [screen,key]=photo.split(':'),src=/^(data:image\/|https:\/\/)/.test(photo)?mediaSource(photo):assets[screen]?.[key]?.file;const img=named(/^plant-photo／/)[0]?.querySelector('img');if(src&&img){img.src=src;Object.assign(img.style,{inset:'0',width:'100%',height:'100%',objectFit:'cover'});}}
   }
   const monthSelect=picker(at('11:1983'),Array.from({length:12},(_,i)=>['2026-'+String(i+1).padStart(2,'0'),(i+1)+'月']),{monthPicker:'true'},'选择记录月份');if(monthSelect&&vm.calendarMonth)for(const option of monthSelect.options)if(option.value===vm.calendarMonth)option.setAttribute('selected','');
  }
@@ -83,7 +84,7 @@ export function completeRuntimeData(root,{name,state,vm,url,assets}){
   if(name==='editor'){
    const photos=named(/^photo-scallions／|^photo-harvest／/);
    const offset=vm.sharePhotoOffset||0;
-   if(publishForm?.dataset.form==='publish'){photos.forEach((e,i)=>{const photo=vm.composer?.photos?.[offset+i],img=e.querySelector('img');if(!photo)e.style.visibility='hidden';else if(img){const [screen,key]=photo.split(':');const src=photo.startsWith('data:image/')?photo:assets[screen]?.[key]?.file;if(src)img.src=src;}bind(e,{action:'upload-native',target:'post',index:String(offset+i)});});
+   if(publishForm?.dataset.form==='publish'){photos.forEach((e,i)=>{const photo=vm.composer?.photos?.[offset+i],img=e.querySelector('img');if(!photo)e.style.visibility='hidden';else if(img){const [screen,key]=photo.split(':');const src=/^(data:image\/|https:\/\/)/.test(photo)?mediaSource(photo):assets[screen]?.[key]?.file;if(src)img.src=src;}bind(e,{action:'upload-native',target:'post',index:String(offset+i)});});
     const counter=at('3:6419');if(counter&&vm.composer?.photos?.length!==2)put(counter,(vm.composer?.photos?.length||0)+' / 9');if(counter&&vm.composer?.photos?.length>2)picker(counter,vm.composer.photos.map((p,i)=>[String(i),'第'+(i+1)+'张照片']),{photoPicker:'true'},'翻看分享图片');
    }
    const removers=named(/^photo-remove1／/);removers.slice(0,2).forEach((e,i)=>bind(e,{action:'remove-photo',target:'post',index:String(offset+i)}));
@@ -101,7 +102,7 @@ export function completeRuntimeData(root,{name,state,vm,url,assets}){
   if(entry?.tagName==='INPUT'){
    const area=document.createElement('textarea');for(const attribute of entry.attributes)area.setAttribute(attribute.name,attribute.value);area.removeAttribute('type');area.value=entry.value;area.textContent=area.value;entry.replaceWith(area);commentForm.dataset.enterSubmit='true';
   }
-  if(name==='post'&&post.photos?.length){const offset=vm.postPhotoOffsets?.[id]||0,slots=named(/^照片／小葱正文|^照片／手拿小葱/);slots.forEach((e,i)=>{const photo=post.photos[(offset+i)%post.photos.length],img=e.querySelector('img');if(img&&(offset||id!=='scallion'||photo.startsWith('data:image/'))){const [screen,key]=photo.split(':');const src=photo.startsWith('data:image/')?photo:assets[screen]?.[key]?.file;if(src)img.src=src;}bind(e,{action:'photo-next',id});e.setAttribute('aria-label','切换分享照片，第'+((offset+i)%post.photos.length+1)+'张，共'+post.photos.length+'张');});}
+  if(name==='post'&&post.photos?.length){const offset=vm.postPhotoOffsets?.[id]||0,slots=named(/^照片／小葱正文|^照片／手拿小葱/);slots.forEach((e,i)=>{const photo=post.photos[(offset+i)%post.photos.length],img=e.querySelector('img');if(img&&(offset||id!=='scallion'||photo.startsWith('data:image/'))){const [screen,key]=photo.split(':');const src=/^(data:image\/|https:\/\/)/.test(photo)?mediaSource(photo):assets[screen]?.[key]?.file;if(src)img.src=src;}bind(e,{action:'photo-next',id});e.setAttribute('aria-label','切换分享照片，第'+((offset+i)%post.photos.length+1)+'张，共'+post.photos.length+'张');});}
   if(!root.querySelector('form[data-form=comment]')&&['help-post','seed-post','help-resolved'].includes(name)){
    const f=form('comment');field(name==='seed-post'?at('3:4612'):name==='help-resolved'?at('I3:5326;3:5362'):at('11:1203'),'text','留言内容');f.dataset.enterSubmit='true';text('发送',{action:'submit-native',form:'comment'});
   }

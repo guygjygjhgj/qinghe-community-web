@@ -60,6 +60,7 @@ export function bindNativeCardCarousel({root,count,index=0,onSelect,entry=0,moti
   try{if(root.hasPointerCapture?.(id))root.releasePointerCapture(id);}catch{}
   if(!horizontal)return;
   guard.until=Date.now()+500;
+  doc.documentElement.dataset.swipeUntil=String(guard.until);
   if(!cancel&&count>1&&Math.abs(offset)>=90)step(offset<0?1:-1);
   else{locked=true;tween(offset,0,()=>{locked=false;});}
  };

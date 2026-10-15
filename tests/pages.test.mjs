@@ -27,6 +27,10 @@ test('Pages output preserves source art and excludes local files and dependencie
  assert.ok(css.includes('url(../../figma/fonts/'));assert.ok(!css.includes('url(/figma/'));
  for(const file of ['ginkgo/game.mjs','ginkgo/scene.mjs','luffa-r7/material-v9.mjs'])assert.ok(!/(["'`])\/(figma|fonts|osmanthus|luffa-r7|luffa|chrysanthemum|ginkgo)\//.test(readFileSync(new URL(file,output),'utf8')),file);
  assert.equal(JSON.parse(readFileSync(new URL('build-info.json',output))).appSha256,report.appSha256);
+ const html=readFileSync(new URL('index.html',output),'utf8'),map=JSON.parse(/<script type="importmap">(.+?)<\/script>/.exec(html)[1]);
+ assert.match(map.imports['./community-client.js'],/^\.\/community-client\.js\?release=[a-f0-9]{16}$/);
+ assert.equal(map.imports['./cognitive-onboarding.js?v=assessment-link-1'],map.imports['./cognitive-onboarding.js']);
+ assert.match(html,/src="app\.js\?release=[a-f0-9]{16}"/);
 });
 
 test('build output cannot overwrite source or arbitrary folders',()=>{
