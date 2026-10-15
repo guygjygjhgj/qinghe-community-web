@@ -14,3 +14,8 @@ body.fixed-presentation{height:100dvh;overflow:hidden}.fixed-presentation #main{
 @font-face{font-family:"Roboto";src:url("assets/fonts/Roboto.woff2");font-weight:700;font-display:block}
 
 @font-face{font-family:"Nunito Sans";src:url("assets/fonts/NunitoSans.woff2");font-weight:400;font-display:block}
+
+/* Clean demonstrations show only the original application screen. */
+.screen-only-presentation .app-shell{padding:8px;min-height:100dvh;display:flex;align-items:center;justify-content:center}
+.screen-only-presentation.fixed-presentation .native-overlay-host,.screen-only-presentation.fixed-presentation .modal-backdrop{top:max(8px,calc((100dvh - var(--demo-height))/2))}
+.screen-only-presentation.fixed-presentation #toast{bottom:max(12px,calc((100dvh - var(--demo-height))/2 + 12px))}

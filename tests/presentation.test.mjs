@@ -11,8 +11,8 @@ test('desktop fitting keeps the whole source artboard within narrow and wide win
  assert.equal(fitArtboard(0,1659,319,668),1);
 });
 
-test('demo zoom preserves edited input and fits both the publishing page and exit dialog',async()=>{
- const e=await setup('/publish');try{
+test('opt-in demo zoom preserves edited input and fits both the publishing page and exit dialog',async()=>{
+ const e=await setup('/publish',undefined,{presentationTools:true});try{
   e.w.matchMedia=()=>({matches:true});e.w.dispatchEvent(new e.w.Event('resize'));
   const root=document.querySelector('#main .native-canvas'),width=root.style.width,height=root.style.height;
   assert.ok(parseFloat(root.style.zoom)<1);assert.equal(document.querySelector('.presentation-toolbar').hidden,false);
@@ -28,6 +28,15 @@ test('touch devices retain the original mobile view and no demo toolbar',async()
  const e=await setup('/');try{
   e.w.matchMedia=()=>({matches:false});e.w.dispatchEvent(new e.w.Event('resize'));
   assert.equal(document.querySelector('.presentation-toolbar').hidden,true);assert.equal(document.querySelector('.native-canvas').style.zoom,'');assert.equal(document.body.classList.contains('desktop-presentation'),false);
+ }finally{e.cleanup();}
+});
+
+test('normal demonstrations show only a fixed app screen even with a saved original-size preference',async()=>{
+ const e=await setup('/publish',undefined,{session:{'qinghe-presentation':'actual'}});try{
+  e.w.matchMedia=()=>({matches:true});e.w.dispatchEvent(new e.w.Event('resize'));
+  assert.equal(document.querySelector('.presentation-toolbar').hidden,true);assert.ok(document.body.classList.contains('screen-only-presentation'));assert.ok(document.body.classList.contains('fixed-presentation'));
+  const root=document.querySelector('.native-canvas');assert.equal(parseFloat(root.style.zoom),390/parseFloat(root.style.width));assert.equal(document.body.style.getPropertyValue('--demo-height'),Math.min(780,e.w.innerHeight-16)+'px');
+  e.fill('publish','body','只显示应用屏幕时也能正常输入和关闭预览');await e.click('#main [data-action=preview]');assert.ok(document.querySelector('#modal-root .native-canvas').style.zoom);await e.click('#modal-root [data-action=close]');assert.equal(document.querySelector('[name=body]').value,'只显示应用屏幕时也能正常输入和关闭预览');
  }finally{e.cleanup();}
 });
 
@@ -64,7 +73,7 @@ test('new routes receive their scale before fonts settle and slow image decoding
 });
 
 test('demo zoom controls preserve content position and entered text without rebuilding the page',async()=>{
- const e=await setup('/publish');try{
+ const e=await setup('/publish',undefined,{presentationTools:true});try{
   e.w.matchMedia=()=>({matches:true});e.w.dispatchEvent(new e.w.Event('resize'));
   const root=document.querySelector('.native-canvas'),main=document.querySelector('#main');
   e.fill('publish','body','放大缩小时保留内容');main.scrollTop=120;

@@ -4,3 +4,8 @@ body.cognitive-onboarding-active{overflow:hidden!important}
 .cognitive-loading{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;background:#fff8da;color:#4b210f;font:18px/1.6 'Noto Sans SC',sans-serif;padding:24px;text-align:center}
 .cognitive-loading button{border:1px solid #e9b74e;border-radius:28px;padding:12px 22px;background:#ffd738;color:#4b210f;font:inherit;cursor:pointer}
 .cognitive-loading button:focus-visible{outline:3px solid #a85000;outline-offset:3px}
+
+.cognitive-onboarding-host{display:flex;align-items:center;justify-content:center;padding:8px;background:#e8e8e6}
+.cognitive-onboarding-host iframe{width:min(390px,100%);height:min(780px,100%)}
+.cognitive-loading{inset:8px;width:min(390px,calc(100% - 16px));height:min(780px,calc(100% - 16px));margin:auto}
+@media(max-width:599px){.cognitive-onboarding-host{padding:0}.cognitive-onboarding-host iframe{width:100%;height:100%}.cognitive-loading{inset:0;width:100%;height:100%}}

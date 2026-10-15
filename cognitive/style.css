@@ -21,3 +21,9 @@ body.large-text .feature b{font-size:18px}body.large-text .feature small{font-si
 @media(max-width:360px){.header-divider,.mini-brand small{display:none}.welcome-hero h2{font-size:22px}.welcome-hero-copy{padding-left:15px}.welcome-hero>.qinghe-mascot{width:128px;height:141px;right:-15px}.welcome-hero p{font-size:10px}.report-head h2{font-size:23px}.report-mascot{width:102px;right:-11px}}
 @media print{body{background:white}.report-head{background:#fff8dd}.report-mascot{width:95px;height:105px}.device{box-shadow:none;border:0}.app-footer{display:none}}
 .stats small span{color:#aa8d61;font-size:10px}.welcome-hero>.qinghe-mascot{right:0;width:143px}.feature small{color:#937e65}.task-description,.instruction-card{color:#80674c}.result-card p{color:#8c7559}
+
+/* Keep explanatory and presentation controls outside the participant's view. */
+body.screen-only{background:#e8e8e6}
+.screen-only .project-intro,.screen-only .tour-panel,.screen-only .mobile-tour{display:none!important}
+.screen-only .workspace{display:block;max-width:430px;margin:0 auto;padding:0;gap:0}
+.screen-only .device{border:0;border-radius:0;box-shadow:none;min-height:100dvh}

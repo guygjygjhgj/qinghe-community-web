@@ -1,6 +1,7 @@
 'use strict';
 // Only the onboarding disposition crosses the frame boundary, never task answers.
 const cognitiveSession=new URLSearchParams(location.search).get('session');
+if(new URLSearchParams(location.search).get('demoTools')==='1')document.body.classList.remove('screen-only');
 const cognitiveEmbedded=window.parent!==window&&!!cognitiveSession;
 function stopCognitiveMedia(){
  stopTick();state.paused=true;
