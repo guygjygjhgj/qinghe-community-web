@@ -8,6 +8,7 @@ import {preserveDesign} from './strict-bindings.js';
 import {completeNativeFunctions} from './native-functions.js';
 import {completeAuthControls} from './demo-auth.js';
 import {prepareNativePlantCarousel} from './native-plant-carousel.js';
+import {recordSelection,recordScreen,completeRecordCard} from './native-record-carousel.js';
 export {esc,today,typeName};
 const norm=s=>s.replace(/\s+/g,'').replace(/›/g,'');
 function completeReaderExit(root){
@@ -146,11 +147,11 @@ export function createViews(getState,assets,homeScene){
  }
  function choose(url,vm){
   const s=getState(),p=url.pathname,q=url.searchParams,id=p.split('/')[2];
-  if(p==='/seasonal')return'seasonal';if(p==='/')return'home';if(p==='/community')return q.get('tab')==='info'?'circle-info':q.get('tab')==='near'?'circle-near':'circle';if(p==='/messages')return'messages';if(p==='/following'||p.startsWith('/neighbor/'))return'following';if(p==='/me')return q.get('tab')==='records'?q.get('kind')==='help'?'record-help':q.get('kind')==='seed'?'record-seed':'records':q.has('empty')?'profile':'plants';
+  if(p==='/seasonal')return'seasonal';if(p==='/')return'home';if(p==='/community')return q.get('tab')==='info'?'circle-info':q.get('tab')==='near'?'circle-near':'circle';if(p==='/messages')return'messages';if(p==='/following'||p.startsWith('/neighbor/'))return'following';if(p==='/me')return q.get('tab')==='records'?recordScreen(recordSelection(s,vm,url).selected?.type):q.has('empty')?'profile':'plants';
   if(p==='/plant/new')return'plant-new';if(/^\/plant\/[^/]+\/success$/.test(p))return'plant-success';if(/^\/plant\/[^/]+\/record$/.test(p))return'editor';if(p.startsWith('/plant/'))return'plant-detail';if(p==='/publish')return vm.composer?.type==='seed'?'seed-editor':vm.composer?.type==='help'?'help-editor':'editor';
   if(p.startsWith('/success/'))return'success';if(p.startsWith('/post/')){const post=s.posts.find(p=>p.id===id);return post?.type==='seed'?'seed-post':post?.type==='help'?post.status==='resolved'?'help-resolved':'help-post':'post';}if(p==='/search')return q.get('q')&&!searchItems(s,q.get('q'),q.get('type')||'all').length?'search-empty':'search';
   if(p==='/favorites')return s.favorites.length?vm.manage?'favorites-manage':'favorites':'favorites-empty';if(p==='/drafts')return myDrafts(s).length?vm.manage?'drafts-manage':'drafts':'drafts-empty';if(p==='/activities')return'filter';if(p.startsWith('/activity/'))return activityState(s,id).mine?'activity-booked':activityState(s,id).full?'activity-full':'activity';
-  if(p.startsWith('/chat/'))return s.agreements.find(a=>a.id===id)?.status==='completed'?'chat-complete':'chat';if(p.startsWith('/article/'))return'article';if(p==='/login')return q.get('method')==='quick'?'one-click-login':'login';if(p==='/profile/edit')return'profile-edit';if(p==='/help')return'help';if(p==='/feedback')return'feedback';if(p==='/settings/notifications')return'notifications';if(p==='/settings/font')return'font';if(p==='/settings/speech')return'reader';if(p==='/plant-records')return'records';if(p==='/settings')return'profile';if(p.startsWith('/design/'))return p.slice(8);return'network';
+  if(p.startsWith('/chat/'))return s.agreements.find(a=>a.id===id)?.status==='completed'?'chat-complete':'chat';if(p.startsWith('/article/'))return'article';if(p==='/login')return q.get('method')==='quick'?'one-click-login':'login';if(p==='/profile/edit')return'profile-edit';if(p==='/help')return'help';if(p==='/feedback')return'feedback';if(p==='/settings/notifications')return'notifications';if(p==='/settings/font')return'font';if(p==='/settings/speech')return'reader';if(p==='/plant-records')return recordScreen(recordSelection(s,vm,url).selected?.type);if(p==='/settings')return'profile';if(p.startsWith('/design/'))return p.slice(8);return'network';
  }
  function render(route,vm){
   const url=new URL(route,'https://qinghe.local');if(url.pathname==='/register')url.pathname='/login';
@@ -170,6 +171,7 @@ export function createViews(getState,assets,homeScene){
    }
    completeNativeFunctions(root,{name,state:getState(),vm,assets,url});
    if(name==='plants')prepareNativePlantCarousel(root);
+   if(['records','record-help','record-seed'].includes(name))completeRecordCard(root,{state:getState(),vm,url,assets});
    if(name==='login')completeAuthControls(root);
    if(name==='reader')completeReaderExit(root);
   }

@@ -192,10 +192,7 @@ export function completeRuntimeData(root,{name,state,vm,url,assets}){
   if(name==='drafts-manage')for(let i=0;i<2;i++){const draft=drafts[i];if(draft&&!['draft-help','draft-seed'].includes(draft.id)){put(at(i?'39:1956':'39:1946'),draft.title||draft.body?.slice(0,20));put(at(i?'39:1957':'39:1947'),draft.body);}}
   if(drafts.length>2){const heading=leaves().find(e=>/发布草稿|管理草稿/.test(e.textContent));picker(heading,drafts.map(d=>['/publish?draft='+d.id,d.title||d.seedName||d.body?.slice(0,20)||'未命名草稿']),{routePicker:'true'},'全部发布草稿');}}
  if(name==='records'||name==='record-help'||name==='record-seed'){
-  const posts=state.posts.filter(p=>p.author===state.userId&&(!url.searchParams.has('kind')||p.type===url.searchParams.get('kind')));
-  if(posts.some(p=>!['scallion','pothos','tomato'].includes(p.id)))picker(leaves().find(e=>e.textContent==='我的记录'),posts.map(p=>['/post/'+p.id,p.title]),{routePicker:'true'},'全部我的帖子');
   for(const e of named(/^服务图标／/)){const routes={'我的收藏':'/favorites','发布草稿':'/drafts','字号设置':'/settings/font','语音朗读':'/settings/speech','消息提醒':'/settings/notifications','隐私设置':'/help?topic=privacy','意见反馈':'/feedback','使用帮助':'/help'};bind(e,{route:routes[e.dataset.name.split('／')[1]]||'/me'});}
-  bind(at('11:1318'),{route:'/publish?post=scallion'});bind(at('11:1320'),{route:'/post/scallion'});bind(at('11:1324'),{action:'like',id:'scallion'});bind(at('11:1325'),{route:'/post/scallion?comments=1'});
  }
  if(name==='favorites'){
   const entries=state.favorites.map(key=>{const [kind,id]=key.split(':');const data=state[kind==='post'?'posts':kind==='activity'?'activities':'articles'].find(x=>x.id===id);return data?{key,data,route:'/'+kind+'/'+id}:null;}).filter(Boolean);

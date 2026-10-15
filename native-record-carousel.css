@@ -1,0 +1,2 @@
+.native-record-runtime-title{position:absolute;inset:0;display:flex;align-items:center;overflow:hidden;white-space:nowrap;color:#ff6200;font-family:'Noto Sans SC',sans-serif;font-style:italic;font-weight:900;line-height:1.1}
+.native-record-motion>[data-record-card]{touch-action:pan-y pinch-zoom;cursor:grab}
