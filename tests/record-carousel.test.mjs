@@ -11,14 +11,17 @@ const key=()=>card().dataset.recordCard;
 function pointer(e,type,target,x,y){const event=new e.w.Event(type,{bubbles:true,cancelable:true});Object.assign(event,{pointerId:1,button:0,isPrimary:true,clientX:x,clientY:y});target.dispatchEvent(event);return event;}
 function swipe(e,dx,dy=0,cancel=false){const target=card().querySelector('[data-record-role=photo]');pointer(e,'pointerdown',target,350,900);const move=pointer(e,'pointermove',target,350+dx,900+dy);pointer(e,cancel?'pointercancel':'pointerup',root(),350+dx,900+dy);return move;}
 const arrow=direction=>card().dispatchEvent(new window.KeyboardEvent('keydown',{key:direction,bubbles:true,cancelable:true}));
-test('empty kind means all records; only own posts and actual seed participation enter the carousel',()=>{
- const s=state();assert.deepEqual(nativeRecordCards(s,''),nativeRecordCards(s));assert.deepEqual(nativeRecordCards(s).map(c=>c.key),['post:scallion','post:pothos','post:tomato']);
+test('all records rotate share, help and seed designs, then retain additional records',()=>{
+ const s=state();assert.deepEqual(nativeRecordCards(s,''),nativeRecordCards(s));assert.deepEqual(nativeRecordCards(s).map(c=>c.key),['post:scallion','post:pothos','reference:seed','post:tomato']);
+ assert.deepEqual(nativeRecordCards(s).slice(0,3).map(c=>c.type),['share','help','seed']);assert.equal(nativeRecordCards(s)[2].reference,true);assert.equal(s.agreements.length,0);
  s.agreements.push({id:'mine',postId:'lettuce',sender:'chen',receiver:'li',status:'reserved'},{id:'cancelled',postId:'lettuce',sender:'chen',receiver:'li',status:'cancelled'},{id:'other',postId:'lettuce',sender:'chen',receiver:'wang',status:'reserved'});
- assert.deepEqual(nativeRecordCards(s,'seed').map(c=>c.key),['agreement:mine']);assert.ok(!nativeRecordCards(s).some(c=>c.key==='post:lettuce'));
+ assert.deepEqual(nativeRecordCards(s,'seed').map(c=>c.key),['agreement:mine']);assert.deepEqual(nativeRecordCards(s).map(c=>c.key),['post:scallion','post:pothos','agreement:mine','post:tomato']);assert.ok(!nativeRecordCards(s).some(c=>c.key==='post:lettuce'));
 });
 test('record cards swipe across original share/help canvases, wrap and persist their selection',async()=>{
  const e=await setup('/me?tab=records&kind=',state());try{
   assert.equal(key(),'post:scallion');swipe(e,-140);await waitFor(()=>key()==='post:pothos');assert.equal(root().dataset.screen,'record-help');assert.equal(card().querySelector('[data-record-role=edit]').dataset.route,'/publish?post=pothos');
+  swipe(e,-140);await waitFor(()=>key()==='reference:seed');assert.equal(root().dataset.screen,'record-seed');assert.equal(card().querySelector('[data-record-role=view]').dataset.route,'/post/lettuce');assert.equal(e.stored().agreements.length,0);
+  swipe(e,140);await waitFor(()=>key()==='post:pothos');swipe(e,-140);await waitFor(()=>key()==='reference:seed');
   swipe(e,-140);await waitFor(()=>key()==='post:tomato');assert.equal(root().dataset.screen,'records');assert.equal(card().querySelector('.native-record-runtime-title').textContent,'我家的番茄红了');
   swipe(e,-140);await waitFor(()=>key()==='post:scallion');swipe(e,140);await waitFor(()=>key()==='post:tomato');assert.equal(e.routeNow(),'/me?tab=records&kind=');
   assert.equal(JSON.parse(e.w.sessionStorage.getItem('qinghe-form-recovery')).recordCarouselKeys.all,'post:tomato');
@@ -35,7 +38,7 @@ test('vertical scrolling, short drags and pointer cancellation retain the curren
 });
 test('keyboard focus survives record type changes; filters remember independent selections',async()=>{
  const e=await setup('/me?tab=records',state());try{
-  card().focus();arrow('ArrowRight');await waitFor(()=>key()==='post:pothos');assert.equal(document.activeElement.dataset.recordRole,'card');arrow('ArrowRight');await waitFor(()=>key()==='post:tomato');
+  card().focus();arrow('ArrowRight');await waitFor(()=>key()==='post:pothos');assert.equal(document.activeElement.dataset.recordRole,'card');arrow('ArrowRight');await waitFor(()=>key()==='reference:seed');assert.equal(document.activeElement.dataset.recordRole,'card');arrow('ArrowRight');await waitFor(()=>key()==='post:tomato');
   let select=document.querySelector('[data-record-select]');select.value='share';select.dispatchEvent(new e.w.Event('change',{bubbles:true}));await waitFor(()=>e.routeNow()==='/me?tab=records&kind=share'&&key()==='post:scallion');arrow('ArrowLeft');await waitFor(()=>key()==='post:tomato');
   select=document.querySelector('[data-record-select]');select.value='';select.dispatchEvent(new e.w.Event('change',{bubbles:true}));await waitFor(()=>e.routeNow()==='/me?tab=records&kind='&&key()==='post:tomato');
  }finally{e.cleanup();}

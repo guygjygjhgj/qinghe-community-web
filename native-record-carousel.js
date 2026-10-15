@@ -5,6 +5,13 @@ export const recordScreen=type=>type==='help'?'record-help':type==='seed'?'recor
 export const recordKind=url=>['share','help','seed'].includes(url.searchParams.get('kind'))?url.searchParams.get('kind'):'all';
 export function nativeRecordCards(state,kind='all'){
  if(!['share','help','seed'].includes(kind))kind='all';
+ if(kind==='all'){
+  // Show each original card type before continuing with additional records.
+  // Empty types keep their read-only design example, just like their filter.
+  const groups=['share','help','seed'].map(type=>nativeRecordCards(state,type)),cards=[];
+  for(let i=0;i<Math.max(...groups.map(group=>group.length));i++)for(const group of groups)if(group[i])cards.push(group[i]);
+  return cards;
+ }
  const cards=state.posts.filter(p=>p.author===state.userId&&(kind==='all'||p.type===kind)).map(post=>({key:'post:'+post.id,type:post.type,post}));
  if(kind==='all'||kind==='seed')for(const agreement of state.agreements){
   if(agreement.status==='cancelled'||![agreement.sender,agreement.receiver].includes(state.userId))continue;
