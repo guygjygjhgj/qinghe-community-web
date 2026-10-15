@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>从藤上到掌心 · 丝瓜生活体验</title><link rel="stylesheet" href="style-loofah-v9.css"></head>
+<body class="initializing"><main id="phone" aria-label="丝瓜采摘与剥皮体验">
+ <header><div class="topline"><button id="back" aria-label="返回原来的应用">‹ 返回</button><span>秋日 · 丝瓜络</span><button id="pause" aria-label="暂停体验">暂停</button></div><h1 id="title">把老丝瓜摘下来</h1><p id="instruction">拖动剪刀，把瓜柄放进剪口。</p></header>
+ <div id="scene" data-stage="harvest">
+  <div class="courtyard" aria-hidden="true"></div>
+  <svg id="vine" viewBox="0 0 420 660" aria-hidden="true"><path d="M211 36 C209 64 235 58 229 106" fill="none" stroke="#68713b" stroke-width="5" stroke-linecap="round"/><path d="M222 74 Q246 73 245 89 Q243 99 235 90" fill="none" stroke="#929357" stroke-width="2"/></svg>
+  <div id="target" aria-hidden="true"><span></span></div>
+  <img id="tray" src="assets/tray.png" alt="接住丝瓜的竹盘" draggable="false">
+  <div id="bowl" aria-label="碗" role="button" tabindex="-1"><img src="assets/bowl-clean.webp" alt="" draggable="false"><svg id="dirt" viewBox="0 0 360 240" aria-hidden="true"><defs><mask id="wipe-mask"><rect width="360" height="240" fill="white"/><g id="wiped-paths" fill="none" stroke="black" stroke-width="76" stroke-linecap="round" stroke-linejoin="round"></g></mask></defs><image href="assets/bowl-dirty.webp" width="360" height="240" mask="url(#wipe-mask)"/></svg></div>
+  <div id="rack" role="button" tabindex="-1" aria-label="通风晾架"><img src="assets/rack.webp" draggable="false" alt=""></div>
+  <div id="cabinet" role="button" tabindex="-1" aria-label="密闭收纳盒"><img src="assets/cabinet-closed.webp" draggable="false" alt=""></div>
+  <button id="faucet" type="button" tabindex="-1" aria-label="水龙头，点一下把手开水" aria-pressed="false"><img src="assets/faucet-v8.webp" draggable="false" alt=""><span id="faucet-state">点把手，开水</span></button>
+  <div id="stream" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><div class="splash"></div></div>
+  <div id="seed-field" aria-hidden="true"></div><div id="sunlight" aria-hidden="true"></div>
+  <div id="contact-shadow" aria-hidden="true"></div>
+  <div id="fruit" aria-label="成熟的绿皮丝瓜" role="slider" tabindex="-1" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+   <svg id="fruit-raw" class="fruit-image" viewBox="370 0 315 1536" preserveAspectRatio="none" aria-hidden="true"><defs><clipPath id="skin-mask"><path id="skin-path" d="M370 0H685V1536H370Z"/></clipPath></defs><image href="assets/fiber.png" width="1024" height="1536"/><image id="pulpy" href="assets/fiber-pulpy.png" width="1024" height="1536"/><image id="green" href="assets/mature-green.png" width="1024" height="1536" clip-path="url(#skin-mask)"/></svg>
+   <img id="finished-fiber" src="assets/loofah-finished-v9.png" alt="洗净、晾干后的米白色丝瓜络，切面可见，没有瓜柄和果皮" draggable="false">
+   <svg id="peel" viewBox="390 0 500 1536" preserveAspectRatio="none" aria-hidden="true"><image href="assets/peel-flap.png" width="1024" height="1536"/></svg>
+   <div id="peel-grip" role="slider" tabindex="0" aria-label="翘起的果皮，按住向下拖动；也可用向下方向键" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span></span></div>
+  </div>
+  <img id="tray-front" src="assets/tray.png" alt="" draggable="false" aria-hidden="true">
+  <div id="shears" role="slider" tabindex="0" aria-label="剪刀，拖动剪口到瓜柄，松手剪断。键盘按回车拿起，用方向键移动，再按回车剪断。" aria-valuemin="0" aria-valuemax="1" aria-valuenow="0">
+   <svg viewBox="0 0 140 170" aria-hidden="true"><defs><linearGradient id="metal" x1="0" y1="0" x2="1" y2=".3"><stop stop-color="#6f7775"/><stop offset=".42" stop-color="#f4f2e8"/><stop offset=".66" stop-color="#a1a6a1"/><stop offset="1" stop-color="#545e58"/></linearGradient><linearGradient id="handle"><stop stop-color="#9c463b"/><stop offset=".5" stop-color="#70372d"/><stop offset="1" stop-color="#b26048"/></linearGradient></defs>
+    <g id="blade-a"><path d="M70 84 L54 12 Q56 0 61 8 L79 78 L108 124" fill="url(#metal)" stroke="#65706a" stroke-width="1.5"/><ellipse cx="105" cy="132" rx="21" ry="29" transform="rotate(-25 105 132)" fill="none" stroke="#512e27" stroke-width="13"/><ellipse cx="105" cy="132" rx="21" ry="29" transform="rotate(-25 105 132)" fill="none" stroke="url(#handle)" stroke-width="10"/></g>
+    <g id="blade-b"><path d="M72 85 L87 12 Q87 1 83 9 L63 78 L35 125" fill="url(#metal)" stroke="#65706a" stroke-width="1.5"/><ellipse cx="34" cy="131" rx="21" ry="29" transform="rotate(25 34 131)" fill="none" stroke="#512e27" stroke-width="13"/><ellipse cx="34" cy="131" rx="21" ry="29" transform="rotate(25 34 131)" fill="none" stroke="url(#handle)" stroke-width="10"/></g>
+    <circle cx="71" cy="81" r="7" fill="url(#metal)" stroke="#56635b"/><path d="M68 78l6 6" stroke="#55625a" stroke-width="2"/>
+   </svg>
+  </div>
+  <svg id="gesture-guide" viewBox="0 0 420 660" aria-hidden="true"><defs><marker id="cue-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="4" markerHeight="4" orient="auto-start-reverse"><path d="M1 1L9 5L1 9" fill="none" stroke="#0087b8" stroke-width="2"/></marker></defs><circle id="guide-ring" r="27"/><path id="guide-path" marker-end="url(#cue-arrow)"/><circle id="guide-dot" r="8"/></svg>
+  <div id="object-label" aria-hidden="true">拿起剪刀</div>
+ </div>
+ <footer><div id="status" role="status" aria-live="polite">这根丝瓜已经长老，果皮开始泛黄。</div><p id="subhint">不用着急，对准时会轻轻吸住。</p><button id="collect" hidden>收进作品收藏</button><button id="replay" hidden>再体验一遍</button></footer>
+ <dialog id="pause-dialog"><h2>歇一会儿</h2><p>丝瓜会留在这里，接着做就好。</p><button id="resume">接着体验</button><button id="listen" class="secondary">听一听这步提示</button><button id="leave" class="secondary">保存进度，先离开</button><button id="restart" class="secondary">从采摘重新开始</button></dialog>
+ <dialog id="restart-dialog"><h2>从头再试一次？</h2><p>这次会回到藤架下，重新采摘。已经收藏的作品会保留。</p><button id="confirm-restart">重新开始</button><button id="cancel-restart" class="secondary">接着刚才做</button></dialog>
+</main><div id="loading" role="status"><h2>正在准备材料…</h2><p>材料准备好后，就能开始。</p><button id="retry-load" hidden>重新载入素材</button></div><script type="module" src="game-loofah-v9.js"></script></body></html>
+
+

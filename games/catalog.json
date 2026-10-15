@@ -1,0 +1,35 @@
+{
+  "source": "Existing local games; original UI and assets retained",
+  "games": [
+    {
+      "id": "chrysanthemum",
+      "title": "菊花花礼",
+      "file": "runtime/index.html?game=chrysanthemum"
+    },
+    {
+      "id": "osmanthus",
+      "title": "桂花松糕",
+      "file": "runtime/index.html?game=osmanthus"
+    },
+    {
+      "id": "luffa",
+      "title": "丝瓜生活",
+      "file": "runtime/index.html?game=luffa"
+    },
+    {
+      "id": "corn",
+      "title": "秋收玉米",
+      "file": "corn/index.html"
+    },
+    {
+      "id": "ginkgo",
+      "title": "银杏留秋",
+      "file": "runtime/index.html?game=ginkgo"
+    },
+    {
+      "id": "cotton",
+      "title": "秋棉体验",
+      "file": "cotton/index.html"
+    }
+  ]
+}

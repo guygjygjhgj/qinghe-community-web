@@ -1,0 +1,62 @@
+[
+  {
+    "file": "leaf-pick.wav",
+    "source": "https://freesound.org/people/ericnorcross81/sounds/570759/",
+    "author": "ericnorcross81",
+    "license": "CC0",
+    "trimStart": 17.2,
+    "duration": 0.8,
+    "peakDB": -16.0,
+    "processing": "Short excerpt; high/low-pass; short fades; conservative peak adjustment. No synthesized tones."
+  },
+  {
+    "file": "leaf-trim.wav",
+    "source": "https://freesound.org/people/ericnorcross81/sounds/570759/",
+    "author": "ericnorcross81",
+    "license": "CC0",
+    "trimStart": 17.35,
+    "duration": 0.6,
+    "peakDB": -17.0,
+    "processing": "Short excerpt; high/low-pass; short fades; conservative peak adjustment. No synthesized tones."
+  },
+  {
+    "file": "stem-insert.wav",
+    "source": "https://freesound.org/people/ericnorcross81/sounds/570759/",
+    "author": "ericnorcross81",
+    "license": "CC0",
+    "trimStart": 22,
+    "duration": 0.85,
+    "peakDB": -18.0,
+    "processing": "Short excerpt; high/low-pass; short fades; conservative peak adjustment. No synthesized tones."
+  },
+  {
+    "file": "water-pour.wav",
+    "source": "https://freesound.org/people/Rudmer_Rotteveel/sounds/700352/",
+    "author": "Rudmer_Rotteveel",
+    "license": "CC0",
+    "trimStart": 0.7,
+    "duration": 3.8,
+    "peakDB": -12.0,
+    "processing": "Short excerpt; high/low-pass; short fades; conservative peak adjustment. No synthesized tones."
+  },
+  {
+    "file": "scissor-close.wav",
+    "source": "https://freesound.org/people/jbeetle/sounds/274778/",
+    "author": "jbeetle",
+    "license": "CC0",
+    "trimStart": 0.6,
+    "duration": 0.55,
+    "peakDB": -14.0,
+    "processing": "Short excerpt; high/low-pass; short fades; conservative peak adjustment. No synthesized tones."
+  },
+  {
+    "file": "glass-set.wav",
+    "source": "https://freesound.org/people/bbrocer/sounds/382668/",
+    "author": "bbrocer",
+    "license": "CC0",
+    "trimStart": 3.38,
+    "duration": 0.72,
+    "peakDB": -16.0,
+    "processing": "Short excerpt; high/low-pass; short fades; conservative peak adjustment. No synthesized tones."
+  }
+]

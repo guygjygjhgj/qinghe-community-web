@@ -1,4 +1,7 @@
 node_modules/
+dist/
+.local/
+.git-incomplete/
 playwright-report/
 test-results/
 *.log

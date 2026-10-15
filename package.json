@@ -7,12 +7,18 @@
   "scripts": {
     "start": "node server.cjs",
     "test": "node --test tests/*.test.mjs",
-    "check": "node --check app.js && node --check domain.js && node --check native-views.js && node --check native-runtime.js"
+    "check": "node --check app.js && node --check presentation.js && node --check domain.js && node --check routing.js && node --check interaction.js && node --check experience-views.js && node --check voice-session.js && node --check voice-input.js && node --check legacy-views.js && node --check strict-bindings.js && node --check native-views.js && node --check native-runtime.js && node --check scripts/repair-native-css.mjs && node --check editor-type-chips.js && node --check native-activities.js && node --check native-inputs.js && node --check native-functions.js && node --check native-runtime-data.js && node --check scripts/package-games.cjs && node --check games/runtime/store.js && node --check native-seasonal.js && node --check native/seasonal.js && node --check scripts/build-seasonal.mjs && node --check scripts/prepare-pages.mjs",
+    "package:games": "node scripts/package-games.cjs",
+    "audit:interactions": "node scripts/audit-interactions.mjs",
+    "repair:native-css": "node scripts/repair-native-css.mjs",
+    "build:seasonal": "node scripts/build-seasonal.mjs",
+    "build:pages": "node scripts/prepare-pages.mjs"
   },
   "engines": {
     "node": ">=20"
   },
   "devDependencies": {
-    "esbuild": "^0.28.2"
+    "esbuild": "^0.28.2",
+    "jsdom": "^26.1.0"
   }
 }
