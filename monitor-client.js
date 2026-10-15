@@ -1,0 +1,13 @@
+const KEY='qinghe-monitor-outbox:';
+export function createMonitorClient({client,auth,getState,storage=localStorage,document:doc=document,window:win=window,onSaved=()=>{},onError=()=>{}}){
+ let busy=false,stopped=false,timer=null;const id=()=>getState().loggedIn?getState().userId:null;
+ const read=account=>{try{const rows=JSON.parse(storage.getItem(KEY+account)||'[]');return Array.isArray(rows)?rows:[];}catch{return [];}};
+ function put(account,item){const rows=read(account),same=rows.find(r=>r.key===item.key);if(!same){if(rows.length>=500&&item.type==='monitor.event')return null;rows.push(item);storage.setItem(KEY+account,JSON.stringify(rows));}return same||item;}
+ async function deliver(account,item){if(account!==id()||!auth.hasSession())throw Error('登录账号已变化，监测记录仍保留在原账号待同步列表');const result=await client.command(item.type,null,item.payload);const remaining=read(account).filter(r=>r.key!==item.key);if(remaining.length)storage.setItem(KEY+account,JSON.stringify(remaining));else storage.removeItem(KEY+account);if(item.type==='monitor.assessment')onSaved(account,item.payload.result.assessmentId);return result;}
+ async function flush(){if(stopped||busy||doc.hidden||!id()||!auth.hasSession())return;busy=true;const account=id();try{for(const item of read(account)){if(stopped||doc.hidden||id()!==account)break;await deliver(account,item);}}catch(error){if(error.status===400||error.status===403||error.status===409)onError(error);}finally{busy=false;schedule();}}
+ function schedule(){if(timer!==null)win.clearTimeout(timer);if(!stopped&&!doc.hidden)timer=win.setTimeout(flush,15000);}
+ function queue(type,payload,key){const account=id();if(!account||!auth.hasSession())return null;try{const item=put(account,{key:key||crypto.randomUUID(),type,payload});void flush();return item;}catch(error){onError(error);return null;}}
+ const wake=()=>{if(doc.hidden){if(timer!==null)win.clearTimeout(timer);}else void flush();};
+ doc.addEventListener('visibilitychange',wake);win.addEventListener('online',wake);win.addEventListener('focus',wake);schedule();
+ return {async assessment(account,result){if(id()!==account)throw Error('测评所属账号已变化');const item=put(account,{key:'assessment:'+result.assessmentId,type:'monitor.assessment',payload:{result}});return deliver(account,item);},mark(account,marker){if(id()===account)queue('monitor.onboarding',marker,'onboarding:'+marker.status);},event(type,detail={}){return queue('monitor.event',{type,...detail,clientAt:new Date().toISOString()});},flush,dispose(){stopped=true;if(timer!==null)win.clearTimeout(timer);doc.removeEventListener('visibilitychange',wake);win.removeEventListener('online',wake);win.removeEventListener('focus',wake);},pending:()=>read(id()||'guest')};
+}

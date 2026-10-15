@@ -3,7 +3,7 @@ import {insertionContext,insertText} from './interaction.js';
 import {esc} from './legacy-views.js';
 
 export function createVoiceInput({getForm,openModal,closeModal,toast,helpers}){
- let session=null,context=null,recorder=null,stream=null,clip=null,audio=null,captureTicket=0,generation=0,pending=false,rawStarted=0,rawElapsed=0,rawTimer=null,hadAudio=false;
+ let session=null,context=null,recorder=null,stream=null,clip=null,audio=null,captureTicket=0,generation=0,pending=false,rawStarted=0,rawElapsed=0,rawTimer=null,hadAudio=false,recognizedText='';
  const stopAudio=()=>{if(rawTimer!==null)window.clearInterval(rawTimer);rawTimer=null;if(rawStarted){rawElapsed=Math.floor((Date.now()-rawStarted)/1000);rawStarted=0;}if(recorder?.state==='recording')recorder.stop();stream?.getTracks().forEach(t=>t.stop());stream=null;};
  const input=()=>getForm(context?.form)?.elements.namedItem(context?.field);
  function update(snapshot){
@@ -25,6 +25,7 @@ export function createVoiceInput({getForm,openModal,closeModal,toast,helpers}){
  }
  function confirmation(text){
   if(!context)return;
+  recognizedText=text;
   captureTicket++;pending=false;stopAudio();
   if(text.length>context.remaining){toast(`请将文字精简到${context.remaining}字以内`);return;}
   session?.close();const h=helpers();
@@ -44,7 +45,7 @@ export function createVoiceInput({getForm,openModal,closeModal,toast,helpers}){
  function insert(){
   const target=input(),text=document.querySelector('#confirmed-speech')?.value;
   if(!target||!text?.trim())throw Error('请填写要插入的文字');
-  const result=insertText(target.value,text,context);target.value=result.value;target.dispatchEvent(new Event('input',{bubbles:true}));
+  const result=insertText(target.value,text,context);target.value=result.value;target.dataset.inputMode=hadAudio||session?.startedAt!=null?'voice_transcript':'typed';target.dispatchEvent(new Event('input',{bubbles:true}));if(hadAudio||session?.startedAt!=null)document.dispatchEvent(new window.CustomEvent('qinghe-voice-event',{detail:{type:text===recognizedText?'voice_transcript':'voice_corrected',elapsedMs:(rawElapsed||session?.elapsed||0)*1000,revisionCount:text===recognizedText?0:1}}));
   closeModal();target.focus({preventScroll:true});target.setSelectionRange(result.caret,result.caret);toast('文字已插入，可以继续修改');
  }
  return {open,start:async()=>{
