@@ -5792,14 +5792,6 @@
           "select": []
         },
         {
-          "node": "3:6958",
-          "name": "输入控件行",
-          "action": "get-code",
-          "route": null,
-          "field": null,
-          "select": []
-        },
-        {
           "node": "3:6999",
           "name": "验证码",
           "action": null,
@@ -5816,15 +5808,7 @@
           "select": []
         },
         {
-          "node": "3:7005",
-          "name": "code-button-label／文案行",
-          "action": "get-code",
-          "route": null,
-          "field": null,
-          "select": []
-        },
-        {
-          "node": "3:7006",
+          "node": null,
           "name": "获取验证码",
           "action": "get-code",
           "route": null,
@@ -5833,22 +5817,14 @@
         },
         {
           "node": "3:7002",
-          "name": "植物名称",
+          "name": "昵称",
           "action": null,
           "route": null,
           "field": "name",
           "select": []
         },
         {
-          "node": "3:7008",
-          "name": "login-button-label／文案行",
-          "action": "submit-native",
-          "route": null,
-          "field": null,
-          "select": []
-        },
-        {
-          "node": "3:7009",
+          "node": null,
           "name": "登录并进入",
           "action": "submit-native",
           "route": null,
@@ -7831,17 +7807,9 @@
           "select": []
         },
         {
-          "node": "I3:5201;3:5248",
-          "name": "icon-close／独立素材槽",
-          "action": "back",
-          "route": null,
-          "field": null,
-          "select": []
-        },
-        {
-          "node": "I3:5201;3:5248;3:5235",
-          "name": "icon-close",
-          "action": "back",
+          "node": "3:5201",
+          "name": "close-disc",
+          "action": "reader-close",
           "route": null,
           "field": null,
           "select": []
@@ -7919,9 +7887,9 @@
           "select": []
         },
         {
-          "node": "I3:5215;3:5266",
-          "name": "停止朗读",
-          "action": "back",
+          "node": "3:5215",
+          "name": "stop-button",
+          "action": "reader-close",
           "route": null,
           "field": null,
           "select": []
@@ -8011,6 +7979,22 @@
           ]
         },
         {
+          "node": "3:4789",
+          "name": "headline-pothos／独立PNG素材",
+          "action": null,
+          "route": "/post/pothos",
+          "field": null,
+          "select": []
+        },
+        {
+          "node": "3:4794",
+          "name": "pothos-photo／照片／独立PNG素材",
+          "action": null,
+          "route": "/post/pothos",
+          "field": null,
+          "select": []
+        },
+        {
           "node": "3:4798",
           "name": "supplement-button",
           "action": null,
@@ -8023,6 +8007,14 @@
           "name": "补充情况",
           "action": null,
           "route": "/publish?post=pothos",
+          "field": null,
+          "select": []
+        },
+        {
+          "node": "3:4799",
+          "name": "progress-button",
+          "action": null,
+          "route": "/post/pothos",
           "field": null,
           "select": []
         },
@@ -8351,26 +8343,50 @@
           ]
         },
         {
+          "node": "3:4948",
+          "name": "headline-lettuce／独立PNG素材",
+          "action": null,
+          "route": "/post/lettuce",
+          "field": null,
+          "select": []
+        },
+        {
+          "node": "3:4953",
+          "name": "lettuce-photo／照片／独立PNG素材",
+          "action": null,
+          "route": "/post/lettuce",
+          "field": null,
+          "select": []
+        },
+        {
           "node": "3:4960",
           "name": "contact-button",
-          "action": "open-seed-chat",
-          "route": null,
+          "action": null,
+          "route": "/chat/a",
           "field": null,
           "select": []
         },
         {
           "node": "I3:4960;3:5049",
           "name": "联系陈爷爷",
-          "action": "open-seed-chat",
-          "route": null,
+          "action": null,
+          "route": "/chat/a",
+          "field": null,
+          "select": []
+        },
+        {
+          "node": "3:4961",
+          "name": "appointment-button",
+          "action": null,
+          "route": "/chat/a",
           "field": null,
           "select": []
         },
         {
           "node": "I3:4961;3:5051",
           "name": "查看约定",
-          "action": "open-seed-chat",
-          "route": null,
+          "action": null,
+          "route": "/chat/a",
           "field": null,
           "select": []
         },
@@ -8723,6 +8739,14 @@
           "select": []
         },
         {
+          "node": "11:1323",
+          "name": "我家的小葱／花体图片组件",
+          "action": null,
+          "route": "/post/scallion",
+          "field": null,
+          "select": []
+        },
+        {
           "node": "11:1324",
           "name": "点赞图标／独立生成图片",
           "action": "like",
@@ -8733,6 +8757,22 @@
         {
           "node": "11:1325",
           "name": "评论图标／独立生成图片",
+          "action": null,
+          "route": "/post/scallion?comments=1",
+          "field": null,
+          "select": []
+        },
+        {
+          "node": "11:1326",
+          "name": "点赞",
+          "action": "like",
+          "route": null,
+          "field": null,
+          "select": []
+        },
+        {
+          "node": "11:1327",
+          "name": "查看评论",
           "action": null,
           "route": "/post/scallion?comments=1",
           "field": null,
@@ -10047,5 +10087,5 @@
   "operational": 47,
   "dialogs": 5,
   "references": 6,
-  "controlBindings": 1181
+  "controlBindings": 1186
 }

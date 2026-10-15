@@ -71,7 +71,7 @@ export function completeNativeFunctions(root,{name,state,vm,url,assets}){
   }
  }
  if(name==='help'&&url.searchParams.get('topic')==='privacy'){
-  const p=leaves().find(p=>/第一次|验证码|功能|退出/.test(p.textContent)&&p.textContent.length>20);if(p){p.textContent='本设备数据保存在浏览器内；头像、照片、聊天与游戏进度不发送给邻居。';p.style.overflowY='auto';}
+  const p=leaves().find(p=>/第一次|验证码|功能|退出/.test(p.textContent)&&p.textContent.length>20);if(p){p.textContent=state.cloud?'社区记录按账号保存在共享服务；私聊仅对参与者可见。小游戏和认知测评进度保留在本设备。':'本设备数据保存在浏览器内；头像、照片、聊天与游戏进度不发送给邻居。';p.style.overflowY='auto';}
  }
  if(name==='chat')for(const e of root.querySelectorAll('[data-name*="聊天气泡"]'))bind(e,{action:'copy-bubble',text:e.textContent});
  if(name==='notifications'){
