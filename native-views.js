@@ -6,6 +6,7 @@ import {myPlants,myDrafts,activityState,searchItems,unread} from './domain.js';
 import {editorSourceExists} from './routing.js';
 import {preserveDesign} from './strict-bindings.js';
 import {completeNativeFunctions} from './native-functions.js';
+import {completeAuthControls} from './demo-auth.js';
 export {esc,today,typeName};
 const norm=s=>s.replace(/\s+/g,'').replace(/›/g,'');
 function nativeIndex(root){
@@ -142,7 +143,7 @@ export function createViews(getState,assets,homeScene){
   if(p.startsWith('/chat/'))return s.agreements.find(a=>a.id===id)?.status==='completed'?'chat-complete':'chat';if(p.startsWith('/article/'))return'article';if(p==='/login')return q.get('method')==='quick'?'one-click-login':'login';if(p==='/profile/edit')return'profile-edit';if(p==='/help')return'help';if(p==='/feedback')return'feedback';if(p==='/settings/notifications')return'notifications';if(p==='/settings/font')return'font';if(p==='/settings/speech')return'reader';if(p==='/plant-records')return'records';if(p==='/settings')return'profile';if(p.startsWith('/design/'))return p.slice(8);return'network';
  }
  function render(route,vm){
-  const url=new URL(route,'https://qinghe.local');
+  const url=new URL(route,'https://qinghe.local');if(url.pathname==='/register')url.pathname='/login';
   if(url.pathname.startsWith('/games/')){const game=url.pathname.split('/')[2];const paths={corn:'corn/index.html',cotton:'cotton/index.html',chrysanthemum:'runtime/index.html?game=chrysanthemum',osmanthus:'runtime/index.html?game=osmanthus',luffa:'runtime/index.html?game=luffa',ginkgo:'runtime/index.html?game=ginkgo'};if(paths[game])return{html:'<iframe id="game-frame" title="植物小乐趣" src="games/'+paths[game]+'" style="width:100vw;height:100vh;border:0;display:block"></iframe>',className:'game-host',nav:'',desktop:''};}
   let name;try{name=choose(url,vm);}catch{name='network';}
   const target=url.pathname.split('/')[2],s=getState();
@@ -158,6 +159,7 @@ export function createViews(getState,assets,homeScene){
     const mask=root.querySelector('[data-name="弹窗遮罩｜独立可编辑"]');let tail=mask;while(tail){const next=tail.nextSibling;tail.remove();tail=next;}
    }
    completeNativeFunctions(root,{name,state:getState(),vm,assets,url});
+   if(name==='login')completeAuthControls(root);
   }
   return {html:root.outerHTML,className:'native-host',nav:'',desktop:''};
  }

@@ -170,7 +170,7 @@ export function completeRuntimeData(root,{name,state,vm,url,assets}){
  if(name==='help'){text('联系社区工作人员',{route:'/feedback'});for(const e of named(/联系客服耳麦/))bind(e,{route:'/feedback'});
   for(const [keys,route]of [[['39:1729','39:1730','39:1734'],'/publish'],[['39:1735','39:1736','39:1739'],'/post/lettuce'],[['39:1740','39:1741','39:1744'],'/me'],[['39:1745','39:1748','39:1764','39:1765'],'/settings/font'],[['39:1755','39:1757'],'/drafts'],[['39:1759'],'/feedback']])keys.forEach(key=>bind(at(key),{route}));['39:1752','39:1754'].forEach(key=>bind(at(key),{action:'help-code'}));
   if(url.searchParams.get('topic')==='privacy'){put(at('39:1724'),'隐私设置');put(at('39:1727'),'本设备保存，不向其他设备发送。');picker(at('39:1763'),[['community','社区内可见'],['private','仅自己可见']],{privacyPicker:'true'},'本设备隐私偏好');}
-  if(url.searchParams.get('topic')==='policy'){put(at('39:1724'),'体验说明');put(at('39:1727'),'演示账号仅在本浏览器内使用。');put(at('39:1763'),'新增数据在本设备保存；不发送短信，也不与其他居民同步。');}
+  if(url.searchParams.get('topic')==='policy'){put(at('39:1724'),'体验说明');put(at('39:1727'),'演示注册需管理员审核后登录。');put(at('39:1763'),'注册申请由审核服务保存；不发送短信，帖子等内容仍在本设备保存。');}
  }
  if(name==='login'||name==='one-click-login'){
   for(const label of ['《用户协议》','《会员服务协议》'])text(label,{route:'/help?topic=policy'});for(const label of ['《隐私政策》','《隐私协议》'])text(label,{route:'/help?topic=privacy'});

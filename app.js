@@ -7,10 +7,14 @@ import {createVoiceInput} from './voice-input.js';
 import {syncFields,calendarFile,validateText,postTitle} from './interaction.js';
 import {createPresentation} from './presentation.js';
 import {fitNativeInputs} from './native-inputs.js';
+import {createDemoAuth} from './demo-auth.js';
 
 const main=document.querySelector('#main'),modalRoot=document.querySelector('#modal-root');
 const presentation=createPresentation({main,modalRoot,document,window});
 const store=new Store(localStorage);
+const accountAuth=createDemoAuth({storage:localStorage});
+function applyAccount(s,account){const template=s.users.li;s.userId=account.id;s.users[account.id]={...template,...s.users[account.id],id:account.id,name:account.nickname};s.loggedIn=true;}
+const restoredAccount=await accountAuth.restore();if(restoredAccount)store.commit(s=>applyAccount(s,restoredAccount));else if(store.data.loggedIn)store.commit(s=>{s.loggedIn=false;});
 
 const vm={composer:null,composerKey:null,dirty:false,submissionKey:id(),manage:false,selected:new Set(),activeDate:'',plantPhoto:null,recordPhoto:null,avatarPhoto:null,plantLocation:'阳台',feedbackPhotos:[],feedbackType:'功能问题',feedbackBody:'',feedbackContact:'',forms:{}};
 try{const cached=JSON.parse(sessionStorage.getItem('qinghe-form-recovery'));if(cached?.forms&&typeof cached.forms==='object'){for(const key of ['forms','plantPhoto','recordPhoto','avatarPhoto','feedbackPhotos','feedbackType','plantLocation','activePlantId','plantWeeks','plantDates'])if(cached[key]!==undefined)vm[key]=cached[key];}}catch{}
@@ -36,7 +40,7 @@ function bindScrollExperience(){
 function fieldError(form,message){toast(message);const invalid=[...form.elements].find(el=>el.validity&&!el.validity.valid);if(invalid){invalid.setAttribute('aria-invalid','true');invalid.focus();}}
 function downloadText(text,name,type){const url=URL.createObjectURL(new Blob([text],{type})),link=document.createElement('a');link.href=url;link.download=name;link.click();setTimeout(()=>URL.revokeObjectURL(url),1000);}
 const values=form=>Object.fromEntries(new FormData(form).entries());
-function toast(message){const el=document.querySelector('#toast');el.textContent=message;el.classList.add('visible');clearTimeout(toastTimeout);toastTimeout=setTimeout(()=>el.classList.remove('visible'),3500);}
+function toast(message,duration=3500){const el=document.querySelector('#toast');el.textContent=message;el.classList.add('visible');clearTimeout(toastTimeout);if(duration)toastTimeout=setTimeout(()=>el.classList.remove('visible'),duration);}
 function commit(fn,message){const result=store.commit(fn);if(message)toast(message);return result;}
 function persistForms(){try{sessionStorage.setItem('qinghe-form-recovery',JSON.stringify({forms:vm.forms,plantPhoto:vm.plantPhoto,recordPhoto:vm.recordPhoto,avatarPhoto:vm.avatarPhoto,feedbackPhotos:vm.feedbackPhotos,feedbackType:vm.feedbackType,plantLocation:vm.plantLocation,activePlantId:vm.activePlantId,plantWeeks:vm.plantWeeks,plantDates:vm.plantDates}));}catch{}}
 function completeForm(form){if(!form)return;form.dataset.saved='true';delete vm.forms[currentRoute+'|'+form.dataset.form];persistForms();}
@@ -61,7 +65,7 @@ function navigate(to,{replace=false,allow=false}={}){
 }
 function leaveEditorBack(){if(history.state?.modal){closeModal(false);pendingNavigation=leaveEditorBack;history.back();return;}if(history.state?.from)history.back();else navigate('/community',{replace:true,allow:true});}
 function goBack(){if(path()==='/activities'&&new URL(currentRoute,'https://qinghe.local').searchParams.get('filter')==='1'){closeActivityFilter();return;}if(modal){closeModal();return;}if(path()==='/publish'&&vm.dirty){confirmExit(leaveEditorBack);return;}if(history.state?.from)history.back();else navigate(fallbackBack(currentRoute),{replace:true});}
-function requireLogin(){if(store.data.loggedIn)return true;preserveRecovery();navigate('/login?returnTo='+encodeURIComponent(currentRoute),{allow:true});toast('请先登录');return false;}
+function requireLogin(){if(store.data.loggedIn&&accountAuth.hasSession())return true;preserveRecovery();navigate('/login?returnTo='+encodeURIComponent(currentRoute),{allow:true});toast('请先完成手机号注册、审批后登录');return false;}
 function confirmExit(callback){pendingExit=callback;openModal(`${views.art('exit','img13','dialog-icon')}<h2 id="dialog-title">内容还没发布</h2><p>先存为草稿，下次可以接着写。</p><div class="stack">${views.button('保存草稿并退出','save-exit','btn btn-primary')}${views.button('继续编辑','close','btn btn-outline')}${views.button('不保存并退出','discard-exit','btn btn-muted')}</div>`,'exit');}
 function finishEditorExit(){
  const exit=pendingExit||leaveEditorBack;pendingExit=null;
@@ -135,11 +139,12 @@ document.addEventListener('click',async event=>{if(event.target.closest('input,t
  case 'select-all-favorites':{const keys=s.favorites.slice(0,3);vm.selected=new Set(keys.every(x=>vm.selected.has(x))?[]:keys);refresh();break;}
  case 'native-font':vm.fontChoice=el.dataset.value;refresh();toast('已选择'+({standard:'标准',large:'大号',extra:'特大'})[el.dataset.value]+'字号');break;
  case 'native-apply-font':commit(s=>{s.settings.font=vm.fontChoice||s.settings.font;s.settings.fontSaved=true;},'字号已保存');goBack();break;
- case 'help-code':toast('体验验证码为 123456；此演示不发送真实短信');break;
+ case 'help-code':toast('使用19900000001至19900009999范围内的演示手机号；验证码显示在网页中，不发送短信。注册由管理员核对批准。',10000);break;
  case 'help-draft':navigate('/drafts');break;
- case 'login-consent':vm.loginAgree=!vm.loginAgree;if(vm.forms[currentRoute+'|login'])delete vm.forms[currentRoute+'|login'].agree;refresh();break;case 'get-code':toast('验证码：123456');break;
- case 'demo-login':{commit(s=>{s.loggedIn=true;},'登录成功');completeForm(getForm('login'));navigate(loginReturn(currentRoute),{replace:true,allow:true});break;}
- case 'policy':navigate('/help?topic=policy');break;case 'legacy-policy':openModal('<h2 id="dialog-title">用户协议</h2><p>本站是 Figma 界面的交互体验版本。初始内容为虚构示例，不发送真实短信，不建立真实社区账号，不与其他设备同步。</p><p>您新增的照片、植物、帖子、草稿和约定保存在本浏览器。可在“账户与数据”导出或清空。</p><p>如要作为真实社区服务使用，需要接入账号、数据库和消息服务。</p>');break;
+ case 'login-consent':vm.loginAgree=!vm.loginAgree;if(vm.forms[currentRoute+'|login'])delete vm.forms[currentRoute+'|login'].agree;refresh();break;
+ case 'get-code':{if(vm.authBusy)break;const phone=getForm('login')?.elements.namedItem('phone')?.value?.trim();if(!/^1990000\d{4}$/.test(phone||''))throw Error('请输入演示手机号，例如19900000003');vm.authBusy=true;try{vm.authChallenge=await accountAuth.challenge(phone);toast('演示验证码：'+vm.authChallenge.code+'（10分钟有效，不发送短信）'+(vm.authChallenge.purpose==='register'?'；提交后等待管理员审批。':''),0);}finally{vm.authBusy=false;}break;}
+ case 'demo-login':navigate('/login?returnTo='+encodeURIComponent(loginReturn(currentRoute)),{replace:true,allow:true});toast('请使用手机号与演示验证码，审批通过后登录');break;
+ case 'policy':navigate('/help?topic=policy');break;case 'legacy-policy':openModal('<h2 id="dialog-title">用户协议</h2><p>本站是 Figma 界面的交互体验版本。初始内容为虚构示例，不发送真实短信。演示注册由共享审核服务保存，需管理员核对验证码并批准后登录。</p><p>您新增的照片、植物、帖子、草稿和约定保存在本浏览器。可在“账户与数据”导出或清空。</p><p>如要作为真实社区服务使用，需要接入账号、数据库和消息服务。</p>');break;
  case 'image':showGallery(el);break;case 'gallery-prev':moveGallery(-1);break;case 'gallery-next':moveGallery(1);break;
  case 'follow':if(!requireLogin())return;commit(s=>{const touched=s.followTouched?.[el.dataset.id]||path()==='/following';s.following=s.following.includes(el.dataset.id)&&touched?s.following.filter(v=>v!==el.dataset.id):[...new Set([...s.following,el.dataset.id])];s.followTouched={...s.followTouched,[el.dataset.id]:true};});refresh();break;
  case 'seasonal-like':if(!requireLogin())return;commit(s=>{s.settings.seasonalLiked=!s.settings.seasonalLiked;});refresh();break;
@@ -210,7 +215,7 @@ document.addEventListener('click',async event=>{if(event.target.closest('input,t
  case 'export-data':exportData();break;
  case 'reset-data':dialogConfirm('恢复示例数据？','会清空本设备新增的植物、帖子、草稿、报名和约定。建议先导出数据。','confirm-reset');break;
  case 'confirm-reset':store.reset();sessionStorage.removeItem('qinghe-editor-recovery');vm.composer=null;vm.composerKey=null;vm.dirty=false;closeModal(false);navigate('/',{replace:true,allow:true});toast('已恢复示例数据');break;
- case 'logout':commit(s=>s.loggedIn=false,'已退出体验账号，本设备记录保留');navigate('/',{allow:true});break;
+ case 'logout':await accountAuth.logout();commit(s=>s.loggedIn=false,'已退出账号，本设备记录保留');vm.authChallenge=null;vm.loginAgree=false;for(const key of Object.keys(vm.forms))if(key.endsWith('|login'))delete vm.forms[key];navigate('/login',{allow:true});break;
  default:throw Error('此操作暂时不可用');
 }}catch(error){toast(error.message||'操作未完成，请重试');}});
 
@@ -218,7 +223,7 @@ async function submitPublish(){capture();if(!requireLogin())return;vm.composer.t
 
 document.addEventListener('submit',async event=>{const form=event.target;if(!form.dataset.form)return;event.preventDefault();capture();const f=values(form);try{switch(form.dataset.form){
  case 'search':navigate('/search?q='+encodeURIComponent((f.q||'').trim()));break;
- case 'login':if(!/^1\d{10}$/.test(f.phone))throw Error('请输入11位手机号');if(f.code!=='123456')throw Error('请输入体验验证码123456');if(!f.agree)throw Error('请确认已阅读体验说明');commit(s=>{s.loggedIn=true;s.users[s.userId].name=(f.name||s.users[s.userId].name).trim();},'登录成功');completeForm(form);navigate(loginReturn(currentRoute),{replace:true,allow:true});break;
+ case 'login':{if(vm.authBusy)break;if(!f.agree)throw Error('请确认已阅读并同意');if(!/^\d{6}$/.test(f.code||''))throw Error('请输入六位演示验证码');vm.authBusy=true;try{const result=await accountAuth.submit({...f,phone:f.phone.trim()},vm.authChallenge);vm.authChallenge=null;completeForm(form);form.elements.namedItem('code').value='';if(result.pending){delete form.dataset.saved;commit(s=>s.loggedIn=false);toast('注册申请已提交，等待管理员核对验证码并批准。批准后重新获取登录验证码。',0);}else{commit(s=>applyAccount(s,result.account),'登录成功');vm.loginAgree=false;navigate(loginReturn(currentRoute),{replace:true,allow:true});}}finally{vm.authBusy=false;}break;}
  case 'plant':if(!requireLogin())return;{const p=commit(s=>addPlant(s,{name:f.name.trim(),date:f.date.replace(/年|月/g,'-').replace('日',''),location:vm.plantLocation||f.location,source:f.source,photo:vm.plantPhoto||'plant-new:img2'}));completeForm(form);delete vm.forms[currentRoute+'|plant'];vm.plantPhoto=null;vm.plantLocation='阳台';navigate('/plant/'+p.id+'/success',{replace:true});break;}
  case 'plant-edit':if(!requireLogin())return;{const old=store.data.plants.find(p=>p.id===form.dataset.id);if(!old)throw Error('植物不存在');commit(s=>updatePlant(s,form.dataset.id,{name:f.name,date:f.date,location:vm.plantLocation||f.location,source:f.source,photo:vm.plantPhoto||old.photo}),'植物资料已更新');completeForm(form);delete vm.forms[currentRoute+'|plant-edit'];vm.plantPhoto=null;form.dataset.saved='true';navigate('/plant/'+form.dataset.id,{replace:true});break;}
  case 'record':if(!requireLogin())return;if(form.dataset.id==='reference-mint'&&!store.data.plants.some(p=>p.id==='reference-mint')){commit(s=>{const p=addPlant(s,{name:'薄荷盆栽',date:'2026-09-12',location:'阳台',source:'自己种的',photo:'plant-detail:imgPhotoMintPotPng'});p.id='reference-mint';});}commit(s=>{addPlantRecord(s,form.dataset.id,{title:f.title?.trim()||f.body.trim().split('\n')[0].slice(0,20),date:f.date,body:f.body.trim(),photo:vm.recordPhoto});delete s.recordDrafts?.[form.dataset.id];},'成长近况已保存');completeForm(form);delete vm.forms[currentRoute+'|record'];vm.recordPhoto=null;navigate('/plant/'+form.dataset.id,{replace:true});break;

@@ -10,11 +10,11 @@ export function normalizeRoute(value, fallback = '/') {
 export function loginReturn(route) {
   const url = new URL(normalizeRoute(route), origin);
   const target = normalizeRoute(url.searchParams.get('returnTo'), '/me');
-  return new URL(target, origin).pathname === '/login' ? '/me' : target;
+  return ['/login','/register'].includes(new URL(target, origin).pathname) ? '/me' : target;
 }
 export function fallbackBack(route) {
   const p = new URL(normalizeRoute(route), origin).pathname;
-  if (p === '/login') return loginReturn(route);
+  if (p === '/login'||p==='/register') return loginReturn(route);
   if (p.startsWith('/activity/')) return '/activities';
   if (p.startsWith('/post/') || p.startsWith('/article/') || p.startsWith('/success/')) return '/community';
   if (/^\/plant\/[^/]+\/record$/.test(p)) return p.replace(/\/record$/, '');
