@@ -20,7 +20,7 @@ export function buildPages(destination='dist'){
  const marker=resolve(out,'.qinghe-build');
  if(existsSync(out)){if(!existsSync(marker))throw Error('Refusing to replace a folder not created by this build');rmSync(out,{recursive:true,force:true});}
  mkdirSync(out,{recursive:true});writeFileSync(marker,'Owned by scripts/prepare-pages.mjs\n');
- const folders=['assets','native','games','osmanthus','luffa','luffa-r7','chrysanthemum','ginkgo','figma','fonts'];
+ const folders=['assets','native','games','cognitive','osmanthus','luffa','luffa-r7','chrysanthemum','ginkgo','figma','fonts'];
  const extensions=new Set(['.js','.mjs','.css','.html','.json','.svg','.png','.jpg','.jpeg','.gif','.webp','.avif','.ico','.mp4','.webm','.mp3','.wav','.ogg','.m4a','.woff','.woff2','.ttf','.txt']);
  const excludedNames=new Set(['review.html','motion-preview.html','structure-audit.html','process-audit.json']);
  let count=0,bytes=0;

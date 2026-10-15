@@ -1,0 +1,14 @@
+<!doctype html>
+<html lang="zh-CN">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#FFD738"><title>青禾社区 · 认知测评交互演示</title><meta name="description" content="参考 TCSA 公开任务形式的课程交互演示，使用原创题目和素材，不提供临床评分或认知障碍分级。"><link rel="stylesheet" href="style.css"></head>
+<body>
+<div class="workspace">
+  <aside class="project-intro"><a class="brand" href="#" aria-label="青禾社区首页"><span class="brand-mark" data-sprout></span><span>青禾社区<small>种植 / 邻里 / 生活</small></span></a><div class="project-copy"><span class="eyebrow">QINGHE COMMUNITY</span><h1>种点植物，<br>认识邻居。</h1><p>在熟悉的青禾里，<br>轻松开启一段认知任务体验。</p><div class="project-note"><b>认知测评 · 课程交互原型</b><p>参考 TCSA 论文公开的任务形式，题目与计时参数为原创改编。仅记录本次表现，不作临床分级。</p></div></div><button class="text-button" id="source-open">查看研究依据与改编说明 ↗</button><small class="version">暖黄主产品风格版 · 无需登录 · 作答记录仅保留在本页内存</small></aside>
+  <main class="device" aria-label="手机端交互原型"><header class="app-header"><span class="mini-brand"><span class="mini-leaf" data-sprout></span>青禾社区<span class="header-divider"></span><small>认知体验</small></span><div><button id="font-toggle" class="icon-button" aria-label="切换大字模式">大字</button><button id="help-open" class="icon-button" aria-label="查看说明">说明</button></div></header><div class="demo-ribbon">课程交互演示 · 非官方 TCSA 测试 · 不作临床分级</div><div id="screen"></div><footer class="app-footer">种植连接邻里 · 青禾伴你同行</footer></main>
+  <aside class="tour-panel"><span class="eyebrow">INTERACTION MAP</span><h2>一条完整的体验路径</h2><p>入口 → 练习 → 9 项任务 → 记录报告</p><ol id="tour-list"></ol><button class="outline small" id="tour-enable">开启逐页讲解</button><p class="tour-hint">讲解模式允许跳转页面。未完成的任务会标记为“未完成”，不会生成虚构分数。</p></aside>
+</div>
+<dialog id="info-dialog"><button class="dialog-close" aria-label="关闭说明">×</button><div id="dialog-content"></div></dialog>
+<div id="pause-layer" class="pause-layer" hidden><div class="pause-card"><span class="large-symbol">Ⅱ</span><h2>已为你暂停</h2><p id="pause-message">准备好了，再继续。</p><button class="primary" id="resume">继续体验</button></div></div>
+<script src="app.js"></script>
+<script src="bridge.js"></script>
+</body></html>

@@ -18,7 +18,7 @@ test('game paths resolve inside the GitHub project prefix and preserve root-path
 test('Pages output preserves source art and excludes local files and dependencies',()=>{
  const report=buildPages('.local/pages-site'),output=new URL('../.local/pages-site/',import.meta.url);
  assert.ok(report.files>1500);assert.ok(report.bytes<1_000_000_000);
- for(const file of ['index.html','app.js','native/seasonal.js','games/runtime/bundle.js','games/corn/index.html','games/cotton/index.html','.nojekyll','build-info.json'])assert.ok(existsSync(new URL(file,output)),file);
+ for(const file of ['index.html','app.js','native/seasonal.js','games/runtime/bundle.js','games/corn/index.html','games/cotton/index.html','cognitive/index.html','cognitive/app.js','cognitive/bridge.js','cognitive/style.css','cognitive/assets/qinghe-deer.png','cognitive/assets/cloud-leaves.png','.nojekyll','build-info.json'])assert.ok(existsSync(new URL(file,output)),file);
  for(const file of ['.git','.local','node_modules','tests','tools','server.cjs','.env','games/runtime/entry.tsx'])assert.ok(!existsSync(new URL(file,output)),file);
  const assets=JSON.parse(readFileSync(new URL('../assets.json',import.meta.url)));
  for(const key of ['imgBannerDeerPng','imgPhotoStep1png']){const file=assets.seasonal[key].file;assert.equal(createHash('sha256').update(readFileSync(new URL(file,output))).digest('hex'),createHash('sha256').update(readFileSync(new URL('../'+file,import.meta.url))).digest('hex'));}
