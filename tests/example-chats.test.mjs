@@ -59,3 +59,17 @@ test('the original conversation selector offers real conversations and both sour
   assert.equal(state.chats.length,0);assert.equal(state.agreements.length,0);
  }finally{env.cleanup();}
 });
+
+test('a shared notice uses its actual author and avatar in the original slots even when names are duplicated',async()=>{
+ const state=initialState();state.loggedIn=true;const env=await setup('/',state);
+ try{
+  state.cloud=true;state.conversations=[];
+  state.users.first={id:'first',name:'邻居',avatar:'profile:img5'};
+  state.users.second={id:'second',name:'邻居',avatar:'seed-post:imgGpt1'};
+  state.messages=[{id:'notice',actorId:'second',kind:'comment',title:'收到留言',text:'邻居：一起交流',to:'/post/mint',read:false,createdAt:Date.now()}];
+  const host=document.createElement('div');host.innerHTML=createViews(()=>state,assets,'').render('/messages',{forms:{},selected:new Set()}).html;
+  assert.equal(host.querySelector('[data-node-id="11:1712"]').textContent,'邻居');
+  assert.equal(host.querySelector('[data-node-id="11:1707"] img').getAttribute('src'),assets['seed-post'].imgGpt1.file);
+  assert.equal(host.querySelector('[data-node-id="11:1698"]').dataset.id,'notice');
+ }finally{env.cleanup();}
+});

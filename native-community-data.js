@@ -52,7 +52,8 @@ export function completeCommunityData(root,{name,state,vm,url,assets}){
   const ids=[['11:1698','11:1703','11:1706','11:1712','11:1713','11:1714','11:1715'],['11:1716','11:1721','11:1724','11:1730','11:1731','11:1732','11:1733'],['11:1734','11:1739','11:1747','11:1746','11:1748','11:1749','11:1750']];
   ids.forEach(([card,badge,quote,user,title,read,time],i)=>{
    const n=all[i],node=at(card);if(!node)return;if(!n){node.hidden=true;return;}
-   const actor=Object.values(state.users).find(u=>u.name&&n.title?.startsWith(u.name)),date=new Date(n.createdAt);
+   const actor=state.users[n.actorId]||Object.values(state.users).filter(u=>!u.sample&&u.name).sort((a,b)=>b.name.length-a.name.length).find(u=>n.title?.startsWith(u.name)||n.text?.startsWith(u.name)),date=new Date(n.createdAt);
+   if(actor?.avatar)for(const avatar of node.querySelectorAll('[data-name]'))if(/avatar|头像/.test(avatar.dataset.name))image(avatar,actor.avatar);
    set(badge,{chat:'邻居消息',seed:'种苗约定',like:'收到点赞',activity:'活动提醒',comment:'收到留言',system:'社区通知'}[n.kind]||'社区通知');
    set(user,actor?.name||'青禾社区');
    if(i<2){set(title,n.text||n.title);set(quote,n.kind==='chat'?'邻居私聊':n.title);set(read,n.read?'已读':'未读');}
