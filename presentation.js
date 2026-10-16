@@ -31,6 +31,7 @@ export function createPresentation({main,modalRoot,document,window}){
    const width=parseFloat(root.style.width),height=parseFloat(root.style.height);
    const next=active&&mode==='fixed'?Math.min(1,frame.width/width):active&&mode==='fit'?fitArtboard(width,height,window.innerWidth,window.innerHeight):1;
    root.style.zoom=next===1?'':String(next);
+   root.style.setProperty('--native-viewport-height',(active&&mode==='fixed'?frame.height/next:window.innerHeight/next)+'px');
    scale=next;
   }
   toolbar.querySelector('output').textContent=Math.round(scale*100)+'%';

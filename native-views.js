@@ -230,7 +230,20 @@ export function alignNativeLayers(root){
    }
    if(m[7]?.unit==='PERCENT')el.style.lineHeight=m[6]*m[7].value/100+'px';
   }
-  const b=bounds(el),pane=el.closest('[data-scroll-region]'),x=origin.x+m[2]+Number(el.dataset.nativeOffsetX||0)-b.x-(pane?.scrollLeft||0),y=origin.y+m[3]-b.y-(pane?.scrollTop||0);
+  // Runtime chat omits agreement sections when no agreement exists. Preserve each
+  // layer's position inside its source section instead of translating its artwork
+  // back into the now-absent sections of the original seed-chat artboard.
+  let flowShift=0;
+  if(['chat','chat-complete'].includes(root.dataset.screen))for(let branch=el;branch&&branch!==root;branch=branch.parentElement){
+   for(let sibling=branch.previousElementSibling;sibling;sibling=sibling.previousElementSibling){
+    const sourceHeight=Number(/(?:^|\s)h-\[([\d.]+)px\](?:\s|$)/.exec(sibling.className||'')?.[1]);
+    if(!sourceHeight||root.ownerDocument.defaultView.getComputedStyle(sibling).position==='absolute')continue;
+    const renderedHeight=sibling.getBoundingClientRect().height;
+    if(sibling.hidden||renderedHeight>0)flowShift+=(sibling.hidden?0:renderedHeight)-sourceHeight;
+   }
+  }
+  const b=bounds(el),pane=el.closest('[data-scroll-region]'),x=origin.x+(el.dataset.chatTitle==='true'?100:m[2])+Number(el.dataset.nativeOffsetX||0)-b.x-(pane?.scrollLeft||0),y=origin.y+m[3]+flowShift-b.y-(pane?.scrollTop||0);
+  if(el.dataset.chatTitle==='true')Object.assign(el.style,{width:'550px',whiteSpace:'nowrap',textAlign:'center',overflow:'hidden',textOverflow:'ellipsis'});
   if(Math.abs(x)>.02||Math.abs(y)>.02)el.style.translate=x+'px '+y+'px';
  }
 }

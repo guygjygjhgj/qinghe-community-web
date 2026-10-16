@@ -55,6 +55,8 @@ export function completeCommunityData(root,{name,state,vm,url,assets}){
  }
  if(name==='chat'||name==='chat-complete'){
   const c=state.conversations.find(c=>c.id===pid),other=state.users[c?.peerId],a=state.agreements.find(a=>a.id===pid),header=at(name==='chat'?'11:1215':'3:4676');put(header,other?.name||'邻居');
+  if(header&&(other?.name||'邻居').length>3)header.dataset.chatTitle='true';
+  if(!a)root.dataset.chatKind='direct';
   const input=root.querySelector('form[data-form=chat] [name=text]');if(input)input.placeholder='给'+(other?.name||'邻居')+'发消息...';
   if(!a){for(const id of ['11:1239','11:1263','11:1234','11:1235','11:1236','11:1237'])if(at(id))at(id).hidden=true;}
   else if(name==='chat'){

@@ -1,0 +1,9 @@
+/* The Figma chat artboard supplies the header, bubbles, artwork and composer.
+   A direct conversation has no seed reservation or handoff panels. */
+.native-canvas[data-chat-kind="direct"]{height:auto!important;min-height:var(--native-viewport-height,1142.492px)}
+.native-canvas[data-chat-kind="direct"] [data-node-id="11:1218"]{height:max(732.507px,calc(var(--native-viewport-height,1142.492px) - 409.985px))}
+.native-canvas[data-chat-kind="direct"] .native-chat-scroll{height:100%!important;scrollbar-width:none}
+.native-canvas[data-chat-kind="direct"] .native-chat-scroll::-webkit-scrollbar{display:none}
+.native-canvas .chat-history .chat-message[data-shared-message]{position:relative!important;top:auto!important;height:auto!important;min-height:220px;padding-top:40.45px;padding-bottom:46px}
+.native-canvas .chat-message[data-shared-message] [data-chat-bubble]{position:relative;top:0!important;height:auto;min-height:132.289px;white-space:normal}
+.native-canvas .chat-message[data-shared-message] [data-chat-bubble]>p{width:100%!important;height:auto!important;max-height:none!important;overflow:visible!important;white-space:pre-wrap;overflow-wrap:anywhere}
