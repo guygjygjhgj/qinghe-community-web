@@ -11,6 +11,7 @@ import {completeAuthControls} from './demo-auth.js';
 import {prepareNativePlantCarousel} from './native-plant-carousel.js';
 import {recordSelection,recordScreen,completeRecordCard} from './native-record-carousel.js';
 import {completeCommunityData} from './native-community-data.js';
+import {exampleChat,prepareExampleChat} from './example-chats.js';
 export {esc,today,typeName};
 const norm=s=>s.replace(/\s+/g,'').replace(/›/g,'');
 function completeReaderExit(root){
@@ -33,6 +34,8 @@ export function createViews(getState,assets,homeScene){
  const templates=new Map();
  function canvas(name){if(!screens[name])name='home';if(templates.has(name))return templates.get(name).cloneNode(true);const root=screens[name](),d=sizes[name];root.classList.add('native-canvas');Object.assign(root.style,{width:d.width+'px',height:d.height+'px'});root.dataset.screen=name;root.setAttribute('aria-label','青禾社区');const nodes=nativeIndex(root);
   for(const m of geometry[name]||[]){if(m[1]!=='T')continue;for(const el of nodes(m[0])){
+   el.dataset.nativeSourceText=el.textContent;
+   el.dataset.nativeSourceLines=String(Math.max(1,Math.round(m[5]/(m[6]*1.2))));
    if(typeof m[6]==='number')el.style.fontSize=m[6]+'px';if(m[7]?.unit==='PIXELS')el.style.lineHeight=m[7].value+'px';if(m[7]?.unit==='PERCENT')el.style.lineHeight=m[7].value/100+'em';if(m[8]?.unit==='PIXELS')el.style.letterSpacing=m[8].value+'px';else if(m[8]?.unit==='PERCENT')el.style.letterSpacing=m[8].value/100+'em';
    const font=m[9];if(font?.family)el.style.fontFamily='"'+font.family+'","Noto Sans SC",sans-serif';if(font?.variationSettings?.wght)el.style.fontWeight=font.variationSettings.wght;
    if(m[5]<=((m[7]?.unit==='PIXELS'?m[7].value:0)||m[6]*1.5)*1.25)el.style.whiteSpace='pre';
@@ -157,6 +160,8 @@ export function createViews(getState,assets,homeScene){
  }
  function render(route,vm){
   const url=new URL(route,'https://qinghe.local');if(url.pathname==='/register')url.pathname='/login';
+  const example=exampleChat(url.pathname.startsWith('/chat/')?url.pathname.split('/')[2]:'');
+  if(example)return {html:prepareExampleChat(canvas('chat'),example,assets).outerHTML,className:'native-host',nav:'',desktop:''};
   if(url.pathname.startsWith('/games/')){const game=url.pathname.split('/')[2];const paths={corn:'corn/index.html',cotton:'cotton/index.html',chrysanthemum:'runtime/index.html?game=chrysanthemum',osmanthus:'runtime/index.html?game=osmanthus',luffa:'runtime/index.html?game=luffa',ginkgo:'runtime/index.html?game=ginkgo'};if(paths[game])return{html:'<iframe id="game-frame" title="植物小乐趣" src="games/'+paths[game]+'" style="width:100vw;height:100vh;border:0;display:block"></iframe>',className:'game-host',nav:'',desktop:''};}
   let name;try{name=choose(url,vm);}catch{name='network';}
   const target=url.pathname.split('/')[2],s=getState();
@@ -224,10 +229,16 @@ export function alignNativeLayers(root){
   if(m[1]==='I'&&el.tagName!=='svg'){el.style.width=m[4]+'px';el.style.height=m[5]+'px';}
   if(m[1]==='T'){
    el.style.width=m[4]+'px';el.style.height=(el.dataset.lines?m[5]*Number(el.dataset.lines):m[5])+'px';
+   if(Number(el.dataset.nativeSourceLines)===1&&!el.matches('input,textarea'))el.style.whiteSpace='nowrap';
    if(el.dataset.fitNumber&&el.textContent.length>1)el.style.fontSize=m[6]*Math.min(1,m[4]/(el.textContent.length*m[6]*.62))+'px';
+   const runtimeText=el.dataset.nativeSourceText!==undefined&&el.textContent!==el.dataset.nativeSourceText&&!el.matches('input,textarea,select');
    if(m[7]?.unit==='AUTO'){
-    let lines=1;if(el.tagName!=='INPUT'&&el.tagName!=='TEXTAREA'){const range=document.createRange();range.selectNodeContents(el);const tops=[...range.getClientRects()].map(r=>Math.round(r.top*10));lines=Math.max(1,new Set(tops).size);}el.style.lineHeight=m[5]/lines+'px';
+    let lines=Number(el.dataset.nativeSourceLines)||1;
+    if(!runtimeText&&el.tagName!=='INPUT'&&el.tagName!=='TEXTAREA'){const range=document.createRange();range.selectNodeContents(el);const tops=[...range.getClientRects()].map(r=>Math.round(r.top*10));lines=Math.max(1,new Set(tops).size);}
+    el.style.lineHeight=m[5]/lines+'px';
    }
+   if(runtimeText){const lines=Number(el.dataset.nativeSourceLines)||1,roundingOnly=lines===1&&el.scrollWidth>0&&el.scrollWidth<=m[4]+8;Object.assign(el.style,{whiteSpace:lines===1?'nowrap':'pre-wrap',overflowX:roundingOnly?'visible':'hidden',overflowY:roundingOnly?'visible':lines===1?'hidden':'auto',textOverflow:lines===1?'ellipsis':'clip'});el.title=el.textContent;}
+   else if(Number(el.dataset.nativeSourceLines)===1&&!el.matches('input,textarea,select'))el.style.overflow='visible';
    if(m[7]?.unit==='PERCENT')el.style.lineHeight=m[6]*m[7].value/100+'px';
   }
   // Runtime chat omits agreement sections when no agreement exists. Preserve each
