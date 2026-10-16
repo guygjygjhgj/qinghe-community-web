@@ -23,6 +23,26 @@ test('both original neighbor examples remain accessible without becoming real me
  }
 });
 
+test('new shared accounts keep the original notification and plant page designs without inventing private records',async()=>{
+ const state=initialState();state.loggedIn=true;const env=await setup('/',state);
+ try{
+  state.cloud=true;state.conversations=[];state.plants=[];state.messages=[{id:'real-notice',title:'真实邻居发来消息',kind:'chat',text:'不能覆盖原稿示例卡片',to:'/chat/real-chat',read:false,createdAt:Date.now()}];
+  const views=createViews(()=>state,assets,''),vm={forms:{},selected:new Set()};
+  const host=document.createElement('div');host.innerHTML=views.render('/messages',vm).html;
+  assert.equal(host.querySelector('[data-node-id="11:1712"]').textContent,'王阿姨');
+  assert.equal(host.querySelector('[data-node-id="11:1730"]').textContent,'陈爷爷');
+  assert.equal(host.querySelector('[data-node-id="11:1698"]').dataset.action,'reference-notice');
+  assert.match(host.querySelector('[data-node-id="11:1698"]').dataset.to,/^\/post\/pothos/);
+  assert.ok([...host.querySelector('[data-message-picker]').options].some(o=>o.value==='__live__'));
+  assert.ok([...host.querySelector('[data-message-picker]').options].some(o=>o.value==='real-notice'));
+  host.innerHTML=views.render('/me',vm).html;
+  assert.equal(host.firstElementChild.dataset.screen,'plants');
+  assert.ok(host.querySelector('[data-native-plant-motion]'));
+  assert.ok([...host.querySelector('select[aria-label="我的植物"]').options].some(o=>o.value==='/plant/new'));
+  assert.equal(state.plants.length,0);assert.equal(state.chats.length,0);
+ }finally{env.cleanup();}
+});
+
 test('the original conversation selector offers real conversations and both source examples',async()=>{
  const state=initialState();state.loggedIn=true;const env=await setup('/',state);
  try{

@@ -12,7 +12,7 @@ test('real notifications occupy their author, message, quote and date slots with
  try{
   state.cloud=true;state.users.chen.name='互聊监测验收B';state.conversations=[{id:'real-chat',peerId:'chen'}];
   state.messages=Array.from({length:3},(_,i)=>({id:'notice-'+i,kind:'chat',title:'互聊监测验收B发来消息',text:'这是一条超过原稿单行长度的真实聊天消息。'.repeat(4),createdAt:new Date('2026-10-16T01:52:00Z').getTime(),read:true,route:'/chat/real-chat'}));
-  const host=document.createElement('div');host.innerHTML=createViews(()=>state,assets,'').render('/messages',{forms:{},selected:new Set()}).html;
+  const host=document.createElement('div');host.innerHTML=createViews(()=>state,assets,'').render('/messages',{forms:{},selected:new Set(),liveNotifications:true}).html;
   const root=host.firstElementChild,at=id=>root.querySelector('[data-node-id="'+id+'"]');
   assert.equal(at('11:1712').textContent,'互聊监测验收B');
   assert.equal(at('11:1713').textContent,state.messages[0].text);

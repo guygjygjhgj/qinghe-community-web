@@ -1,5 +1,5 @@
 import {mediaSource} from './community-media.js';
-import {seedCounts,activityState} from './domain.js';
+import {seedCounts,activityState,initialState} from './domain.js';
 import {exampleChat,exampleChats} from './example-chats.js';
 const labels={share:'分享',help:'求助',seed:'种苗赠送'};
 export function completeCommunityData(root,{name,state,vm,url,assets}){
@@ -50,7 +50,13 @@ export function completeCommunityData(root,{name,state,vm,url,assets}){
  if(name==='messages'){
   const all=state.messages.filter(n=>url.searchParams.get('tab')!=='seed'||n.kind==='seed').filter(n=>url.searchParams.get('tab')!=='system'||['system','activity'].includes(n.kind));
   const ids=[['11:1698','11:1703','11:1706','11:1712','11:1713','11:1714','11:1715'],['11:1716','11:1721','11:1724','11:1730','11:1731','11:1732','11:1733'],['11:1734','11:1739','11:1747','11:1746','11:1748','11:1749','11:1750']];
-  ids.forEach(([card,badge,quote,user,title,read,time],i)=>{
+  if(!vm.liveNotifications)ids.forEach(([card],i)=>{
+   const node=at(card),n=initialState().messages[i];if(!node)return;
+   for(const e of [node,...node.querySelectorAll('[data-route],[data-action]')])bind(e,{action:'reference-notice',to:n.to},'查看原稿示例：'+n.title);
+   node.title='原稿示例通知；真实通知可从“互动通知”选择查看';
+   if(vm.sourceNoticesRead&&i<2){set(i===0?'11:1714':'11:1732','已读');for(const dot of node.querySelectorAll('[data-name*="unread-dot"]'))dot.hidden=true;}
+  });
+  else ids.forEach(([card,badge,quote,user,title,read,time],i)=>{
    const n=all[i],node=at(card);if(!node)return;if(!n){node.hidden=true;return;}
    const actor=Object.values(state.users).find(u=>u.name&&n.title?.startsWith(u.name)),date=new Date(n.createdAt);
    set(badge,{chat:'邻居消息',seed:'种苗约定',like:'收到点赞',activity:'活动提醒',comment:'收到留言',system:'社区通知'}[n.kind]||'社区通知');
@@ -66,7 +72,7 @@ export function completeCommunityData(root,{name,state,vm,url,assets}){
    for(const e of [node,...node.querySelectorAll('[data-route],[data-action]')])bind(e,{action:'notification',id:n.id},n.title);
    for(const dot of node.querySelectorAll('[data-name*="unread-dot"]'))dot.hidden=n.read;
   });
-  if(all.length>3)picker(at('11:1755'),all.map(n=>[n.id,n.title]),'messagePicker','查看全部通知');
+  const noticePicker=picker(at('11:1755'),[['__source__','原稿通知'],['__live__','真实通知'],...all.map(n=>[n.id,n.title])],'messagePicker','查看全部通知');if(noticePicker&&vm.liveNotifications){noticePicker.value='__live__';for(const option of noticePicker.options)option.selected?option.setAttribute('selected',''):option.removeAttribute('selected');}
   const conversations=state.conversations||[],example=exampleChat(vm.cloudConversationId)||(!conversations.length?exampleChats[0]:null),c=example?null:conversations.find(c=>c.id===vm.cloudConversationId)||conversations.at(-1),chat=at('11:1757');
   if(example){set('11:1766',example.name);set('11:1767',example.preview);set('11:1761','原稿聊天示例');set('11:1768','示例');for(const e of [chat,...chat.querySelectorAll('[data-route],[data-action]')])bind(e,{route:'/chat/'+example.id},'查看'+example.name+'原稿聊天示例');const avatar=state.users['sample-'+example.person]?.avatar||example.avatar;image(named(/^chat-avatar／/)[0],avatar);}
   if(chat&&!example){if(!c)chat.hidden=true;else{const other=state.users[c.peerId],last=state.chats.filter(m=>m.conversation===c.id).at(-1),a=state.agreements.find(a=>a.id===c.id);set('11:1766',other?.name||'邻居');set('11:1767',last?.text||'还没有消息，点击开始交流');set('11:1761',a?(state.posts.find(p=>p.id===a.postId)?.seedName||'种苗约定'):'邻居私聊');set('11:1768',last&&last.author!==state.userId&&last.createdAt>c.readAt?'未读':'已读');for(const e of chat.querySelectorAll('[data-route],[data-action]'))bind(e,{route:'/chat/'+c.id},'查看与'+other?.name+'的聊天');image(named(/^chat-avatar／/)[0],other?.avatar);}}

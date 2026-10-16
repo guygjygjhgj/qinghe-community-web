@@ -39,6 +39,9 @@ export function completeRuntimeData(root,{name,state,vm,url,assets}){
  }
  if(name==='plants'){
   const plants=nativePlantCards(state),selected=plants.find(p=>p.id===vm.activePlantId)||plants[0],pid=selected.id;
+  const plantTab=leaves().find(e=>e.textContent==='我的植物');
+  picker(plantTab,[['/me','查看我的植物'],['/plant/new','添加植物']],{routePicker:'true'},'我的植物');
+  if(selected.reference){const card=root.querySelector('[data-name="plant／原图定位分层"]');if(card)card.title='原稿示例植物；通过“我的植物”选择添加后显示本人植物记录';}
   for(const e of named(/^plant-photo／|^plant-heading／|^plant-tagline／/)){bind(e,{route:'/plant/'+pid});e.setAttribute('aria-label',selected?.name||'薄荷盆栽');}
   for(const e of named(/^side-card-left／|^side-card-right／/))bind(e,{action:'native-plant-step',delta:e.dataset.name.includes('left')?'-1':'1'});
   const month=vm.calendarMonth||'2026-09';
