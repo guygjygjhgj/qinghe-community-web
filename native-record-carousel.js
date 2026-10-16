@@ -34,7 +34,7 @@ export function completeRecordCard(root,{state,vm,url,assets}){
  const card=root.querySelector('[data-name="记录卡片"],[data-name="post-card"]');if(!card)return;
  if(!selected){card.hidden=true;return;}
  const {post,agreement,reference}=selected,type=selected.type;
- card.dataset.recordCard=selected.key;card.dataset.recordRole='card';card.tabIndex=0;card.setAttribute('role','group');card.setAttribute('aria-roledescription','轮播卡片');card.setAttribute('aria-label',(reference?'原稿示例，':'')+'我的记录，第'+(index+1)+'张，共'+cards.length+'张，可左右滑动');
+ card.dataset.recordCard=selected.key;card.dataset.recordRole='card';card.tabIndex=0;card.setAttribute('role','group');card.setAttribute('aria-roledescription','轮播卡片');card.setAttribute('aria-label',(reference?'尚无个人记录，':'')+'我的记录，第'+(index+1)+'张，共'+cards.length+'张，可左右滑动');
  for(const e of card.querySelectorAll('[data-route],[data-action]')){delete e.dataset.route;delete e.dataset.action;e.removeAttribute('role');e.removeAttribute('tabindex');}
  const at=id=>card.querySelector('[data-node-id="'+id+'"]');
  const named=name=>card.querySelector('[data-name="'+name+'"]');

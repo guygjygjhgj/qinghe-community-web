@@ -41,7 +41,7 @@ export function completeRuntimeData(root,{name,state,vm,url,assets}){
   const plants=nativePlantCards(state),selected=plants.find(p=>p.id===vm.activePlantId)||plants[0],pid=selected.id;
   const plantTab=leaves().find(e=>e.textContent==='我的植物');
   picker(plantTab,[['/me','查看我的植物'],['/plant/new','添加植物']],{routePicker:'true'},'我的植物');
-  if(selected.reference){const card=root.querySelector('[data-name="plant／原图定位分层"]');if(card)card.title='原稿示例植物；通过“我的植物”选择添加后显示本人植物记录';}
+  if(selected.reference){const card=root.querySelector('[data-name="plant／原图定位分层"]');if(card)card.title='通过“我的植物”添加并查看自己的植物记录';}
   for(const e of named(/^plant-photo／|^plant-heading／|^plant-tagline／/)){bind(e,{route:'/plant/'+pid});e.setAttribute('aria-label',selected?.name||'薄荷盆栽');}
   for(const e of named(/^side-card-left／|^side-card-right／/))bind(e,{action:'native-plant-step',delta:e.dataset.name.includes('left')?'-1':'1'});
   const month=vm.calendarMonth||'2026-09';
@@ -168,10 +168,10 @@ export function completeRuntimeData(root,{name,state,vm,url,assets}){
    if(name==='chat'){
     if(agreement.status==='requested'){put(at('11:1235'),'确认领取约定');put(at('11:1252'),'待确认领取 · 1份');put(at('11:1253'),'确认约定后再为您预留');}
     if(agreement.pending){put(at('11:1235'),'确认修改约定');put(at('11:1256'),Number(agreement.pending.date.slice(5,7))+'月'+Number(agreement.pending.date.slice(8))+'日 '+agreement.pending.time);}
-    if(agreement.receiverConfirmed){put(at('11:1265'),'您已确认收到，等待对方确认');put(at('11:1267'),'演示对方确认送出');}else if(agreement.senderConfirmed)put(at('11:1265'),'对方已确认送出，等待您确认');
+    if(agreement.receiverConfirmed){put(at('11:1265'),'您已确认收到，等待对方确认');put(at('11:1267'),'等待对方确认送出');}else if(agreement.senderConfirmed)put(at('11:1265'),'对方已确认送出，等待您确认');
     if(agreement.status==='cancelled'){put(at('11:1252'),'领取约定已取消');put(at('11:1253'),'原预留份数已释放');}
    }
-   for(const e of root.querySelectorAll('[data-action=handoff]'))e.setAttribute('aria-label',agreement.receiverConfirmed?'演示对方确认送出':'确认收到种苗');
+   for(const e of root.querySelectorAll('[data-action=handoff]'))e.setAttribute('aria-label',agreement.receiverConfirmed?'等待对方确认送出':'确认收到种苗');
   }
   for(const e of named(/icon-send|发送图标|发送圆按钮/))bind(e,{action:'submit-native',form:'chat'});
   for(const e of named(/icon-record/))if(agreement)bind(e,{action:'add-seed-plant',id});

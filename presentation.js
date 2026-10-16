@@ -11,8 +11,8 @@ export function fixedViewport(viewportWidth,viewportHeight,preferredWidth=390,ve
 
 export function createPresentation({main,modalRoot,document,window}){
  const showTools=new URL(window.location.href).searchParams.get('demoTools')==='1';
- const toolbar=document.createElement('div');toolbar.className='presentation-toolbar';toolbar.setAttribute('role','group');toolbar.setAttribute('aria-label','电脑演示缩放');toolbar.hidden=true;
- toolbar.innerHTML='<button type="button" data-presentation="fixed">固定窗口</button><button type="button" data-presentation="fit">完整页面</button><button type="button" data-presentation="actual">原始尺寸</button><button type="button" data-presentation-step="-30" aria-label="缩小演示窗口">−</button><output aria-label="页面缩放比例"></output><button type="button" data-presentation-step="30" aria-label="放大演示窗口">+</button>';
+ const toolbar=document.createElement('div');toolbar.className='presentation-toolbar';toolbar.setAttribute('role','group');toolbar.setAttribute('aria-label','电脑展示缩放');toolbar.hidden=true;
+ toolbar.innerHTML='<button type="button" data-presentation="fixed">固定窗口</button><button type="button" data-presentation="fit">完整页面</button><button type="button" data-presentation="actual">原始尺寸</button><button type="button" data-presentation-step="-30" aria-label="缩小展示窗口">−</button><output aria-label="页面缩放比例"></output><button type="button" data-presentation-step="30" aria-label="放大展示窗口">+</button>';
  document.body.append(toolbar);
  const ready=new WeakSet();
  let mode='fixed';try{const saved=window.sessionStorage.getItem('qinghe-presentation');if(['fixed','fit','actual'].includes(saved))mode=saved;}catch{}

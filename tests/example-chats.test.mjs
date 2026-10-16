@@ -11,7 +11,7 @@ test('both original neighbor examples remain accessible without becoming real me
   const state=initialState();state.loggedIn=true;const env=await setup('/chat/example-'+person,state);
   try{
    assert.equal(document.querySelector('.native-canvas').dataset.exampleChat,'example-'+person);
-   assert.ok(document.querySelector('[data-node-id="11:1215"]').textContent.includes('示例'));
+   assert.ok(document.querySelector('[data-node-id="11:1215"]').textContent.includes('已归档'));
    assert.ok(document.querySelector('[data-node-id="11:1221"]'));
    assert.equal(document.querySelector('form[data-form=chat]'),null);
    await env.click('[data-node-id="11:1282"]');
@@ -29,11 +29,12 @@ test('new shared accounts keep the original notification and plant page designs 
   state.cloud=true;state.conversations=[];state.plants=[];state.messages=[{id:'real-notice',title:'真实邻居发来消息',kind:'chat',text:'不能覆盖原稿示例卡片',to:'/chat/real-chat',read:false,createdAt:Date.now()}];
   const views=createViews(()=>state,assets,''),vm={forms:{},selected:new Set()};
   const host=document.createElement('div');host.innerHTML=views.render('/messages',vm).html;
-  assert.equal(host.querySelector('[data-node-id="11:1712"]').textContent,'王阿姨');
-  assert.equal(host.querySelector('[data-node-id="11:1730"]').textContent,'陈爷爷');
-  assert.equal(host.querySelector('[data-node-id="11:1698"]').dataset.action,'reference-notice');
-  assert.match(host.querySelector('[data-node-id="11:1698"]').dataset.to,/^\/post\/pothos/);
-  assert.ok([...host.querySelector('[data-message-picker]').options].some(o=>o.value==='__live__'));
+  assert.equal(host.querySelector('[data-node-id="11:1712"]').textContent,'青禾社区');
+  assert.equal(host.querySelector('[data-node-id="11:1713"]').textContent,'不能覆盖原稿示例卡片');
+  assert.equal(host.querySelector('[data-node-id="11:1716"]').hidden,true);
+  assert.equal(host.querySelector('[data-node-id="11:1698"]').dataset.action,'notification');
+  assert.equal(host.querySelector('[data-node-id="11:1698"]').dataset.id,'real-notice');
+  assert.ok(!host.textContent.includes('原稿通知'));
   assert.ok([...host.querySelector('[data-message-picker]').options].some(o=>o.value==='real-notice'));
   host.innerHTML=views.render('/me',vm).html;
   assert.equal(host.firstElementChild.dataset.screen,'plants');
@@ -51,8 +52,8 @@ test('the original conversation selector offers real conversations and both sour
    const host=document.createElement('div');host.innerHTML=createViews(()=>state,assets,'').render('/messages',{forms:{},selected:new Set(),cloudConversationId:selected}).html;
    const picker=host.querySelector('[data-cloud-conversation-select]');
    assert.equal(picker.value,selected);
-   assert.ok([...picker.options].some(o=>o.value==='example-chen'&&o.textContent.includes('原稿示例')));
-   assert.ok([...picker.options].some(o=>o.value==='example-wang'&&o.textContent.includes('原稿示例')));
+   assert.ok([...picker.options].some(o=>o.value==='example-chen'&&o.textContent.includes('已归档')));
+   assert.ok([...picker.options].some(o=>o.value==='example-wang'&&o.textContent.includes('已归档')));
    assert.ok(host.querySelector('[data-route="/chat/'+selected+'"]'));
   }
   assert.equal(state.chats.length,0);assert.equal(state.agreements.length,0);
