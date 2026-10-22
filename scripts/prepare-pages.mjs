@@ -2,6 +2,7 @@ import {readdirSync,readFileSync,writeFileSync,statSync,existsSync,mkdirSync,cop
 import {resolve,relative,dirname,extname,sep} from 'node:path';
 import {fileURLToPath,pathToFileURL} from 'node:url';
 import {createHash} from 'node:crypto';
+import {buildSync} from 'esbuild';
 const workspace=fileURLToPath(new URL('../',import.meta.url));
 const gameFolders='figma|fonts|osmanthus|luffa-r7|luffa|chrysanthemum|ginkgo';
 
@@ -28,18 +29,39 @@ export function buildPages(destination='dist'){
  for(const item of readdirSync(workspace,{withFileTypes:true}))if(item.isFile()&&(/\.(js|css|html|svg)$/.test(item.name)||['assets.json','design-source.json'].includes(item.name)))copy(item.name);
  function walk(folder){for(const item of readdirSync(resolve(workspace,folder),{withFileTypes:true})){const path=folder+'/'+item.name;if(item.isDirectory()){if(!item.name.startsWith('.')&&item.name!=='node_modules')walk(path);}else if(item.isFile()&&extensions.has(extname(item.name))&&!excludedNames.has(item.name))copy(path);}}
  for(const folder of folders)walk(folder);
+ // Keep the source PNGs available for old browser tabs. New pages use verified,
+ // same-size, pixel-identical WebP copies, without changing any image slot.
+ const performancePath=resolve(workspace,'assets/optimized/manifest.json');
+ let performanceManifest=null;
+ if(existsSync(performancePath)){
+  performanceManifest=JSON.parse(readFileSync(performancePath,'utf8'));
+  for(const [source,item] of Object.entries(performanceManifest.images)){
+   if(!/^assets\/[a-f0-9]{40}\.png$/.test(source)||!/^assets\/optimized\/[a-f0-9]{40}\.webp$/.test(item.file))throw Error('Invalid performance asset path');
+   for(const [file,expected] of [[source,item.originalSha256],[item.file,item.sha256]])if(createHash('sha256').update(readFileSync(resolve(workspace,file))).digest('hex')!==expected)throw Error('Performance asset changed: '+file);
+  }
+ }
+ const optimizeImages=source=>source.replace(/assets\/[a-f0-9]{40}\.png/g,path=>performanceManifest?.images[path]?.file||path);
+ const textFiles=readdirSync(out).filter(f=>/\.(js|css|html|json)$/.test(f)).concat(readdirSync(resolve(out,'native')).filter(f=>f.endsWith('.js')).map(f=>'native/'+f));
+ for(const file of textFiles){const target=resolve(out,file);writeFileSync(target,optimizeImages(readFileSync(target,'utf8')));}
+ // A single request replaces the eager module waterfall across all art screens.
+ const bundle=buildSync({entryPoints:[resolve(workspace,'app.js')],bundle:true,write:false,metafile:true,format:'esm',target:'es2022',minify:true,charset:'utf8',legalComments:'none'});
+ writeFileSync(resolve(out,'app.js'),optimizeImages(bundle.outputFiles[0].text));
  // One release token covers the module graph, preventing an old cached dependency
  // from mixing local-only handlers with the newly deployed shared service.
  const modules=readdirSync(out).filter(f=>f.endsWith('.js')).concat(readdirSync(resolve(out,'native')).filter(f=>f.endsWith('.js')).map(f=>'native/'+f)).sort();
- const release=createHash('sha256');for(const file of modules)release.update(file).update(readFileSync(resolve(out,file)));
+ const release=createHash('sha256');for(const file of modules.concat(readdirSync(out).filter(f=>f.endsWith('.css'))))release.update(file).update(readFileSync(resolve(out,file)));
  const token=release.digest('hex').slice(0,16),imports={};
- for(const file of modules){imports['./'+file]='./'+file+'?release='+token;const source=readFileSync(resolve(out,file),'utf8');for(const match of source.matchAll(/(?:from\s*|import\s*\()(['"])(\.\/[^'"]+\.js\?[^'"]+)\1/g))if(!file.includes('/'))imports[match[2]]=match[2].split('?')[0]+'?release='+token;}
- const htmlPath=resolve(out,'index.html');let html=readFileSync(htmlPath,'utf8');html=html.replace('</head>','<script type="importmap">'+JSON.stringify({imports})+'</script></head>').replace(/src="app\.js[^\"]*"/,'src="app.js?release='+token+'"').replace(/href="([^"?]+\.css)"/g,'href="$1?release='+token+'"');writeFileSync(htmlPath,html);
+ for(const file of modules){imports['./'+file]='./'+file+'?release='+token;const source=readFileSync(resolve(out,file),'utf8')+(file.includes('/')?'':'\n'+readFileSync(resolve(workspace,file),'utf8'));for(const match of source.matchAll(/(?:from\s*|import\s*\()(['"])(\.\/[^'"]+\.js\?[^'"]+)\1/g))if(!file.includes('/'))imports[match[2]]=match[2].split('?')[0]+'?release='+token;}
+ const htmlPath=resolve(out,'index.html');let html=readFileSync(htmlPath,'utf8');
+ html=html.replace('</head>','<script type="importmap">'+JSON.stringify({imports})+'</script></head>').replace(/src="app\.js[^\"]*"/,'src="app.js?release='+token+'"').replace(/href="([^"?]+\.css)"/g,'href="$1?release='+token+'"');writeFileSync(htmlPath,html);
  writeFileSync(resolve(out,'.nojekyll'),'');
  const appSha256=createHash('sha256').update(readFileSync(resolve(out,'app.js'))).digest('hex');
  writeFileSync(resolve(out,'build-info.json'),JSON.stringify({commit:process.env.GITHUB_SHA||'local',appSha256,builtAt:new Date().toISOString()},null,2)+'\n');
+ count=0;bytes=0;
+ function measure(folder){for(const item of readdirSync(folder,{withFileTypes:true})){const path=resolve(folder,item.name);if(item.isDirectory())measure(path);else{count++;bytes+=statSync(path).size;}}}
+ measure(out);
  if(bytes>1_000_000_000)throw Error('Published site exceeds the 1 GB Pages limit');
- return {output:rel,files:count,bytes,appSha256};
+ return {output:rel,files:count,bytes,appSha256,bundleBytes:statSync(resolve(out,'app.js')).size,bundledModules:Object.keys(bundle.metafile.inputs).length};
 }
 
 if(process.argv[1]&&import.meta.url===pathToFileURL(process.argv[1]).href)console.log(JSON.stringify(buildPages(process.argv[2]||'dist')));

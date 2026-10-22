@@ -31,6 +31,16 @@ test('Pages output preserves source art and excludes local files and dependencie
  assert.match(map.imports['./community-client.js'],/^\.\/community-client\.js\?release=[a-f0-9]{16}$/);
  assert.equal(map.imports['./cognitive-onboarding.js?v=assessment-link-1'],map.imports['./cognitive-onboarding.js']);
  assert.match(html,/src="app\.js\?release=[a-f0-9]{16}"/);
+ const bundle=readFileSync(new URL('app.js',output),'utf8');
+ assert.ok(report.bundledModules>50,'The source screen modules should be included in one entry request');
+ assert.ok(!/^import\s.+from\s/m.test(bundle),'No eager module waterfall should remain');
+ const manifest=JSON.parse(readFileSync(new URL('../assets/optimized/manifest.json',import.meta.url),'utf8'));
+ for(const [source,item] of Object.entries(manifest.images)){
+  for(const [file,hash] of [[source,item.originalSha256],[item.file,item.sha256]])assert.equal(createHash('sha256').update(readFileSync(new URL(file,output))).digest('hex'),hash,file);
+  assert.ok(item.bytes<item.originalBytes);assert.ok(item.width>0&&item.height>0);
+ }
+ assert.equal(readFileSync(new URL('style.css',output),'utf8'),readFileSync(new URL('../style.css',import.meta.url),'utf8'));
+ assert.equal(createHash('sha256').update(readFileSync(new URL('assets/fonts/NotoSansSC.woff2',output))).digest('hex'),createHash('sha256').update(readFileSync(new URL('../assets/fonts/NotoSansSC.woff2',import.meta.url))).digest('hex'));
 });
 
 test('build output cannot overwrite source or arbitrary folders',()=>{
