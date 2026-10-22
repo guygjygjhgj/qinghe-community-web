@@ -9,7 +9,7 @@ let sequence=0;
 export async function waitFor(check){for(let i=0;i<50;i++){if(check())return;await delay(20);}assert.ok(check(),'Navigation did not settle');}
 export async function setup(route='/',state=initialState(),options={}){
  const dom=new JSDOM(readFileSync(new URL('index.html',root),'utf8'),{url:'http://127.0.0.1:4180/'+(options.presentationTools?'?demoTools=1':'')+'#'+route,pretendToBeVisual:true}),w=dom.window;
- if(!options.community){const fixture=w.document.createElement('meta');fixture.name='qinghe-community-mode';fixture.content='fixture';w.document.head.append(fixture);}
+ const fixture=w.document.createElement('meta');fixture.name='qinghe-community-mode';fixture.content=options.reference?'reference':options.community?'shared':'fixture';w.document.head.append(fixture);
  w.localStorage.setItem(STORAGE_KEY,JSON.stringify(state));
  if(state.loggedIn&&!options.noAuthSession)w.localStorage.setItem(AUTH_SESSION_KEY,JSON.stringify({token:options.token||'test-approved-session',expiresAt:Date.now()+86400000}));
  for(const [key,value]of Object.entries(options.session||{}))w.sessionStorage.setItem(key,typeof value==='string'?value:JSON.stringify(value));

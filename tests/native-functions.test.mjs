@@ -1,4 +1,5 @@
 import test from 'node:test';
+import './helpers/fixture-clock.mjs';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {setup,waitFor} from './helpers/browser.mjs';

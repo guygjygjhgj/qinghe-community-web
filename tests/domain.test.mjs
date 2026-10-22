@@ -1,4 +1,5 @@
 import test from 'node:test';import assert from 'node:assert/strict';
+import './helpers/fixture-clock.mjs';
 import {initialState,seedCounts,activityState,bookActivity,cancelBooking,requestSeed,reserveSeed,confirmHandoff,cancelAgreement,publishPost,saveDraft,addPlant,addPlantRecord,toggleFavorite,searchItems,Store} from '../domain.js';
 test('报名与取消重复操作不会重复占用名额',()=>{const s=initialState();bookActivity(s,'herbs');bookActivity(s,'herbs');assert.equal(activityState(s,'herbs').count,13);assert.equal(s.bookings.length,1);cancelBooking(s,'herbs');cancelBooking(s,'herbs');assert.equal(activityState(s,'herbs').remaining,8);});
 test('最后一个名额只能由一个体验用户取得',()=>{const s=initialState();s.activities[0].otherBooked=19;bookActivity(s,'herbs');s.userId='wang';assert.throws(()=>bookActivity(s,'herbs'),/名额已满/);assert.equal(s.bookings.length,1);});

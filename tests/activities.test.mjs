@@ -1,4 +1,5 @@
 import test from 'node:test';
+import './helpers/fixture-clock.mjs';
 import assert from 'node:assert/strict';
 test('clipboard permission failures keep the actual location available for manual copying',async()=>{const e=await setup('/activity/herbs',state());try{e.w.navigator.clipboard.writeText=async()=>{throw Error('permission denied');};await e.click('[data-action=copy-location]');assert.ok(document.body.textContent.includes('手动复制'));assert.equal(e.w.getSelection().toString(),'社区花园活动区');}finally{e.cleanup();}});
 import {setup,waitFor} from './helpers/browser.mjs';

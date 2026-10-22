@@ -4,7 +4,7 @@ export function needsCognitiveWelcome(state,route){
  return !!state.loggedIn&&new URL(route,'https://qinghe.local').pathname==='/'&&!(seen?.version===COGNITIVE_VERSION&&['finished','deferred'].includes(seen.status));
 }
 
-export function createCognitiveOnboarding({document,window,getState,getRoute,markSeen,saveResult,onError}){
+export function createCognitiveOnboarding({document,window,getState,getRoute,markSeen,saveResult,onError,autoStart=true}){
  let host=null,frame=null,account=null,session=null,timer=null,previousFocus=null;
  const backgrounds=new Map(),handledThisSession=new Set();
  function close(){
@@ -37,7 +37,7 @@ export function createCognitiveOnboarding({document,window,getState,getRoute,mar
   if(data.type==='exit'&&['finished','deferred'].includes(data.status))exit(data.status);
  }
  function sync(){
-  const s=getState(),requested=new URL(window.location.href).searchParams.get('assessment')==='start'&&s.loggedIn&&new URL(getRoute(),'https://qinghe.local').pathname==='/';if((!requested&&!needsCognitiveWelcome(s,getRoute()))||handledThisSession.has(s.userId)){close();return;}
+  const s=getState(),requested=new URL(window.location.href).searchParams.get('assessment')==='start'&&s.loggedIn&&new URL(getRoute(),'https://qinghe.local').pathname==='/';if((!requested&&(!autoStart||!needsCognitiveWelcome(s,getRoute())))||handledThisSession.has(s.userId)){close();return;}
   if(host&&account===s.userId)return;
   close();account=s.userId;session=window.crypto.randomUUID();previousFocus=document.activeElement;
   host=document.createElement('section');host.className='cognitive-onboarding-host';host.setAttribute('role','dialog');host.setAttribute('aria-modal','true');host.setAttribute('aria-label','首次登录认知小体验');
