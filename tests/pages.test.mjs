@@ -31,6 +31,10 @@ test('Pages output preserves source art and excludes local files and dependencie
  assert.match(map.imports['./community-client.js'],/^\.\/community-client\.js\?release=[a-f0-9]{16}$/);
  assert.equal(map.imports['./cognitive-onboarding.js?v=assessment-link-1'],map.imports['./cognitive-onboarding.js']);
  assert.match(html,/src="app\.js\?release=[a-f0-9]{16}"/);
+ assert.ok(html.includes('src="asset-cache-registration.js"'));
+ const worker=readFileSync(new URL('asset-worker.js',output),'utf8');
+ assert.ok(!worker.includes('__STATIC_FONT_REVISION__'));
+ assert.match(worker,/lezhi-community-art-/);
  const bundle=readFileSync(new URL('app.js',output),'utf8');
  assert.ok(report.bundledModules>50,'The source screen modules should be included in one entry request');
  assert.ok(!/^import\s.+from\s/m.test(bundle),'No eager module waterfall should remain');

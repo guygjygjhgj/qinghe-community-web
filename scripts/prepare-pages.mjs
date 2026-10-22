@@ -29,6 +29,10 @@ export function buildPages(destination='dist'){
  for(const item of readdirSync(workspace,{withFileTypes:true}))if(item.isFile()&&(/\.(js|css|html|svg)$/.test(item.name)||['assets.json','design-source.json'].includes(item.name)))copy(item.name);
  function walk(folder){for(const item of readdirSync(resolve(workspace,folder),{withFileTypes:true})){const path=folder+'/'+item.name;if(item.isDirectory()){if(!item.name.startsWith('.')&&item.name!=='node_modules')walk(path);}else if(item.isFile()&&extensions.has(extname(item.name))&&!excludedNames.has(item.name))copy(path);}}
  for(const folder of folders)walk(folder);
+ const fontRevision=createHash('sha256');
+ for(const file of readdirSync(resolve(workspace,'assets/fonts')).filter(f=>f.endsWith('.woff2')).sort())fontRevision.update(file).update(readFileSync(resolve(workspace,'assets/fonts',file)));
+ const workerPath=resolve(out,'asset-worker.js');
+ writeFileSync(workerPath,readFileSync(workerPath,'utf8').replace('__STATIC_FONT_REVISION__',fontRevision.digest('hex').slice(0,16)));
  // Keep the source PNGs available for old browser tabs. New pages use verified,
  // same-size, pixel-identical WebP copies, without changing any image slot.
  const performancePath=resolve(workspace,'assets/optimized/manifest.json');
