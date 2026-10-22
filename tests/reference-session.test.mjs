@@ -24,8 +24,22 @@ test('public pages open as Li without restoring a login or contacting account se
 
 test('old login and registration links continue to the requested page without a login screen',async()=>{
  assert.equal(referenceRoute('/login?returnTo=%2Fmessages'),'/messages');assert.equal(referenceRoute('/register'),'/me');assert.equal(referenceRoute('/login?returnTo=%2Flogin'),'/me');
- for(const route of ['/login?returnTo=%2Fpublish','/register']){
+ for(const route of ['/login?returnTo=%2Fpublish','/register','/login?method=quick','/design/login','/design/one-click-login','/register?returnTo=%2Fdesign%2Flogin','/design/login?returnTo=%2Fdesign%2Fone-click-login']){
   const e=await setup(route,undefined,{reference:true,noAuthSession:true});try{assert.equal(e.routeNow(),route.includes('publish')?'/publish':'/me');assert.equal(document.querySelector('form[data-form=login]'),null);}finally{e.cleanup();}
+ }
+});
+
+test('public business pages never require account services or reveal account entry controls',async()=>{
+ const routes=['/community','/community?tab=near','/community?tab=info','/publish','/publish?type=help','/publish?type=seed','/plant/new','/plant/mint-reference','/plant/mint-reference/record','/post/scallion','/post/pothos','/post/lettuce','/messages','/chat/seed-demo','/activities','/activity/herbs','/me','/me?tab=records','/favorites','/drafts','/profile/edit','/following','/search','/settings','/settings/font','/settings/notifications','/settings/speech','/help','/feedback'];
+ for(const route of routes){
+  let calls=0;const e=await setup(route,undefined,{reference:true,noAuthSession:true,authFetch:async()=>{calls++;throw Error('Account service must stay unused');}});
+  try{
+   assert.equal(e.routeNow(),route);assert.equal(calls,0);assert.equal(document.querySelector('form[data-form=login]'),null);
+   const visible=el=>!el.closest('[hidden]');
+   for(const el of document.querySelectorAll('[data-action="logout"],[data-action="demo-login"],[data-action="get-code"],[data-route="/login"],[data-route="/register"]'))assert.equal(visible(el),false,route);
+   const copy=[...document.querySelectorAll('#main p,#main span,#main button,#main a')].filter(visible).map(el=>el.textContent).join(' ');
+   assert.doesNotMatch(copy,/登录|注册|游客/,route);
+  }finally{e.cleanup();}
  }
 });
 

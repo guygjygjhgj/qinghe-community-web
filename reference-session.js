@@ -18,12 +18,15 @@ export function useReferenceIdentity(state){
 
 export function referenceRoute(route){
  route=normalizeRoute(route);const path=new URL(route,'https://qinghe.local').pathname;
- return ['/login','/register'].includes(path)?loginReturn(route):route;
+ const accountPages=['/login','/register','/design/login','/design/one-click-login'];
+ if(!accountPages.includes(path))return route;
+ const target=loginReturn(route);
+ return accountPages.includes(new URL(target,'https://qinghe.local').pathname)?'/me':target;
 }
 
 export function removeReferenceLoginControls(root,user){
  for(const el of root.querySelectorAll('[data-action="logout"],[data-action="demo-login"],[data-action="get-code"],[data-action="login-consent"]'))el.hidden=true;
- for(const el of root.querySelectorAll('[data-route]'))if(['/login','/register'].includes(new URL(el.dataset.route,'https://qinghe.local').pathname))el.hidden=true;
+ for(const el of root.querySelectorAll('[data-route]'))if(['/login','/register','/design/login','/design/one-click-login'].includes(new URL(el.dataset.route,'https://qinghe.local').pathname))el.hidden=true;
  if(root.querySelector('.native-canvas')?.dataset.screen==='messages'){
   const ownName=root.querySelector('[data-node-id="11:1784"]');if(ownName)ownName.textContent=user?.name||'李阿姨';
  }
